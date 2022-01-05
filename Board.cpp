@@ -1,14 +1,14 @@
 #include "Board.h"
 #include <cstring>
-#include <valarray>
 
 Board::Board() {
     this->bgColor = new char[26];
+    strncpy(this->bgColor, "background-color:#ffffff", 25);
+
     this->boardName = new char[26];
     strncpy(this->boardName, "New Board", 25);
-    strncpy(this->bgColor, "#ffffff", 25);
 
-    cork = new NoteBoard();
+    cork = new Cork();
 }
 
 Board::Board(QString bgColor, QString boardName) {
@@ -18,7 +18,7 @@ Board::Board(QString bgColor, QString boardName) {
     this->boardName = new char[26];
     strncpy(this->boardName, boardName.toLocal8Bit().data(), 25);
 
-    this->ID = 0;
+    cork = new Cork();
 }
 
 void Board::setColor(QString bgColor) {

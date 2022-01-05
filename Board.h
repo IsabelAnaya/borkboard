@@ -4,7 +4,7 @@
 #include <QString>
 #include <list>
 #include "Note.h"
-#include "NoteBoard.h"
+#include "Cork.h"
 
 //contain info for individual board
 class Board  {
@@ -19,7 +19,7 @@ public:
     char* boardName;
     unsigned int ID;
 
-    NoteBoard* cork;
+    Cork* cork;
 
 };
 

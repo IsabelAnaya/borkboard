@@ -11,6 +11,7 @@ struct BoardNode{
     Board *parent;
 };
 
+
 class Wall {
 
 public:

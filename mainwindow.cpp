@@ -5,25 +5,23 @@
 const char* delim = "%$";
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
-    colorPicker = new QColorDialog();
-    namer = new QInputDialog();
+    colorDia = new QColorDialog();
+    nameDia = new QInputDialog();
     fileDia = new QFileDialog();
 
     this->resize(900, 500);
 
     currWall = new Wall();
     currBoard = currWall->root.board;
-    currBoard->boardName = "New Board";
-    currBoard->bgColor = "ffffff";
-    name = new QLabel;
-    name->setText(tr("New Board"));
+    wallName = new QLabel;
+    wallName->setText(tr("New Wall"));
 
     this->setWindowTitle("Bork Board");
 
     //file bar
     menu = new QMenuBar;
     fileMenu = menuBar()->addMenu(tr("&File"));
-    tools = menuBar()->addMenu(tr("&Tools"));
+    toolMenu = menuBar()->addMenu(tr("&Tools"));
 
     //new wall
     QAction *newWallAction = new QAction(tr("&New Wall"), this);
@@ -48,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     //add note
     QAction *addNoteAction = new QAction(tr("&New Note"), this);
     connect(addNoteAction, &QAction::triggered, this, &MainWindow::addNote);
-    tools->addAction(addNoteAction);
+    toolMenu->addAction(addNoteAction);
 
     //make child board
     //QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
@@ -57,14 +55,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     mainbox = new QGridLayout;
     mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
-    mainbox->addWidget(name, 0, 4, 1, 1);
+    mainbox->addWidget(wallName, 0, 4, 1, 1);
     mainbox->addLayout(currWall->buildTreeVis(), 1, 4, 9, 1);
 
     QWidget *window = new QWidget();
     window->setLayout(mainbox);
     this->setCentralWidget(window);
-
-
 }
 
 void MainWindow::newWall() {
@@ -95,9 +91,9 @@ void MainWindow::loadWall() {
 void MainWindow::saveWall() {
     std::ofstream file((std::string)currBoard->boardName + ".wal", std::ios::out | std::ios::binary);
     file.write(currBoard->boardName, 26);
-    file.write(delim, sizeof(delim));
+    //file.write(delim, sizeof(delim));
     file.write(currBoard->bgColor, 26);
-    file.write(delim, sizeof(delim));
+    //file.write(delim, sizeof(delim));
 
     int notesize = currBoard->cork->notes.size();
     file.write(reinterpret_cast<const char*>(&notesize), sizeof(reinterpret_cast<const char*>(&notesize)) + 1);
@@ -111,17 +107,16 @@ void MainWindow::saveWall() {
 }
 
 void MainWindow::tempedit() {
-
-    if (colorPicker->exec() == true) {
-        this->currBoard->setColor("background-color:" + colorPicker->currentColor().name(QColor::HexRgb));
+    if (colorDia->exec() == true) {
+        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb));
         std::cout << this->currBoard->bgColor << std::endl;
     }
-    if (namer->exec() == true) {
-        this->currBoard->setName(namer->textValue());
+
+    if (nameDia->exec() == true) {
+        this->currBoard->setName(nameDia->textValue());
     }
 
     updateBoard();
-
 }
 
 void MainWindow::addNote() {
@@ -134,6 +129,6 @@ MainWindow::~MainWindow() {
 
 void MainWindow::updateBoard() {
     this->setStyleSheet(QString(currBoard->bgColor));
-    this->name->setText(QString(currBoard->boardName));
+    this->wallName->setText(QString(currBoard->boardName));
 }
 

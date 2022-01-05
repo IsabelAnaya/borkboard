@@ -10,16 +10,16 @@ CONFIG += c++11
 
 SOURCES += \
     Board.cpp \
+    Cork.cpp \
     Note.cpp \
-    NoteBoard.cpp \
     Wall.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     Board.h \
+    Cork.h \
     Note.h \
-    NoteBoard.h \
     Wall.h \
     mainwindow.h
 

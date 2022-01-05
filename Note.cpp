@@ -8,11 +8,13 @@ Note::Note(QWidget *parent) : QFrame(parent) {
     title->setFixedHeight(27);
     title->setFrameStyle(QFrame::StyledPanel);
     title->setLineWidth(2);
+
     content = new QTextEdit(this);
     content->setText(tr("type text here..."));
     content->setFixedHeight(80);
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
+
     lay = new QVBoxLayout;
     lay->addWidget(title);
     lay->addWidget(content);
@@ -33,11 +35,13 @@ Note::Note(QString t, QString c, QWidget *parent) : QFrame(parent) {
     title->setFixedHeight(27);
     title->setFrameStyle(QFrame::StyledPanel);
     title->setLineWidth(2);
+
     content = new QTextEdit(this);
     content->setText(c);
     content->setFixedHeight(80);
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
+
     lay = new QVBoxLayout;
     lay->addWidget(title);
     lay->addWidget(content);

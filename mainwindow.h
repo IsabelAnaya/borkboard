@@ -9,9 +9,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMenuBar>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include "NoteBoard.h"
+#include "Cork.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -41,13 +39,12 @@ private:
 
     QMenuBar *menu;
     QMenu *fileMenu;
-    QMenu *tools;
-    QColorDialog *colorPicker;
-    QInputDialog *namer;
+    QMenu *toolMenu;
+    QColorDialog *colorDia;
+    QInputDialog *nameDia;
     QFileDialog *fileDia;
-    QLabel *name;
+    QLabel *wallName;
     QGridLayout *mainbox;
-
 
 };
 #endif // MAINWINDOW_H
