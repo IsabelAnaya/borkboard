@@ -22,7 +22,7 @@ public:
     QVBoxLayout* lay;
     int ID;
     float xLoc, yLoc;
-    float len, wid;
+    //float len, wid;
 };
 
 #endif // NOTE_H

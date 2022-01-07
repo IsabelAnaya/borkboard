@@ -15,8 +15,12 @@ class Cork : public QFrame {
 public:
     explicit Cork(QWidget *parent = nullptr);
 
-    void addNote();
+    Note* addNote();
+    Note* addNote(std::string title, std::string content, int xPos, int yPos);
     std::vector<Note*> notes;
+
+private:
+    unsigned int maxID = 0;
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;

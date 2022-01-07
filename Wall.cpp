@@ -17,8 +17,12 @@ std::vector<QPushButton*> traverse(BoardNode node) {
 
 
 Wall::Wall() {
+    wallName = "New Wall";
+
     root = BoardNode();
     root.board = new Board();
+    root.board->setName("Root");
+    root.board->ID = 0;
     root.parent = NULL;
 }
 

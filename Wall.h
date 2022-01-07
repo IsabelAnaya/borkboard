@@ -7,6 +7,7 @@
 //contain all of the save info
 struct BoardNode{
     Board *board;
+    int id;
     std::vector<BoardNode> children;
     Board *parent;
 };
@@ -18,6 +19,7 @@ public:
     Wall();
     QLayout *buildTreeVis();
     BoardNode root;
+    std::string wallName;
 
 private:
     int maxID = 0;

@@ -45,6 +45,7 @@ private:
     QFileDialog *fileDia;
     QLabel *wallName;
     QGridLayout *mainbox;
+    QWidget *window;
 
 };
 #endif // MAINWINDOW_H

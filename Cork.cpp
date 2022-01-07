@@ -7,22 +7,39 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
 
-    Note *tempTest = new Note(this);
-    notes.push_back(tempTest);
+//    Note *tempTest = addNote();
+//    tempTest->move(10, 10);
 
-    tempTest->move(10, 10);
-
-    Note *temp2 = new Note(this);
-    temp2->move(20, 30);
-    notes.push_back(temp2);
+//    Note *temp2 = addNote();
+//    temp2->move(20, 30);
 }
 
-void Cork::addNote() {
+Note* Cork::addNote() {
     std::cout << "new note" << std::endl;
     Note *tempo = new Note(this);
 
+    tempo->ID = maxID;
+    maxID++;
+
     tempo->move(10, 10);
     notes.push_back(tempo);
+
+    return tempo;
+}
+
+Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
+    std::cout << "rebuilding note" << std::endl;
+    Note *tempo = new Note(this);
+
+    tempo->title->setText(QString::fromStdString(title));
+    tempo->content->setText(QString::fromStdString(content));
+    tempo->ID = maxID;
+    maxID++;
+
+    tempo->move(xPos, yPos);
+    notes.push_back(tempo);
+
+    return tempo;
 }
 
 void Cork::dragEnterEvent(QDragEnterEvent *event) {
@@ -97,6 +114,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
             std::cout << "right click on empty" << std::endl;
         } else {
             std::cout << "right click on note" << std::endl;
+            //std::cout << child->pos().x() << ", " << child->pos().y() << std::endl;
         }
 
     } else if (event->button() == Qt::LeftButton) {
