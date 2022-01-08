@@ -12,6 +12,7 @@ SOURCES += \
     Board.cpp \
     Cork.cpp \
     Note.cpp \
+    Sidebar.cpp \
     Wall.cpp \
     main.cpp \
     mainwindow.cpp
@@ -20,6 +21,7 @@ HEADERS += \
     Board.h \
     Cork.h \
     Note.h \
+    Sidebar.h \
     Wall.h \
     mainwindow.h
 

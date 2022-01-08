@@ -16,12 +16,13 @@ class Note : public QFrame {
 public:
     explicit Note(QWidget *parent = nullptr);
     Note(QString t, QString c, QWidget *parent);
+    ~Note();
 
     QTextEdit* title;
     QTextEdit* content;
     QVBoxLayout* lay;
     int ID;
-    float xLoc, yLoc;
+    //float xLoc, yLoc;
     //float len, wid;
 };
 

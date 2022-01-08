@@ -26,16 +26,12 @@ Wall::Wall() {
     root.parent = NULL;
 }
 
-QLayout* Wall::buildTreeVis() {
-    //QPushButton *wallTitle = new QPushButton(root.board->boardName);
-
-    QVBoxLayout *lay = new QVBoxLayout;
-
+Sidebar* Wall::buildTreeVis() {
     std::vector<QPushButton*> bits = traverse(root);
-    for (unsigned int i = 0; i < bits.size(); i++) {
-        lay->addWidget(bits[i]);
-    }
 
-    return lay;
+    return new Sidebar(bits);
 }
 
+Wall::~Wall() {
+    delete root.board;
+}

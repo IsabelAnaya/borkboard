@@ -17,8 +17,8 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
 Note* Cork::addNote() {
     std::cout << "new note" << std::endl;
     Note *tempo = new Note(this);
-
     tempo->ID = maxID;
+
     maxID++;
 
     tempo->move(10, 10);
@@ -30,16 +30,23 @@ Note* Cork::addNote() {
 Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
     std::cout << "rebuilding note" << std::endl;
     Note *tempo = new Note(this);
+    tempo->ID = maxID;
+
+    maxID++;
 
     tempo->title->setText(QString::fromStdString(title));
     tempo->content->setText(QString::fromStdString(content));
-    tempo->ID = maxID;
-    maxID++;
-
     tempo->move(xPos, yPos);
     notes.push_back(tempo);
 
     return tempo;
+}
+
+void Cork::renumberNotes() {
+    maxID = notes.size();
+    for (int i = 0; i < int(maxID); i++) {
+        notes[i]->ID = i;
+    }
 }
 
 void Cork::dragEnterEvent(QDragEnterEvent *event) {
@@ -90,8 +97,8 @@ void Cork::dropEvent(QDropEvent *event) {
         QPoint offset;
         dataStream >> t >> c >> offset;
 
-        Note *newnote = new Note(t, c, this);
-        newnote->move(event->pos() - offset);
+        Note *newnote = this->addNote(t.toStdString(), c.toStdString(), event->pos().x() - offset.x(), event->pos().y() - offset.y());
+        //newnote->move(event->pos() - offset);
         newnote->show();
         newnote->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -136,9 +143,18 @@ void Cork::mousePressEvent(QMouseEvent *event) {
 
         child->hide();
         if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction) {
+            notes.erase(notes.begin() + child->ID);
+            this->renumberNotes();
             child->close();
         } else {
             child->show();
         }
+    }
+}
+
+Cork::~Cork() {
+    int notesize = notes.size();
+    for (int i = 0; i < notesize; i++) {
+        delete notes[i];
     }
 }

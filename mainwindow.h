@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include "Cork.h"
+#include "Sidebar.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -46,6 +47,7 @@ private:
     QLabel *wallName;
     QGridLayout *mainbox;
     QWidget *window;
+    Sidebar *treeVis;
 
 };
 #endif // MAINWINDOW_H

@@ -11,6 +11,7 @@ class Board  {
 public:
     Board();
     Board(QString bgColor, QString boardName);
+    ~Board();
 
     void setName(QString boardName);
     void setColor(QString bgColor);

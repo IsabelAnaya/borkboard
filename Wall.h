@@ -2,6 +2,7 @@
 #define WALL_H
 
 #include "Board.h"
+#include "Sidebar.h"
 #include <list>
 
 //contain all of the save info
@@ -17,7 +18,9 @@ class Wall {
 
 public:
     Wall();
-    QLayout *buildTreeVis();
+    ~Wall();
+    Sidebar *buildTreeVis();
+
     BoardNode root;
     std::string wallName;
 

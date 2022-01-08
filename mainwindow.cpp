@@ -59,7 +59,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     mainbox = new QGridLayout;
     mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
     mainbox->addWidget(wallName, 0, 4, 1, 1);
-    mainbox->addLayout(currWall->buildTreeVis(), 1, 4, 9, 1);
+    treeVis = currWall->buildTreeVis();
+    mainbox->addLayout(treeVis, 1, 4, 9, 1);
 
     window = new QWidget();
     window->setLayout(mainbox);
@@ -119,6 +120,12 @@ void MainWindow::loadWall() {
                 yPos = stoi(temp);
                 newBoard->cork->addNote(title, content, xPos, yPos);
             }
+
+            //TEMP ROOT
+            BoardNode newRoot;
+            newRoot.board = newBoard;
+            newRoot.id = 0;
+            currWall->root = newRoot;
         }
 
         currBoard = currWall->root.board;
@@ -139,17 +146,12 @@ void MainWindow::saveWall() {
 
     Cork *currCork = currBoard->cork;
     for (int i = 0; i < notesize; i++) {
-        std::cout << "benchmark 1" << std::endl;
         Note *currNote = currCork->notes[i];
-        std::cout << "benchmark 2" << std::endl;
-        file << currNote->title->toPlainText().toStdString() << std::endl; //BREAKS HERE?????
-        std::cout << "benchmark 3" << std::endl;
+        file << currNote->title->toPlainText().toStdString() << std::endl;
         file << currNote->content->toPlainText().toStdString() << std::endl;
-        std::cout << "benchmark 4" << std::endl;
+
         file << currNote->pos().x() << std::endl;
-        std::cout << "benchmark 5" << std::endl;
         file << currNote->pos().y() << std::endl;
-        std::cout << "benchmark 6" << std::endl;
     }
 
     file.close();
@@ -186,11 +188,14 @@ void MainWindow::updateBoard() {
     this->setStyleSheet(QString(currBoard->bgColor));
     this->wallName->setText(QString::fromStdString(currWall->wallName));
 
+    delete treeVis;
     delete mainbox;
+
     mainbox = new QGridLayout;
+    treeVis = currWall->buildTreeVis();
     mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
     mainbox->addWidget(wallName, 0, 4, 1, 1);
-    mainbox->addLayout(currWall->buildTreeVis(), 1, 4, 9, 1);
+    mainbox->addLayout(treeVis, 1, 4, 9, 1);
 
     window->setLayout(mainbox);
 }

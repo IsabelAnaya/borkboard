@@ -14,12 +14,14 @@ class Cork : public QFrame {
 
 public:
     explicit Cork(QWidget *parent = nullptr);
+    ~Cork();
 
     Note* addNote();
     Note* addNote(std::string title, std::string content, int xPos, int yPos);
     std::vector<Note*> notes;
 
 private:
+    void renumberNotes();
     unsigned int maxID = 0;
 
 protected:

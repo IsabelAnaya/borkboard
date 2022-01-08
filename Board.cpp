@@ -28,3 +28,9 @@ void Board::setColor(QString bgColor) {
 void Board::setName(QString boardName) {
     strncpy(this->boardName, boardName.toLocal8Bit().data(), 25);
 }
+
+Board::~Board() {
+    delete[] bgColor;
+    delete[] boardName;
+    delete cork;
+}

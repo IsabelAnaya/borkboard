@@ -53,3 +53,9 @@ Note::Note(QString t, QString c, QWidget *parent) : QFrame(parent) {
     show();
     setAttribute(Qt::WA_DeleteOnClose);
 }
+
+Note::~Note() {
+    delete title;
+    delete content;
+    delete lay;
+}
