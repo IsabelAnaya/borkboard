@@ -32,6 +32,13 @@ Sidebar* Wall::buildTreeVis() {
     return new Sidebar(bits);
 }
 
+void Wall::saveData(std::ofstream *file) {
+    *file << "v0.1" << std::endl;
+    *file << wallName << std::endl;
+
+    //recursion on a boardnode here
+}
+
 Wall::~Wall() {
     delete root.board;
 }

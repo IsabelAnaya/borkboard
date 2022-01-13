@@ -52,9 +52,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     toolMenu->addAction(addNoteAction);
 
     //make child board
-    //QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
-    //connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
-    //tools->addAction(addChildBoardAction);
+    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
+    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
+    toolMenu->addAction(addChildBoardAction);
 
     mainbox = new QGridLayout;
     mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
@@ -138,21 +138,8 @@ void MainWindow::saveWall() {
     std::ofstream file((std::string)currWall->wallName + ".wal", std::ios::out | std::ios::trunc);
     file << currWall->wallName << std::endl;
     file << 1 << std::endl; //number of boards
-    file << currBoard->boardName << std::endl;
-    file << currBoard->bgColor << std::endl;
 
-    int notesize = currBoard->cork->notes.size();
-    file << notesize << std::endl;;
-
-    Cork *currCork = currBoard->cork;
-    for (int i = 0; i < notesize; i++) {
-        Note *currNote = currCork->notes[i];
-        file << currNote->title->toPlainText().toStdString() << std::endl;
-        file << currNote->content->toPlainText().toStdString() << std::endl;
-
-        file << currNote->pos().x() << std::endl;
-        file << currNote->pos().y() << std::endl;
-    }
+    currBoard->saveData(&file);
 
     file.close();
 }
@@ -163,15 +150,15 @@ void MainWindow::tempedit() {
         std::cout << this->currBoard->bgColor << std::endl;
     }
 
+    nameDia->setLabelText("Enter new name of wall:");
     if (nameDia->exec() == true) {
         currWall->wallName = nameDia->textValue().toStdString();
     }
-    nameDia->setLabelText("Enter new name of current board:");
 
+    nameDia->setLabelText("Enter new name of current board:");
     if (nameDia->exec() == true) {
         this->currBoard->setName(nameDia->textValue());
     }
-    nameDia->setLabelText("Enter new name of wall:"); //reset to the normal text
 
     updateBoard();
 }
@@ -179,6 +166,18 @@ void MainWindow::tempedit() {
 void MainWindow::addNote() {
     currBoard->cork->addNote();
 }
+
+void MainWindow::addBoard() {
+    nameDia->setLabelText("Enter name of new board:");
+    nameDia->setTextValue("New Board");
+    if (nameDia->exec() == true) {
+
+        currWall->wallName = nameDia->textValue().toStdString();
+        //pass current board and name of new board to wall
+    }
+}
+
+
 
 MainWindow::~MainWindow() {
 

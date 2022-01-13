@@ -16,6 +16,8 @@ public:
     void setName(QString boardName);
     void setColor(QString bgColor);
 
+    void saveData(std::ofstream *file);
+
     char* bgColor;
     char* boardName;
     unsigned int ID;

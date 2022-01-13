@@ -9,6 +9,8 @@
 #include <QDrag>
 #include <QVBoxLayout>
 
+#include <fstream>
+
 //note
 class Note : public QFrame {
     Q_OBJECT
@@ -17,6 +19,8 @@ public:
     explicit Note(QWidget *parent = nullptr);
     Note(QString t, QString c, QWidget *parent);
     ~Note();
+
+    void saveData(std::ofstream *file);
 
     QTextEdit* title;
     QTextEdit* content;

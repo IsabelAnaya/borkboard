@@ -29,6 +29,18 @@ void Board::setName(QString boardName) {
     strncpy(this->boardName, boardName.toLocal8Bit().data(), 25);
 }
 
+void Board::saveData(std::ofstream *file) {
+    *file << boardName << std::endl;
+    *file << bgColor << std::endl;
+
+    int notesize = cork->notes.size();
+    *file << notesize << std::endl;
+
+    for (int i = 0; i < notesize; i++) {
+        cork->notes[i]->saveData(file);
+    }
+}
+
 Board::~Board() {
     delete[] bgColor;
     delete[] boardName;

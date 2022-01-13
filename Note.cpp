@@ -54,6 +54,14 @@ Note::Note(QString t, QString c, QWidget *parent) : QFrame(parent) {
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
+void Note::saveData(std::ofstream *file) {
+    *file << title->toPlainText().toStdString() << std::endl;
+    *file << content->toPlainText().toStdString() << std::endl;
+
+    *file << this->pos().x() << std::endl;
+    *file << this->pos().y() << std::endl;
+}
+
 Note::~Note() {
     delete title;
     delete content;

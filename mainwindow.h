@@ -34,6 +34,7 @@ private slots:
     void tempedit();
 
     void addNote();
+    void addBoard();
 
 private:
     void updateBoard();

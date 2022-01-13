@@ -20,6 +20,7 @@ public:
     Wall();
     ~Wall();
     Sidebar *buildTreeVis();
+    void saveData(std::ofstream *file);
 
     BoardNode root;
     std::string wallName;
