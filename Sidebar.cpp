@@ -1,5 +1,4 @@
 #include "Sidebar.h"
-#include <iostream> //TEMP
 
 Sidebar::Sidebar(std::vector<QPushButton*> bits) {
     for (unsigned int i = 0; i < bits.size(); i++) {

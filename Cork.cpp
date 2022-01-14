@@ -1,21 +1,15 @@
 #include "Cork.h"
-#include <iostream>
+#include <iostream> //testing
 //https://doc.qt.io/qt-5/qtwidgets-draganddrop-draggableicons-example.html
 
 Cork::Cork(QWidget *parent) : QFrame(parent) {
     setMinimumSize(200, 200);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
-
-//    Note *tempTest = addNote();
-//    tempTest->move(10, 10);
-
-//    Note *temp2 = addNote();
-//    temp2->move(20, 30);
 }
 
 Note* Cork::addNote() {
-    std::cout << "new note" << std::endl;
+    //std::cout << "new note" << std::endl;
     Note *tempo = new Note(this);
     tempo->ID = maxID;
 
@@ -28,7 +22,7 @@ Note* Cork::addNote() {
 }
 
 Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
-    std::cout << "rebuilding note" << std::endl;
+    //std::cout << "rebuilding note" << std::endl;
     Note *tempo = new Note(this);
     tempo->ID = maxID;
 

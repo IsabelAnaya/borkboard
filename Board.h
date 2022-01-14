@@ -17,9 +17,10 @@ public:
     void setColor(QString bgColor);
 
     void saveData(std::ofstream *file);
+    void readData(std::ifstream *file);
 
-    char* bgColor;
-    char* boardName;
+    std::string bgColor;
+    std::string boardName;
     unsigned int ID;
 
     Cork* cork;

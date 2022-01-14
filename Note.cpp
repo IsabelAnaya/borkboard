@@ -62,6 +62,24 @@ void Note::saveData(std::ofstream *file) {
     *file << this->pos().y() << std::endl;
 }
 
+void Note::readData(std::ifstream *file) {
+    std::string temp;
+    std::getline(*file, temp);
+    title->setText(QString::fromStdString(temp));
+
+    std::getline(*file, temp);
+    content->setText(QString::fromStdString(temp));
+
+
+    std::getline(*file, temp);
+    int inted = stoi(temp);
+    this->pos().setX(inted);
+
+    std::getline(*file, temp);
+    inted = stoi(temp);
+    this->pos().setY(inted);
+}
+
 Note::~Note() {
     delete title;
     delete content;

@@ -21,12 +21,12 @@ public:
     ~Note();
 
     void saveData(std::ofstream *file);
+    void readData(std::ifstream *file);
 
     QTextEdit* title;
     QTextEdit* content;
     QVBoxLayout* lay;
     int ID;
-    //float xLoc, yLoc;
     //float len, wid;
 };
 

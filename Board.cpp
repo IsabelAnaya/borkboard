@@ -1,32 +1,25 @@
 #include "Board.h"
-#include <cstring>
 
 Board::Board() {
-    this->bgColor = new char[26];
-    strncpy(this->bgColor, "background-color:#ffffff", 25);
-
-    this->boardName = new char[26];
-    strncpy(this->boardName, "New Board", 25);
+    this->bgColor = "background-color:#ffffff";
+    this->boardName = "New Board";
 
     cork = new Cork();
 }
 
 Board::Board(QString bgColor, QString boardName) {
-    this->bgColor = new char[26];
-    strncpy(this->bgColor, bgColor.toLocal8Bit().data(), 25);
-
-    this->boardName = new char[26];
-    strncpy(this->boardName, boardName.toLocal8Bit().data(), 25);
+    this->bgColor = bgColor.toStdString();
+    this->boardName = boardName.toStdString();
 
     cork = new Cork();
 }
 
 void Board::setColor(QString bgColor) {
-    strncpy(this->bgColor, bgColor.toLocal8Bit().data(), 25);
+    this->bgColor = bgColor.toStdString();
 }
 
 void Board::setName(QString boardName) {
-    strncpy(this->boardName, boardName.toLocal8Bit().data(), 25);
+    this->boardName = boardName.toStdString();
 }
 
 void Board::saveData(std::ofstream *file) {
@@ -41,8 +34,20 @@ void Board::saveData(std::ofstream *file) {
     }
 }
 
+void Board::readData(std::ifstream *file) {
+    std::getline(*file, boardName);
+    std::getline(*file, bgColor);
+
+    std::string temp;
+    std::getline(*file, temp);
+    int notesize = stoi(temp);
+
+    for (int i = 0; i < notesize; i++) {
+        Note *newNote = cork->addNote();
+        newNote->readData(file);
+    }
+}
+
 Board::~Board() {
-    delete[] bgColor;
-    delete[] boardName;
     delete cork;
 }

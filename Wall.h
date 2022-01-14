@@ -4,13 +4,14 @@
 #include "Board.h"
 #include "Sidebar.h"
 #include <list>
+#include <QPushButton>
 
 //contain all of the save info
 struct BoardNode{
     Board *board;
     int id;
-    std::vector<BoardNode> children;
-    Board *parent;
+    std::vector<BoardNode*> children;
+    BoardNode *parent;
 };
 
 
@@ -21,8 +22,9 @@ public:
     ~Wall();
     Sidebar *buildTreeVis();
     void saveData(std::ofstream *file);
+    void readData(std::ifstream *file);
 
-    BoardNode root;
+    BoardNode *root;
     std::string wallName;
 
 private:

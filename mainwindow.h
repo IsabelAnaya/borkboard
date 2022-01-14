@@ -9,6 +9,9 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMenuBar>
+#include <fstream>
+#include <iostream>
+#include <string>
 #include "Cork.h"
 #include "Sidebar.h"
 

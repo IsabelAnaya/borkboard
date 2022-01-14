@@ -1,9 +1,4 @@
 #include "mainwindow.h"
-#include <fstream>
-#include <iostream>
-#include <string>
-
-const char* delim = "%$";
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     colorDia = new QColorDialog();
@@ -15,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     this->resize(900, 500);
 
     currWall = new Wall();
-    currBoard = currWall->root.board;
+    currBoard = currWall->root->board;
     wallName = new QLabel;
     wallName->setText(tr("New Wall"));
 
@@ -69,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
 void MainWindow::newWall() {
     currWall = new Wall();
-    currBoard = currWall->root.board;
+    currBoard = currWall->root->board;
     updateBoard();
 }
 
@@ -83,52 +78,9 @@ void MainWindow::loadWall() {
         currBoard = NULL;
         currWall = new Wall();
 
-        std::string temp;
-        std::getline(file, temp);
-        currWall->wallName = temp;
+        currWall->readData(&file);
 
-        int boardsize;
-        std::getline(file, temp); //num of boards
-        boardsize = stoi(temp);
-
-        //get boards
-        for (int i = 0; i < boardsize; i++) {
-            //set parent
-            Board *newBoard = new Board();
-
-            std::getline(file, temp);
-            newBoard->setName(QString::fromStdString(temp));
-            std::getline(file, temp);
-            newBoard->setColor(QString::fromStdString(temp));
-
-            int notesize;
-            std::getline(file, temp); //num of notes for curr board
-            notesize = stoi(temp);
-
-            std::string title;
-            std::string content;
-            int xPos;
-            int yPos;
-            //get notes
-            for (int j = 0; j < notesize; j++) {
-                std::getline(file, title);
-                std::getline(file, content);
-
-                std::getline(file, temp);
-                xPos = stoi(temp);
-                std::getline(file, temp);
-                yPos = stoi(temp);
-                newBoard->cork->addNote(title, content, xPos, yPos);
-            }
-
-            //TEMP ROOT
-            BoardNode newRoot;
-            newRoot.board = newBoard;
-            newRoot.id = 0;
-            currWall->root = newRoot;
-        }
-
-        currBoard = currWall->root.board;
+        currBoard = currWall->root->board;
         updateBoard();
         file.close();
     }
@@ -136,10 +88,8 @@ void MainWindow::loadWall() {
 
 void MainWindow::saveWall() {
     std::ofstream file((std::string)currWall->wallName + ".wal", std::ios::out | std::ios::trunc);
-    file << currWall->wallName << std::endl;
-    file << 1 << std::endl; //number of boards
 
-    currBoard->saveData(&file);
+    currWall->saveData(&file);
 
     file.close();
 }
@@ -184,7 +134,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::updateBoard() {
-    this->setStyleSheet(QString(currBoard->bgColor));
+    this->setStyleSheet(QString::fromStdString(currBoard->bgColor));
     this->wallName->setText(QString::fromStdString(currWall->wallName));
 
     delete treeVis;
