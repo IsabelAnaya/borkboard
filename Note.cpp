@@ -1,4 +1,5 @@
 #include "Note.h"
+#include <iostream>
 
 Note::Note(QWidget *parent) : QFrame(parent) {
     setMinimumSize(20, 20);
@@ -66,18 +67,11 @@ void Note::readData(std::ifstream *file) {
     std::string temp;
     std::getline(*file, temp);
     title->setText(QString::fromStdString(temp));
+    std::cout << "benchmark 9x: getting title (Note); " << temp << std::endl;
 
     std::getline(*file, temp);
     content->setText(QString::fromStdString(temp));
-
-
-    std::getline(*file, temp);
-    int inted = stoi(temp);
-    this->pos().setX(inted);
-
-    std::getline(*file, temp);
-    inted = stoi(temp);
-    this->pos().setY(inted);
+    std::cout << "benchmark 10x: getting content (Note); " << temp << std::endl;
 }
 
 Note::~Note() {

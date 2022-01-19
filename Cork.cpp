@@ -36,6 +36,10 @@ Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) 
     return tempo;
 }
 
+void Cork::moveNote(Note *note, int xPos, int yPos) {
+    note->move(xPos, yPos);
+}
+
 void Cork::renumberNotes() {
     maxID = notes.size();
     for (int i = 0; i < int(maxID); i++) {

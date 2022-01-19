@@ -1,4 +1,5 @@
 #include "Wall.h"
+#include <iostream>
 
 std::vector<QPushButton*> traverse(BoardNode *node) {
     QPushButton *curr = new QPushButton(QString::fromStdString(node->board->boardName));
@@ -23,18 +24,26 @@ void saveRecurse(std::ofstream *file, BoardNode *currNode) {
 }
 
 BoardNode* loadRecurse(std::ifstream *file, BoardNode* currNode) {
+    std::cout << "benchmark 4x: calling board(Wall)" << std::endl;
     Board *newBoard = new Board();
     newBoard->readData(file);
 
+    currNode->board = newBoard;
+    std::cout << "benchmark 4.3: board set" << std::endl;
+
     std::string temp;
     std::getline(*file, temp);
+    temp = "0";
+    std::cout << "benchmark 4.4: about to stoi" << std::endl;
     int childrensize = stoi(temp);
+    std::cout << "benchmark 4.5: child size " << temp << std::endl;
 
     for (int i = 0; i < childrensize; i++) {
         BoardNode* child = new BoardNode;
         child->parent = currNode;
         currNode->children.push_back(loadRecurse(file, child));
     }
+
 
     return currNode;
 }
@@ -43,7 +52,7 @@ BoardNode* loadRecurse(std::ifstream *file, BoardNode* currNode) {
 Wall::Wall() {
     wallName = "New Wall";
 
-    root = new BoardNode();
+    root = new BoardNode;
     root->board = new Board();
     root->board->setName("Root");
     root->board->ID = 0;
@@ -59,20 +68,28 @@ Sidebar* Wall::buildTreeVis() {
 void Wall::saveData(std::ofstream *file) {
     *file << "v0.1" << std::endl;
     *file << wallName << std::endl;
+    *file << 0 << std::endl;
 
     saveRecurse(file, root);
 }
 
 void Wall::readData(std::ifstream *file) {
+    delete root;
+    root = new BoardNode;
+    root->parent = NULL;
+
     std::string temp;
     std::getline(*file, temp); //file version
+    std::cout << "benchmark 2: file version (Wall); " << temp << std::endl;
     std::getline(*file, wallName);
+    std::cout << "benchmark 3: wall name (Wall); " << wallName << std::endl;
 
     root = loadRecurse(file, root);
 
 }
 
 Wall::~Wall() {
+    std::cout << "deletin (Wall)" << std::endl;
     delete root->board;
     //this will need more
 }

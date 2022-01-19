@@ -18,6 +18,7 @@ public:
 
     Note* addNote();
     Note* addNote(std::string title, std::string content, int xPos, int yPos);
+    void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 
 private:

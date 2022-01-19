@@ -78,11 +78,15 @@ void MainWindow::loadWall() {
         currBoard = NULL;
         currWall = new Wall();
 
+        std::cout << "benchmark 1: call read (mainwindow)" << std::endl;
         currWall->readData(&file);
 
+        std::cout << "benchmark FINAL - 1: set up (mainwindow)" << std::endl;
         currBoard = currWall->root->board;
         updateBoard();
         file.close();
+        std::cout << "benchmark FINAL: close file (mainwindow)" << std::endl;
+        std::cout << currWall->root->board->boardName << std::endl;
     }
 }
 
