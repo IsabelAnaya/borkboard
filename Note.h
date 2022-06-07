@@ -8,10 +8,9 @@
 #include <QTextEdit>
 #include <QDrag>
 #include <QVBoxLayout>
-
 #include <fstream>
 
-//note
+//note semi-abstract class
 class Note : public QFrame {
     Q_OBJECT
 
