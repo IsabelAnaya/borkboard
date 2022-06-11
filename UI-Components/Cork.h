@@ -6,7 +6,9 @@
 #include <QMouseEvent>
 #include <QMimeData>
 #include <QDrag>
-#include "Note.h"
+#include "Notes/Note.h"
+#include "Notes/NoteImage.h"
+#include "Notes/NoteText.h"
 
 //area for notes
 class Cork : public QFrame {
@@ -16,8 +18,10 @@ public:
     explicit Cork(QWidget *parent = nullptr);
     ~Cork();
 
-    Note* addNote();
-    Note* addNote(std::string title, std::string content, int xPos, int yPos);
+    //Note* addNote();
+    //Note* addNote(std::string title, std::string content, int xPos, int yPos);
+    Note* addTextNote();
+    Note* addImageNote();
     void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 

@@ -1,8 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "Board.h"
-#include "Wall.h"
+#include "UI-Components/Board.h"
+#include "UI-Components/Wall.h"
 #include <QMainWindow>
 #include <QColorDialog>
 #include <QInputDialog>
@@ -12,8 +12,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "Cork.h"
-#include "Sidebar.h"
+#include "UI-Components/Cork.h"
+#include "UI-Components/Sidebar.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -35,8 +35,8 @@ private slots:
     void loadWall();
     void saveWall();
     void tempedit();
-
-    void addNote();
+    void addTextNote();
+    void addImageNote();
     void addBoard();
 
 private:

@@ -9,24 +9,24 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    Board.cpp \
-    Cork.cpp \
-    Note.cpp \
-    NoteImage.cpp \
-    NoteText.cpp \
-    Sidebar.cpp \
-    Wall.cpp \
+    Notes/Note.cpp \
+    Notes/NoteImage.cpp \
+    Notes/NoteText.cpp \
+    UI-Components/Board.cpp \
+    UI-Components/Cork.cpp \
+    UI-Components/Sidebar.cpp \
+    UI-Components/Wall.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
-    Board.h \
-    Cork.h \
-    Note.h \
-    NoteImage.h \
-    NoteText.h \
-    Sidebar.h \
-    Wall.h \
+    Notes/Note.h \
+    Notes/NoteImage.h \
+    Notes/NoteText.h \
+    UI-Components/Board.h \
+    UI-Components/Cork.h \
+    UI-Components/Sidebar.h \
+    UI-Components/Wall.h \
     mainwindow.h
 
 FORMS +=

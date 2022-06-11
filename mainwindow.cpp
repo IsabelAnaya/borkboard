@@ -41,10 +41,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(tempeditAction, &QAction::triggered, this, &MainWindow::tempedit);
     fileMenu->addAction(tempeditAction);
 
-    //add note
-    QAction *addNoteAction = new QAction(tr("&New Note"), this);
-    connect(addNoteAction, &QAction::triggered, this, &MainWindow::addNote);
-    toolMenu->addAction(addNoteAction);
+    //add text note
+    QAction *addTextNoteAction = new QAction(tr("&New Text Note"), this);
+    connect(addTextNoteAction, &QAction::triggered, this, &MainWindow::addTextNote);
+    toolMenu->addAction(addTextNoteAction);
+
+    //add image note
+    QAction *addImageNoteAction = new QAction(tr("&New Image Note"), this);
+    connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
+    toolMenu->addAction(addImageNoteAction);
 
     //make child board
     QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
@@ -117,8 +122,12 @@ void MainWindow::tempedit() {
     updateBoard();
 }
 
-void MainWindow::addNote() {
-    currBoard->cork->addNote();
+void MainWindow::addTextNote() {
+    currBoard->cork->addTextNote();
+}
+
+void MainWindow::addImageNote() {
+    currBoard->cork->addImageNote();
 }
 
 void MainWindow::addBoard() {

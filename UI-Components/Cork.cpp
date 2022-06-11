@@ -8,9 +8,9 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setAcceptDrops(true);
 }
 
-Note* Cork::addNote() {
+Note* Cork::addTextNote() {
     //std::cout << "new note" << std::endl;
-    Note *tempo = new Note(this);
+    Note *tempo = new NoteText(this);
     tempo->ID = maxID;
 
     maxID++;
@@ -21,20 +21,33 @@ Note* Cork::addNote() {
     return tempo;
 }
 
-Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
-    //std::cout << "rebuilding note" << std::endl;
-    Note *tempo = new Note(this);
+Note* Cork::addImageNote() {
+    //std::cout << "new note" << std::endl;
+    Note *tempo = new NoteImage(this);
     tempo->ID = maxID;
 
     maxID++;
 
-    tempo->title->setText(QString::fromStdString(title));
-    tempo->content->setText(QString::fromStdString(content));
-    tempo->move(xPos, yPos);
+    tempo->move(10, 10);
     notes.push_back(tempo);
 
     return tempo;
 }
+
+//Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
+//    //std::cout << "rebuilding note" << std::endl;
+//    Note *tempo = new Note(this);
+//    tempo->ID = maxID;
+
+//    maxID++;
+
+////    tempo->title->setText(QString::fromStdString(title));
+////    tempo->content->setText(QString::fromStdString(content));
+//    tempo->move(xPos, yPos);
+//    notes.push_back(tempo);
+
+//    return tempo;
+//}
 
 void Cork::moveNote(Note *note, int xPos, int yPos) {
     note->move(xPos, yPos);
@@ -95,10 +108,10 @@ void Cork::dropEvent(QDropEvent *event) {
         QPoint offset;
         dataStream >> t >> c >> offset;
 
-        Note *newnote = this->addNote(t.toStdString(), c.toStdString(), event->pos().x() - offset.x(), event->pos().y() - offset.y());
+        //Note *newnote = this->addNote(t.toStdString(), c.toStdString(), event->pos().x() - offset.x(), event->pos().y() - offset.y());
         //newnote->move(event->pos() - offset);
-        newnote->show();
-        newnote->setAttribute(Qt::WA_DeleteOnClose);
+        //newnote->show();
+        //newnote->setAttribute(Qt::WA_DeleteOnClose);
 
         if (event->source() == this) {
             event->setDropAction(Qt::MoveAction);
@@ -129,7 +142,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
 
         QByteArray itemData;
         QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-        dataStream << child->title->toPlainText() << child->content->toPlainText() << QPoint(event->pos() - child->pos());
+        //dataStream << child->title->toPlainText() << child->content->toPlainText() << QPoint(event->pos() - child->pos());
 
         QMimeData *mimeData = new QMimeData;
         mimeData->setData("application/x-dnditemdata", itemData);
