@@ -1,10 +1,10 @@
 #include "Note.h"
 
-Note::Note(QWidget *parent) {
+Note::Note(QWidget *parent) : QFrame(parent) {
 
 }
 
-Note::Note(QString t, QString c, QWidget *parent) {
+Note::Note(QString t, QString c, QWidget *parent) : QFrame(parent) {
 
 }
 
