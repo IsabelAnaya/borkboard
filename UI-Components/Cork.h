@@ -9,6 +9,7 @@
 #include "Notes/Note.h"
 #include "Notes/NoteImage.h"
 #include "Notes/NoteText.h"
+#include "Notes/NoteBoardLink.h"
 
 //area for notes
 class Cork : public QFrame {
@@ -22,6 +23,7 @@ public:
     //Note* addNote(std::string title, std::string content, int xPos, int yPos);
     Note* addTextNote();
     Note* addImageNote();
+    Note* addBoardLinkNote();
     void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 

@@ -5,15 +5,7 @@
 #include "Sidebar.h"
 #include <list>
 #include <QPushButton>
-
-//contain all of the save info
-struct BoardNode{
-    Board *board;
-    int id;
-    std::vector<BoardNode*> children;
-    BoardNode *parent;
-};
-
+#include <QGridLayout>
 
 class Wall {
 
@@ -23,10 +15,14 @@ public:
     Sidebar *buildTreeVis();
     void saveData(std::ofstream *file);
     void readData(std::ifstream *file);
+    void update();
 
-    BoardNode *root;
+    Board *root;
+    Board *currentBoard;
     std::string wallName;
-
+    Sidebar *treeVis;
+    QGridLayout *mainbox;
+    QLabel* wallNameLabel;
 private:
     int maxID = 0;
 

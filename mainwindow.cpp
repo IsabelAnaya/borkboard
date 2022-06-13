@@ -10,9 +10,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     this->resize(900, 500);
 
     currWall = new Wall();
-    currBoard = currWall->root->board;
-    wallName = new QLabel;
-    wallName->setText(tr("New Wall"));
+    currBoard = currWall->root;
 
     this->setWindowTitle("Bork Board");
 
@@ -41,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(tempeditAction, &QAction::triggered, this, &MainWindow::tempedit);
     fileMenu->addAction(tempeditAction);
 
+    /******* NOTES ********/
     //add text note
     QAction *addTextNoteAction = new QAction(tr("&New Text Note"), this);
     connect(addTextNoteAction, &QAction::triggered, this, &MainWindow::addTextNote);
@@ -51,25 +50,27 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
     toolMenu->addAction(addImageNoteAction);
 
+    //add board link note
+    QAction *addBoardLinkNoteAction = new QAction(tr("New Board Note"), this);
+    connect(addBoardLinkNoteAction, &QAction::triggered, this, &MainWindow::addBoardLinkNote);
+    toolMenu->addAction(addBoardLinkNoteAction);
+
     //make child board
     QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
     connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
     toolMenu->addAction(addChildBoardAction);
 
-    mainbox = new QGridLayout;
-    mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallName, 0, 4, 1, 1);
-    treeVis = currWall->buildTreeVis();
-    mainbox->addLayout(treeVis, 1, 4, 9, 1);
+
+
 
     window = new QWidget();
-    window->setLayout(mainbox);
+    window->setLayout(currWall->mainbox);
     this->setCentralWidget(window);
 }
 
 void MainWindow::newWall() {
     currWall = new Wall();
-    currBoard = currWall->root->board;
+    currBoard = currWall->root;
     updateBoard();
 }
 
@@ -87,11 +88,11 @@ void MainWindow::loadWall() {
         currWall->readData(&file);
 
         std::cout << "benchmark FINAL - 1: set up (mainwindow)" << std::endl;
-        currBoard = currWall->root->board;
+        currBoard = currWall->root;
         updateBoard();
         file.close();
         std::cout << "benchmark FINAL: close file (mainwindow)" << std::endl;
-        std::cout << currWall->root->board->boardName << std::endl;
+        std::cout << currWall->root->boardName << std::endl;
     }
 }
 
@@ -105,7 +106,7 @@ void MainWindow::saveWall() {
 
 void MainWindow::tempedit() {
     if (colorDia->exec() == true) {
-        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb));
+        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb).toStdString());
         std::cout << this->currBoard->bgColor << std::endl;
     }
 
@@ -116,7 +117,7 @@ void MainWindow::tempedit() {
 
     nameDia->setLabelText("Enter new name of current board:");
     if (nameDia->exec() == true) {
-        this->currBoard->setName(nameDia->textValue());
+        this->currBoard->setName(nameDia->textValue().toStdString());
     }
 
     updateBoard();
@@ -130,12 +131,20 @@ void MainWindow::addImageNote() {
     currBoard->cork->addImageNote();
 }
 
+void MainWindow::addBoardLinkNote() {
+    //ask for name
+    currBoard->cork->addBoardLinkNote();
+}
+
 void MainWindow::addBoard() {
     nameDia->setLabelText("Enter name of new board:");
     nameDia->setTextValue("New Board");
     if (nameDia->exec() == true) {
 
         currWall->wallName = nameDia->textValue().toStdString();
+        currBoard->makeChild(nameDia->textValue().toStdString());
+
+        updateBoard();
         //pass current board and name of new board to wall
     }
 }
@@ -147,18 +156,8 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::updateBoard() {
-    this->setStyleSheet(QString::fromStdString(currBoard->bgColor));
-    this->wallName->setText(QString::fromStdString(currWall->wallName));
+    currWall->update();
 
-    delete treeVis;
-    delete mainbox;
-
-    mainbox = new QGridLayout;
-    treeVis = currWall->buildTreeVis();
-    mainbox->addWidget(currBoard->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallName, 0, 4, 1, 1);
-    mainbox->addLayout(treeVis, 1, 4, 9, 1);
-
-    window->setLayout(mainbox);
+    window->setLayout(currWall->mainbox);
 }
 

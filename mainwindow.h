@@ -13,8 +13,6 @@
 #include <iostream>
 #include <string>
 #include "UI-Components/Cork.h"
-#include "UI-Components/Sidebar.h"
-
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -37,6 +35,7 @@ private slots:
     void tempedit();
     void addTextNote();
     void addImageNote();
+    void addBoardLinkNote();
     void addBoard();
 
 private:
@@ -51,7 +50,7 @@ private:
     QLabel *wallName;
     QGridLayout *mainbox;
     QWidget *window;
-    Sidebar *treeVis;
+
 
 };
 #endif // MAINWINDOW_H

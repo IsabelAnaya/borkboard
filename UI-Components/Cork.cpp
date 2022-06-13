@@ -34,6 +34,18 @@ Note* Cork::addImageNote() {
     return tempo;
 }
 
+Note* Cork::addBoardLinkNote() {
+    Note *tempo = new NoteBoardLink(this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(20, 20);
+    notes.push_back(tempo);
+
+    return tempo;
+}
+
 //Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
 //    //std::cout << "rebuilding note" << std::endl;
 //    Note *tempo = new Note(this);

@@ -12,6 +12,7 @@ SOURCES += \
     Notes/Note.cpp \
     Notes/NoteImage.cpp \
     Notes/NoteText.cpp \
+    Notes/NoteBoardLink.cpp \
     UI-Components/Board.cpp \
     UI-Components/Cork.cpp \
     UI-Components/Sidebar.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     Notes/Note.h \
     Notes/NoteImage.h \
     Notes/NoteText.h \
+    Notes/NoteBoardLink.h \
     UI-Components/Board.h \
     UI-Components/Cork.h \
     UI-Components/Sidebar.h \

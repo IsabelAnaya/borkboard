@@ -8,19 +8,27 @@ Board::Board() {
     cork = new Cork();
 }
 
-Board::Board(QString bgColor, QString boardName) {
-    this->bgColor = bgColor.toStdString();
-    this->boardName = boardName.toStdString();
+Board::Board(std::string bgColor, std::string boardName) {
+    this->bgColor = bgColor;
+    this->boardName = boardName;
 
     cork = new Cork();
 }
 
-void Board::setColor(QString bgColor) {
-    this->bgColor = bgColor.toStdString();
+void Board::setColor(std::string bgColor) {
+    this->bgColor = bgColor;
 }
 
-void Board::setName(QString boardName) {
-    this->boardName = boardName.toStdString();
+void Board::setName(std::string boardName) {
+    this->boardName = boardName;
+}
+
+Board* Board::makeChild(std::string boardName) {
+    Board *newB = new Board("background-color:#ffffff", boardName);
+    children.push_back(newB);
+    newB->parent = this;
+
+    return newB;
 }
 
 void Board::saveData(std::ofstream *file) {
