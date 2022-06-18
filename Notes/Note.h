@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include <QLabel>
-#include <QMouseEvent>
 #include <QMimeData>
 #include <QTextEdit>
 #include <QDrag>
 #include <QVBoxLayout>
 #include <fstream>
+
+enum noteType { noteImage, noteText, noteBoard, noteFile };
 
 //note semi-abstract class
 class Note : public QFrame {
@@ -19,12 +20,17 @@ public:
     Note(QString t, QString c, QWidget *parent);
     ~Note();
 
-    void saveData(std::ofstream *file);
-    void readData(std::ifstream *file);
+    virtual void saveData(std::ofstream *file);
+    virtual void readData(std::ifstream *file);
+    virtual std::string toText();
+    virtual noteType getType();
 
     QVBoxLayout* lay;
     int ID;
     //float len, wid;
+
+protected:
+
 };
 
 #endif // NOTE_H

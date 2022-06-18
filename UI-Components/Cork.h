@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QMouseEvent>
 #include <QMimeData>
-#include <QDrag>
+#include <stdlib.h>
 #include "Notes/Note.h"
 #include "Notes/NoteImage.h"
 #include "Notes/NoteText.h"
@@ -30,11 +30,12 @@ public:
 private:
     void renumberNotes();
     unsigned int maxID = 0;
+    Note* selectedNote;
+    QPoint offset;
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
 };
 

@@ -57,22 +57,19 @@ NoteText::NoteText(QString t, QString c, QWidget *parent) : Note(parent) {
 }
 
 void NoteText::saveData(std::ofstream *file) {
-    *file << title->toPlainText().toStdString() << std::endl;
-    *file << content->toPlainText().toStdString() << std::endl;
 
-    *file << this->pos().x() << std::endl;
-    *file << this->pos().y() << std::endl;
 }
 
 void NoteText::readData(std::ifstream *file) {
-    std::string temp;
-    std::getline(*file, temp);
-    title->setText(QString::fromStdString(temp));
-    std::cout << "benchmark 9x: getting title (Note); " << temp << std::endl;
 
-    std::getline(*file, temp);
-    content->setText(QString::fromStdString(temp));
-    std::cout << "benchmark 10x: getting content (Note); " << temp << std::endl;
+}
+
+std::string NoteText::toText() {
+    return content->toPlainText().toStdString();
+}
+
+noteType NoteText::getType() {
+    return noteText;
 }
 
 NoteText::~NoteText() {

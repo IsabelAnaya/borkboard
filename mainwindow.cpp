@@ -132,7 +132,7 @@ void MainWindow::addImageNote() {
 }
 
 void MainWindow::addBoardLinkNote() {
-    //ask for name
+    //ask for new/existing
     currBoard->cork->addBoardLinkNote();
 }
 
@@ -142,8 +142,9 @@ void MainWindow::addBoard() {
     if (nameDia->exec() == true) {
 
         currWall->wallName = nameDia->textValue().toStdString();
-        currBoard->makeChild(nameDia->textValue().toStdString());
+        Board* child = currBoard->makeChild(nameDia->textValue().toStdString());
 
+        //currBoard->cork->addBoardLinkNote(child);
         updateBoard();
         //pass current board and name of new board to wall
     }
@@ -157,7 +158,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::updateBoard() {
     currWall->update();
-
+    this->setStyleSheet(QString::fromStdString(currWall->currentBoard->bgColor));
     window->setLayout(currWall->mainbox);
 }
 

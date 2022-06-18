@@ -60,6 +60,8 @@ Wall::Wall() {
     root->ID = 0;
     root->parent = NULL;
 
+    currentBoard = root;
+
     mainbox = new QGridLayout;
     mainbox->addWidget(root->cork,0, 0, 10, 3);
     mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
@@ -74,14 +76,14 @@ Sidebar* Wall::buildTreeVis() {
 }
 
 void Wall::update() {
-    //this->setStyleSheet(QString::fromStdString(currBoard->bgColor));
+
     this->wallNameLabel->setText(QString::fromStdString(wallName));
 
     delete mainbox;
 
     mainbox = new QGridLayout;
     Sidebar* treeVis = buildTreeVis();
-    mainbox->addWidget(root->cork,0, 0, 10, 3);
+    mainbox->addWidget(currentBoard->cork,0, 0, 10, 3);
     mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
     mainbox->addLayout(treeVis, 1, 4, 9, 1);
 }

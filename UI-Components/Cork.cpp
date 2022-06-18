@@ -72,68 +72,18 @@ void Cork::renumberNotes() {
     }
 }
 
-void Cork::dragEnterEvent(QDragEnterEvent *event) {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-        //std::cout << "dragenter" << std::endl;
-
-        if (children().contains(event->source())) {
-            event->setDropAction(Qt::MoveAction);
-            event->accept();
-        } else {
-            event->acceptProposedAction();
-        }
-    } else if (event->mimeData()->hasText()) {
-        event->acceptProposedAction();
-    } else {
-        event->ignore();
-    }
+void Cork::mouseReleaseEvent(QMouseEvent *event) {
+    selectedNote = NULL;
 }
 
-void Cork::dragMoveEvent(QDragMoveEvent *event) {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-        //std::cout << "dragmove" << std::endl;
+void Cork::mouseMoveEvent(QMouseEvent *event) {
+    event->pos();
 
-        if (children().contains(event->source())) {
-            event->setDropAction(Qt::MoveAction);
-            event->accept();
-        } else {
-            event->acceptProposedAction();
-        }
-    } else if (event->mimeData()->hasText()) {
-        event->acceptProposedAction();
-    } else {
-        event->ignore();
+    if (selectedNote) {
+        selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
     }
-}
+    //move selected child relative to offset from note's origin
 
-void Cork::dropEvent(QDropEvent *event) {
-    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
-        //std::cout << "dropevent" << std::endl;
-
-        const QMimeData *mime = event->mimeData();
-
-        QByteArray itemData = mime->data("application/x-dnditemdata");
-        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-        QString t;
-        QString c;
-        QPoint offset;
-        dataStream >> t >> c >> offset;
-
-        //Note *newnote = this->addNote(t.toStdString(), c.toStdString(), event->pos().x() - offset.x(), event->pos().y() - offset.y());
-        //newnote->move(event->pos() - offset);
-        //newnote->show();
-        //newnote->setAttribute(Qt::WA_DeleteOnClose);
-
-        if (event->source() == this) {
-            event->setDropAction(Qt::MoveAction);
-            event->accept();
-        } else {
-            event->acceptProposedAction();
-        }
-    } else {
-        event->ignore();
-    }
 }
 
 void Cork::mousePressEvent(QMouseEvent *event) {
@@ -148,30 +98,12 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         }
 
     } else if (event->button() == Qt::LeftButton) {
+        selectedNote = static_cast<Note*>(childAt(event->pos()));
+        if(!selectedNote) { return; }
 
-        Note *child = static_cast<Note*>(childAt(event->pos()));
-        if(!child) { return; }
-
-        QByteArray itemData;
-        QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-        //dataStream << child->title->toPlainText() << child->content->toPlainText() << QPoint(event->pos() - child->pos());
-
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setData("application/x-dnditemdata", itemData);
-
-        QDrag *drag = new QDrag(this);
-        drag->setMimeData(mimeData);
-        //drag->setPixmap(child->pixmap(Qt::ReturnByValue));
-        drag->setHotSpot(event->pos() - child->pos());
-
-        child->hide();
-        if (drag->exec(Qt::MoveAction | Qt::CopyAction, Qt::CopyAction) == Qt::MoveAction) {
-            notes.erase(notes.begin() + child->ID);
-            this->renumberNotes();
-            child->close();
-        } else {
-            child->show();
-        }
+        offset = event->pos() - selectedNote->pos();
+        std::cout << selectedNote->mapTo(this, selectedNote->pos()).x() << " " << selectedNote->mapTo(this, selectedNote->pos()).y() << std::endl;
+        std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
     }
 }
 

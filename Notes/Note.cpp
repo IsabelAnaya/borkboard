@@ -16,6 +16,14 @@ void Note::readData(std::ifstream *file) {
 
 }
 
+std::string Note::toText() {
+    return "hello";
+}
+
+noteType Note::getType() {
+    return noteText;
+}
+
 Note::~Note() {
 
 }

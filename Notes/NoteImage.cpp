@@ -59,22 +59,20 @@ NoteImage::NoteImage(QString t, QString c, QWidget *parent) : Note(parent) {
 }
 
 void NoteImage::saveData(std::ofstream *file) {
-    *file << title->toPlainText().toStdString() << std::endl;
-    //save image location
 
-    *file << this->pos().x() << std::endl;
-    *file << this->pos().y() << std::endl;
 }
 
 void NoteImage::readData(std::ifstream *file) {
-    std::string temp;
-    std::getline(*file, temp);
-    title->setText(QString::fromStdString(temp));
-    std::cout << "benchmark 9x: getting title (Note); " << temp << std::endl;
 
-    //std::getline(*file, temp);
-    //content->setText(QString::fromStdString(temp));
-    std::cout << "benchmark 10x: getting content (Note); " << temp << std::endl;
+}
+
+std::string NoteImage::toText() {
+    return title->toPlainText().toStdString();
+    //need the pixmap
+}
+
+noteType NoteImage::getType() {
+    return noteImage;
 }
 
 NoteImage::~NoteImage() {
