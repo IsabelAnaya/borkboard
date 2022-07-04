@@ -8,7 +8,7 @@
 class NoteBoardLink: public Note {
 public:
     explicit NoteBoardLink(QWidget *parent = nullptr);
-    //NoteBoardLink(Board* b, QWidget *parent);
+    NoteBoardLink(int board, QWidget *parent);
     ~NoteBoardLink();
 
     void saveData(std::ofstream *file) override;
@@ -17,7 +17,7 @@ public:
     noteType getType() override;
 
     QPushButton* thing;
-    //Board* board;
+    int boardID;
 };
 
 #endif // NOTEIMAGE_H

@@ -1,4 +1,5 @@
 QT       += core gui
+QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,6 +14,8 @@ SOURCES += \
     Notes/NoteImage.cpp \
     Notes/NoteText.cpp \
     Notes/NoteBoardLink.cpp \
+    Tools/DBManager.cpp \
+    Tools/DataHandler.cpp \
     UI-Components/Board.cpp \
     UI-Components/Cork.cpp \
     UI-Components/Sidebar.cpp \
@@ -25,6 +28,8 @@ HEADERS += \
     Notes/NoteImage.h \
     Notes/NoteText.h \
     Notes/NoteBoardLink.h \
+    Tools/DBManager.h \
+    Tools/DataHandler.h \
     UI-Components/Board.h \
     UI-Components/Cork.h \
     UI-Components/Sidebar.h \

@@ -13,6 +13,8 @@
 #include <iostream>
 #include <string>
 #include "UI-Components/Cork.h"
+#include "Tools/DBManager.h"
+#include "Tools/DataHandler.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -50,7 +52,8 @@ private:
     QLabel *wallName;
     QGridLayout *mainbox;
     QWidget *window;
-
+    DBManager *db;
+    DataHandler *dh;
 
 };
 #endif // MAINWINDOW_H

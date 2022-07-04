@@ -66,6 +66,11 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     window = new QWidget();
     window->setLayout(currWall->mainbox);
     this->setCentralWidget(window);
+
+    db = new DBManager();
+    db->addWall("hi");
+
+    dh = new DataHandler(db);
 }
 
 void MainWindow::newWall() {
@@ -97,11 +102,7 @@ void MainWindow::loadWall() {
 }
 
 void MainWindow::saveWall() {
-    std::ofstream file((std::string)currWall->wallName + ".wal", std::ios::out | std::ios::trunc);
-
-    currWall->saveData(&file);
-
-    file.close();
+    dh->saveBoard(currBoard, 0, NULL);
 }
 
 void MainWindow::tempedit() {

@@ -104,6 +104,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         offset = event->pos() - selectedNote->pos();
         std::cout << selectedNote->mapTo(this, selectedNote->pos()).x() << " " << selectedNote->mapTo(this, selectedNote->pos()).y() << std::endl;
         std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
+        selectedNote->raise();
     }
 }
 
