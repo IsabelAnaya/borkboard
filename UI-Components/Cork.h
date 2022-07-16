@@ -22,6 +22,7 @@ public:
     //Note* addNote();
     //Note* addNote(std::string title, std::string content, int xPos, int yPos);
     Note* addTextNote();
+    Note* addTextNote(int x, int y, QString t, QString c);
     Note* addImageNote();
     Note* addBoardLinkNote();
     void moveNote(Note *note, int xPos, int yPos);

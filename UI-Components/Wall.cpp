@@ -2,7 +2,7 @@
 #include <iostream>
 
 std::vector<QPushButton*> traverse(Board *node) {
-    QPushButton *curr = new QPushButton(QString::fromStdString(node->boardName));
+    QPushButton *curr = new QPushButton(node->boardName);
     std::vector<QPushButton*> bits;
     bits.push_back(curr);
 
@@ -14,46 +14,11 @@ std::vector<QPushButton*> traverse(Board *node) {
     return bits;
 }
 
-void saveRecurse(std::ofstream *file, Board *currNode) {
-    currNode->saveData(file);
-    *file << currNode->children.size() << std::endl;
-
-    for (int i = 0; i < int(currNode->children.size()); i++) {
-        saveRecurse(file, currNode->children[i]);
-    }
-}
-
-Board* loadRecurse(std::ifstream *file, Board* currNode) {
-    std::cout << "benchmark 4x: calling board(Wall)" << std::endl;
-    Board *newBoard = new Board();
-    newBoard->readData(file);
-
-    currNode = newBoard;
-    std::cout << "benchmark 4.3: board set" << std::endl;
-
-    std::string temp;
-    std::getline(*file, temp);
-    temp = "0";
-    std::cout << "benchmark 4.4: about to stoi" << std::endl;
-    int childrensize = stoi(temp);
-    std::cout << "benchmark 4.5: child size " << temp << std::endl;
-
-    for (int i = 0; i < childrensize; i++) {
-        Board* child = new Board;
-        child->parent = currNode;
-        currNode->children.push_back(loadRecurse(file, child));
-    }
-
-
-    return currNode;
-}
-
-
 Wall::Wall() {
     wallName = "New Wall";
 
     wallNameLabel = new QLabel;
-    wallNameLabel->setText(QString::fromStdString(wallName));
+    wallNameLabel->setText(wallName);
 
     root = new Board();
     root->setName("Root");
@@ -69,6 +34,25 @@ Wall::Wall() {
     mainbox->addLayout(treeVis, 1, 4, 9, 1);
 }
 
+//sets the wall's name and root board
+Wall::Wall(QString name, QString bgColor, QString rootName) {
+    wallName = name;
+
+    wallNameLabel = new QLabel;
+    wallNameLabel->setText(wallName);
+
+    root = new Board(bgColor, rootName);
+    root->ID = 0;
+    root->parent = NULL;
+
+    currentBoard = root;
+    mainbox = new QGridLayout;
+    mainbox->addWidget(root->cork,0, 0, 10, 3);
+    mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
+    treeVis = buildTreeVis();
+    mainbox->addLayout(treeVis, 1, 4, 9, 1);
+}
+
 Sidebar* Wall::buildTreeVis() {
     std::vector<QPushButton*> bits = traverse(root);
 
@@ -77,7 +61,7 @@ Sidebar* Wall::buildTreeVis() {
 
 void Wall::update() {
 
-    this->wallNameLabel->setText(QString::fromStdString(wallName));
+    this->wallNameLabel->setText(wallName);
 
     delete mainbox;
 
@@ -88,31 +72,11 @@ void Wall::update() {
     mainbox->addLayout(treeVis, 1, 4, 9, 1);
 }
 
-void Wall::saveData(std::ofstream *file) {
-    *file << "v0.2" << std::endl;
-    *file << wallName << std::endl;
-    *file << 0 << std::endl;
-
-    saveRecurse(file, root);
-}
-
-void Wall::readData(std::ifstream *file) {
-    delete root;
-    root = new Board;
-    root->parent = NULL;
-
-    std::string temp;
-    std::getline(*file, temp); //file version
-    std::cout << "benchmark 2: file version (Wall); " << temp << std::endl;
-    std::getline(*file, wallName);
-    std::cout << "benchmark 3: wall name (Wall); " << wallName << std::endl;
-
-    root = loadRecurse(file, root);
-
-}
-
 Wall::~Wall() {
     std::cout << "deletin (Wall)" << std::endl;
     delete root;
-    //this will need more
+    delete wallNameLabel;
+    delete mainbox;
+    //delete treeVis;
+    //currentBoard should hopefully get deleted in the board deletion
 }

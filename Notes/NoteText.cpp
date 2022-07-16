@@ -56,14 +56,6 @@ NoteText::NoteText(QString t, QString c, QWidget *parent) : Note(parent) {
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void NoteText::saveData(std::ofstream *file) {
-
-}
-
-void NoteText::readData(std::ifstream *file) {
-
-}
-
 std::string NoteText::toText() {
     return content->toPlainText().toStdString();
 }

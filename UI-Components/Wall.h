@@ -11,15 +11,14 @@ class Wall {
 
 public:
     Wall();
+    Wall(QString name, QString bgColor, QString rootName);
     ~Wall();
     Sidebar *buildTreeVis();
-    void saveData(std::ofstream *file);
-    void readData(std::ifstream *file);
     void update();
 
     Board *root;
     Board *currentBoard;
-    std::string wallName;
+    QString wallName;
     Sidebar *treeVis;
     QGridLayout *mainbox;
     QLabel* wallNameLabel;

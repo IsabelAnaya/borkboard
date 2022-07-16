@@ -21,6 +21,19 @@ Note* Cork::addTextNote() {
     return tempo;
 }
 
+Note* Cork::addTextNote(int x, int y, QString t, QString c) {
+    //std::cout << "new note" << std::endl;
+    Note *tempo = new NoteText(t, c, this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(x, y);
+    notes.push_back(tempo);
+
+    return tempo;
+}
+
 Note* Cork::addImageNote() {
     //std::cout << "new note" << std::endl;
     Note *tempo = new NoteImage(this);
@@ -45,21 +58,6 @@ Note* Cork::addBoardLinkNote() {
 
     return tempo;
 }
-
-//Note* Cork::addNote(std::string title, std::string content, int xPos, int yPos) {
-//    //std::cout << "rebuilding note" << std::endl;
-//    Note *tempo = new Note(this);
-//    tempo->ID = maxID;
-
-//    maxID++;
-
-////    tempo->title->setText(QString::fromStdString(title));
-////    tempo->content->setText(QString::fromStdString(content));
-//    tempo->move(xPos, yPos);
-//    notes.push_back(tempo);
-
-//    return tempo;
-//}
 
 void Cork::moveNote(Note *note, int xPos, int yPos) {
     note->move(xPos, yPos);
@@ -109,6 +107,8 @@ void Cork::mousePressEvent(QMouseEvent *event) {
 }
 
 Cork::~Cork() {
+    selectedNote = NULL; //just in case
+
     int notesize = notes.size();
     for (int i = 0; i < notesize; i++) {
         delete notes[i];

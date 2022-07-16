@@ -17,11 +17,9 @@ class Note : public QFrame {
 
 public:
     explicit Note(QWidget *parent = nullptr);
-    Note(QString t, QString c, QWidget *parent);
+    //Note(QString t, QString c, QWidget *parent);
     ~Note();
 
-    virtual void saveData(std::ofstream *file);
-    virtual void readData(std::ifstream *file);
     virtual std::string toText();
     virtual noteType getType();
 

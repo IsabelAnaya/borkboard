@@ -10,25 +10,22 @@
 class Board  {
 public:
     Board();
-    Board(std::string bgColor, std::string boardName);
+    Board(QString color, QString name);
     ~Board();
 
-    void setName(std::string boardName);
-    void setColor(std::string bgColor);
+    void setName(QString name);
+    void setColor(QString color);
 
-    Board* makeChild(std::string boardName);
+    Board* makeNewChild(QString boardName);
 
-    void saveData(std::ofstream *file);
-    void readData(std::ifstream *file);
-
-    std::string bgColor;
-    std::string boardName;
+    QString bgColor;
+    QString boardName;
     unsigned int ID;
 
     Cork* cork;
 
     std::vector<Board*> children;
-    Board* parent;
+    unsigned int parent;
 };
 
 #endif // BOARD_H

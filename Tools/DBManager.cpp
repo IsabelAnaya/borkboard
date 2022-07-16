@@ -7,13 +7,16 @@ DBManager::DBManager() {
 bool DBManager::addWall(QString name) {
     db.setDatabaseName(name + ".bork");
 
+    if (QFile::exists(name + ".bork")) {
+        qDebug() << "file exists";
+    }
+
+
     if(!db.open()) {
         qDebug() << "database connection failure";
     } else {
         qDebug() << "database connection success";
     }
-
-    bool success = false;
 
     QSqlQuery query;
     query.prepare("PRAGMA schema.user_version = 0");
@@ -34,8 +37,38 @@ bool DBManager::addWall(QString name) {
     return true;
 }
 
+bool DBManager::openWall(QString name) {
+    if (QFile::exists(name)) {
+        qDebug() << "file exists";
+        db.setDatabaseName(name);
+
+        db.open();
+
+        return true;
+    }
+
+    return false;
+}
+
 bool DBManager::completeQuery(QSqlQuery q) {
     return q.exec();
+}
+
+QSqlQuery DBManager::returnQuery(QSqlQuery q) {
+    q.exec();
+    return q;
+}
+
+QString DBManager::getName() {
+    QString name = db.databaseName();
+
+    std::string strName = name.toStdString();
+    int pos = strName.find('/');
+    while (strName.find('/', pos + 1) != std::string::npos) {
+        pos = strName.find('/', pos + 1);
+    }
+
+    return (name.right(name.size() - pos - 1)).left(name.size() - pos - 6);
 }
 
 

@@ -34,14 +34,6 @@ NoteBoardLink::NoteBoardLink(QWidget *parent) : Note(parent) {
 //    setAttribute(Qt::WA_DeleteOnClose);
 //}
 
-void NoteBoardLink::saveData(std::ofstream *file) {
-
-}
-
-void NoteBoardLink::readData(std::ifstream *file) {
-
-}
-
 std::string NoteBoardLink::toText() {
     return thing->text().toStdString();
 }
@@ -50,8 +42,7 @@ noteType NoteBoardLink::getType() {
     return noteBoard;
 }
 
-
-
 NoteBoardLink::~NoteBoardLink() {
-
+    delete thing;
+    delete lay;
 }

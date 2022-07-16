@@ -68,57 +68,56 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     this->setCentralWidget(window);
 
     db = new DBManager();
-    db->addWall("hi");
+    //db->addWall("hi");
 
     dh = new DataHandler(db);
 }
 
 void MainWindow::newWall() {
+    delete currWall;
+    currBoard = NULL;
     currWall = new Wall();
     currBoard = currWall->root;
     updateBoard();
 }
 
 void MainWindow::loadWall() {
-    std::string filePath = fileDia->getOpenFileName(this, tr("Open Wall"), "", tr("*.wal")).toStdString();
+    QString filePath = fileDia->getOpenFileName(this, tr("Open Wall"), "", tr("*.bork"));
 
     if (filePath != "") {
-        std::ifstream file(filePath, std::ios::in);
-
         delete currWall;
         currBoard = NULL;
-        currWall = new Wall();
 
-        std::cout << "benchmark 1: call read (mainwindow)" << std::endl;
-        currWall->readData(&file);
+        db->openWall(filePath);
+        currWall = dh->rebuildWall();
 
-        std::cout << "benchmark FINAL - 1: set up (mainwindow)" << std::endl;
-        currBoard = currWall->root;
         updateBoard();
-        file.close();
-        std::cout << "benchmark FINAL: close file (mainwindow)" << std::endl;
-        std::cout << currWall->root->boardName << std::endl;
     }
 }
 
 void MainWindow::saveWall() {
+    if (db->openWall(currWall->wallName + ".bork")) {
+        qDebug() << "overwriting " << currWall->wallName;
+    } else {
+        db->addWall(currWall->wallName);
+    }
     dh->saveBoard(currBoard, 0, NULL);
 }
 
 void MainWindow::tempedit() {
-    if (colorDia->exec() == true) {
-        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb).toStdString());
-        std::cout << this->currBoard->bgColor << std::endl;
-    }
+//    if (colorDia->exec() == true) {
+//        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb));
+//    }
 
     nameDia->setLabelText("Enter new name of wall:");
     if (nameDia->exec() == true) {
-        currWall->wallName = nameDia->textValue().toStdString();
+        currWall->wallName = nameDia->textValue();
+
     }
 
     nameDia->setLabelText("Enter new name of current board:");
     if (nameDia->exec() == true) {
-        this->currBoard->setName(nameDia->textValue().toStdString());
+        this->currBoard->setName(nameDia->textValue());
     }
 
     updateBoard();
@@ -142,8 +141,8 @@ void MainWindow::addBoard() {
     nameDia->setTextValue("New Board");
     if (nameDia->exec() == true) {
 
-        currWall->wallName = nameDia->textValue().toStdString();
-        Board* child = currBoard->makeChild(nameDia->textValue().toStdString());
+        currWall->wallName = nameDia->textValue();
+        Board* child = currBoard->makeNewChild(nameDia->textValue());
 
         //currBoard->cork->addBoardLinkNote(child);
         updateBoard();
@@ -159,7 +158,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::updateBoard() {
     currWall->update();
-    this->setStyleSheet(QString::fromStdString(currWall->currentBoard->bgColor));
+    this->setStyleSheet(currWall->currentBoard->bgColor);
     window->setLayout(currWall->mainbox);
 }
 

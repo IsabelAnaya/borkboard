@@ -58,14 +58,6 @@ NoteImage::NoteImage(QString t, QString c, QWidget *parent) : Note(parent) {
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void NoteImage::saveData(std::ofstream *file) {
-
-}
-
-void NoteImage::readData(std::ifstream *file) {
-
-}
-
 std::string NoteImage::toText() {
     return title->toPlainText().toStdString();
     //need the pixmap

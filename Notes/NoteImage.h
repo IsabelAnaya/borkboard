@@ -9,8 +9,6 @@ public:
     NoteImage(QString t, QString c, QWidget *parent);
     ~NoteImage();
 
-    void saveData(std::ofstream *file) override;
-    void readData(std::ifstream *file) override;
     std::string toText() override;
     noteType getType() override;
 
