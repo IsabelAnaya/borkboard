@@ -26,6 +26,8 @@ Wall::Wall() {
     root->parent = NULL;
 
     currentBoard = root;
+    boardMap = new Board* [MAX_BOARDS];
+    boardMap[0] = root;
 
     mainbox = new QGridLayout;
     mainbox->addWidget(root->cork,0, 0, 10, 3);
@@ -46,11 +48,28 @@ Wall::Wall(QString name, QString bgColor, QString rootName) {
     root->parent = NULL;
 
     currentBoard = root;
+    boardMap = new Board* [MAX_BOARDS];
+    boardMap[0] = root;
+
     mainbox = new QGridLayout;
     mainbox->addWidget(root->cork,0, 0, 10, 3);
     mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
     treeVis = buildTreeVis();
     mainbox->addLayout(treeVis, 1, 4, 9, 1);
+}
+
+Board* Wall::addBoard(Board* parent, QString name) {
+    if (boardsStored < MAX_BOARDS) {
+        Board* child = parent->makeNewChild(name);
+        child->ID = maxID % MAX_BOARDS;
+        boardMap[maxID] =  child;
+
+        maxID++;
+        return child;
+
+    } else {
+        return NULL;
+    }
 }
 
 Sidebar* Wall::buildTreeVis() {
@@ -59,8 +78,13 @@ Sidebar* Wall::buildTreeVis() {
     return new Sidebar(bits);
 }
 
+void Wall::changeBoard(int board) {
+    currentBoard = boardMap[board];
+}
+
 void Wall::update() {
 
+    qDebug() << wallName;
     this->wallNameLabel->setText(wallName);
 
     delete mainbox;

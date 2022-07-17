@@ -30,6 +30,9 @@ public:
     Wall *currWall;
     Board *currBoard;
 
+public slots:
+    void changeBoard(int board);
+
 private slots:
     void newWall();
     void loadWall();
@@ -38,7 +41,7 @@ private slots:
     void addTextNote();
     void addImageNote();
     void addBoardLinkNote();
-    void addBoard();
+    Board* addBoard();
 
 private:
     void updateBoard();

@@ -8,9 +8,9 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setAcceptDrops(true);
 }
 
-Note* Cork::addTextNote() {
+NoteText* Cork::addTextNote() {
     //std::cout << "new note" << std::endl;
-    Note *tempo = new NoteText(this);
+    NoteText *tempo = new NoteText(this);
     tempo->ID = maxID;
 
     maxID++;
@@ -21,9 +21,9 @@ Note* Cork::addTextNote() {
     return tempo;
 }
 
-Note* Cork::addTextNote(int x, int y, QString t, QString c) {
+NoteText* Cork::addTextNote(int x, int y, QString t, QString c) {
     //std::cout << "new note" << std::endl;
-    Note *tempo = new NoteText(t, c, this);
+    NoteText *tempo = new NoteText(t, c, this);
     tempo->ID = maxID;
 
     maxID++;
@@ -34,9 +34,9 @@ Note* Cork::addTextNote(int x, int y, QString t, QString c) {
     return tempo;
 }
 
-Note* Cork::addImageNote() {
+NoteImage* Cork::addImageNote() {
     //std::cout << "new note" << std::endl;
-    Note *tempo = new NoteImage(this);
+    NoteImage *tempo = new NoteImage(this);
     tempo->ID = maxID;
 
     maxID++;
@@ -47,8 +47,8 @@ Note* Cork::addImageNote() {
     return tempo;
 }
 
-Note* Cork::addBoardLinkNote() {
-    Note *tempo = new NoteBoardLink(this);
+NoteBoardLink* Cork::addBoardLinkNote(int board, QString name) {
+    NoteBoardLink *tempo = new NoteBoardLink(board, name, this);
     tempo->ID = maxID;
 
     maxID++;

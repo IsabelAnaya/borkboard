@@ -4,6 +4,7 @@ NoteBoardLink::NoteBoardLink(QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
     thing = new QPushButton("New Board", this);
+    connect(thing, &QAbstractButton::released, this, &NoteBoardLink::emitSignal);
 
     lay = new QVBoxLayout;
     lay->addWidget(thing);
@@ -17,22 +18,27 @@ NoteBoardLink::NoteBoardLink(QWidget *parent) : Note(parent) {
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-//NoteBoardLink::NoteBoardLink(Board* b, QWidget *parent) : Note(parent) {
-//    setMinimumSize(20, 20);
+NoteBoardLink::NoteBoardLink(int board, QString name, QWidget *parent) : Note(parent) {
+    setMinimumSize(20, 20);
 
-//    thing = new QPushButton(QString::fromStdString(b->boardName), this);
-//    //board = b;
+    thing = new QPushButton(name, this);
+    connect(thing, &QAbstractButton::released, this, &NoteBoardLink::emitSignal);
+    boardID = board;
 
-//    lay = new QVBoxLayout;
-//    lay->addWidget(thing);
-//    setLayout(lay);
+    lay = new QVBoxLayout;
+    lay->addWidget(thing);
+    setLayout(lay);
 
-//    this->setFrameStyle(QFrame::StyledPanel);
-//    this->setLineWidth(2);
+    this->setFrameStyle(QFrame::StyledPanel);
+    this->setLineWidth(2);
 
-//    show();
-//    setAttribute(Qt::WA_DeleteOnClose);
-//}
+    show();
+    setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void NoteBoardLink::emitSignal() {
+    emit boardSwitch(boardID);
+}
 
 std::string NoteBoardLink::toText() {
     return thing->text().toStdString();

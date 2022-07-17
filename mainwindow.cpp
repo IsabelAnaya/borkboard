@@ -104,6 +104,12 @@ void MainWindow::saveWall() {
     dh->saveBoard(currBoard, 0, NULL);
 }
 
+void MainWindow::changeBoard(int board) {
+    currWall->changeBoard(board);
+    currBoard = currWall->currentBoard;
+    updateBoard();
+}
+
 void MainWindow::tempedit() {
 //    if (colorDia->exec() == true) {
 //        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb));
@@ -133,21 +139,24 @@ void MainWindow::addImageNote() {
 
 void MainWindow::addBoardLinkNote() {
     //ask for new/existing
-    currBoard->cork->addBoardLinkNote();
+    Board* board = addBoard();
+
+    if (board) {
+        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName), &NoteBoardLink::boardSwitch, this, &MainWindow::changeBoard);
+    }
 }
 
-void MainWindow::addBoard() {
+Board* MainWindow::addBoard() {
     nameDia->setLabelText("Enter name of new board:");
     nameDia->setTextValue("New Board");
     if (nameDia->exec() == true) {
+        Board* child = currWall->addBoard(currBoard, nameDia->textValue());
 
-        currWall->wallName = nameDia->textValue();
-        Board* child = currBoard->makeNewChild(nameDia->textValue());
-
-        //currBoard->cork->addBoardLinkNote(child);
         updateBoard();
         //pass current board and name of new board to wall
+        return child;
     }
+    return NULL;
 }
 
 
