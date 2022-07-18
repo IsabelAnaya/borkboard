@@ -4,6 +4,7 @@
 #include "Note.h"
 
 class NoteText: public Note {
+
 public:
     explicit NoteText(QWidget *parent = nullptr);
     NoteText(QString t, QString c, QWidget *parent);

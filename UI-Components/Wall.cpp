@@ -1,13 +1,14 @@
 #include "Wall.h"
 #include <iostream>
 
-std::vector<QPushButton*> traverse(Board *node) {
-    QPushButton *curr = new QPushButton(node->boardName);
-    std::vector<QPushButton*> bits;
+std::vector<BoardSwitchButton*> traverse(Board *node) {
+    qDebug() << "building tree, " << node->boardName;
+    BoardSwitchButton *curr = new BoardSwitchButton(node->ID, node->boardName);
+    std::vector<BoardSwitchButton*> bits;
     bits.push_back(curr);
 
     for (unsigned int i = 0; i < node->children.size(); i++) {
-        std::vector<QPushButton*> newEnd = traverse(node->children[i]);
+        std::vector<BoardSwitchButton*> newEnd = traverse(node->children[i]);
         bits.insert(bits.end(), newEnd.begin(), newEnd.end());
     }
 
@@ -73,7 +74,7 @@ Board* Wall::addBoard(Board* parent, QString name) {
 }
 
 Sidebar* Wall::buildTreeVis() {
-    std::vector<QPushButton*> bits = traverse(root);
+    std::vector<BoardSwitchButton*> bits = traverse(root);
 
     return new Sidebar(bits);
 }

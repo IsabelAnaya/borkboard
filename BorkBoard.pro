@@ -17,6 +17,7 @@ SOURCES += \
     Tools/DBManager.cpp \
     Tools/DataHandler.cpp \
     UI-Components/Board.cpp \
+    UI-Components/BoardSwitchButton.cpp \
     UI-Components/Cork.cpp \
     UI-Components/Sidebar.cpp \
     UI-Components/Wall.cpp \
@@ -31,6 +32,7 @@ HEADERS += \
     Tools/DBManager.h \
     Tools/DataHandler.h \
     UI-Components/Board.h \
+    UI-Components/BoardSwitchButton.h \
     UI-Components/Cork.h \
     UI-Components/Sidebar.h \
     UI-Components/Wall.h \

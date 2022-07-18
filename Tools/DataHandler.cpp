@@ -63,7 +63,7 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
             break;
 
         case noteBoard:
-            content1 = QString::number(static_cast<NoteBoardLink*>(note)->boardID);
+            content1 = QString::number(static_cast<NoteBoardLink*>(note)->button->boardID);
             break;
 
 //        case noteFile:

@@ -142,7 +142,7 @@ void MainWindow::addBoardLinkNote() {
     Board* board = addBoard();
 
     if (board) {
-        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName), &NoteBoardLink::boardSwitch, this, &MainWindow::changeBoard);
+        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
     }
 }
 
@@ -169,5 +169,10 @@ void MainWindow::updateBoard() {
     currWall->update();
     this->setStyleSheet(currWall->currentBoard->bgColor);
     window->setLayout(currWall->mainbox);
+
+    foreach (BoardSwitchButton *button, currWall->treeVis->buttons) {
+        qDebug() << "connecting tree button";
+        connect(button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
+    }
 }
 

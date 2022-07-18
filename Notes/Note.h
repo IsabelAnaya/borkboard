@@ -13,7 +13,6 @@ enum noteType { noteImage, noteText, noteBoard, noteFile };
 
 //note semi-abstract class
 class Note : public QFrame {
-    Q_OBJECT
 
 public:
     explicit Note(QWidget *parent = nullptr);

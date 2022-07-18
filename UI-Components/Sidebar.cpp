@@ -1,6 +1,8 @@
 #include "Sidebar.h"
 
-Sidebar::Sidebar(std::vector<QPushButton*> bits) {
+Sidebar::Sidebar(std::vector<BoardSwitchButton*> bits) {
+    buttons = bits;
+
     for (unsigned int i = 0; i < bits.size(); i++) {
         this->addWidget(bits[i]);
     }

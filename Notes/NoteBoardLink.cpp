@@ -1,32 +1,13 @@
 #include "NoteBoardLink.h"
 
-NoteBoardLink::NoteBoardLink(QWidget *parent) : Note(parent) {
-    setMinimumSize(20, 20);
-
-    thing = new QPushButton("New Board", this);
-    connect(thing, &QAbstractButton::released, this, &NoteBoardLink::emitSignal);
-
-    lay = new QVBoxLayout;
-    lay->addWidget(thing);
-    setLayout(lay);
-    //board = NULL;
-
-    this->setFrameStyle(QFrame::StyledPanel);
-    this->setLineWidth(2);
-
-    show();
-    setAttribute(Qt::WA_DeleteOnClose);
-}
 
 NoteBoardLink::NoteBoardLink(int board, QString name, QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
-    thing = new QPushButton(name, this);
-    connect(thing, &QAbstractButton::released, this, &NoteBoardLink::emitSignal);
-    boardID = board;
+    button = new BoardSwitchButton(board, name);
 
     lay = new QVBoxLayout;
-    lay->addWidget(thing);
+    lay->addWidget(button);
     setLayout(lay);
 
     this->setFrameStyle(QFrame::StyledPanel);
@@ -34,14 +15,6 @@ NoteBoardLink::NoteBoardLink(int board, QString name, QWidget *parent) : Note(pa
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
-}
-
-void NoteBoardLink::emitSignal() {
-    emit boardSwitch(boardID);
-}
-
-std::string NoteBoardLink::toText() {
-    return thing->text().toStdString();
 }
 
 noteType NoteBoardLink::getType() {
@@ -49,6 +22,6 @@ noteType NoteBoardLink::getType() {
 }
 
 NoteBoardLink::~NoteBoardLink() {
-    delete thing;
+    delete button;
     delete lay;
 }
