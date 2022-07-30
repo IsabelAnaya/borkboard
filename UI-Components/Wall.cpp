@@ -1,25 +1,8 @@
 #include "Wall.h"
 #include <iostream>
 
-std::vector<BoardSwitchButton*> traverse(Board *node) {
-    qDebug() << "building tree, " << node->boardName;
-    BoardSwitchButton *curr = new BoardSwitchButton(node->ID, node->boardName);
-    std::vector<BoardSwitchButton*> bits;
-    bits.push_back(curr);
-
-    for (unsigned int i = 0; i < node->children.size(); i++) {
-        std::vector<BoardSwitchButton*> newEnd = traverse(node->children[i]);
-        bits.insert(bits.end(), newEnd.begin(), newEnd.end());
-    }
-
-    return bits;
-}
-
 Wall::Wall() {
     wallName = "New Wall";
-
-    wallNameLabel = new QLabel;
-    wallNameLabel->setText(wallName);
 
     root = new Board();
     root->setName("Root");
@@ -29,20 +12,11 @@ Wall::Wall() {
     currentBoard = root;
     boardMap = new Board* [MAX_BOARDS];
     boardMap[0] = root;
-
-    mainbox = new QGridLayout;
-    mainbox->addWidget(root->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
-    treeVis = buildTreeVis();
-    mainbox->addLayout(treeVis, 1, 4, 9, 1);
 }
 
 //sets the wall's name and root board
 Wall::Wall(QString name, QString bgColor, QString rootName) {
     wallName = name;
-
-    wallNameLabel = new QLabel;
-    wallNameLabel->setText(wallName);
 
     root = new Board(bgColor, rootName);
     root->ID = 0;
@@ -51,12 +25,6 @@ Wall::Wall(QString name, QString bgColor, QString rootName) {
     currentBoard = root;
     boardMap = new Board* [MAX_BOARDS];
     boardMap[0] = root;
-
-    mainbox = new QGridLayout;
-    mainbox->addWidget(root->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
-    treeVis = buildTreeVis();
-    mainbox->addLayout(treeVis, 1, 4, 9, 1);
 }
 
 Board* Wall::addBoard(Board* parent, QString name) {
@@ -73,35 +41,27 @@ Board* Wall::addBoard(Board* parent, QString name) {
     }
 }
 
-Sidebar* Wall::buildTreeVis() {
-    std::vector<BoardSwitchButton*> bits = traverse(root);
-
-    return new Sidebar(bits);
-}
-
 void Wall::changeBoard(int board) {
     currentBoard = boardMap[board];
 }
 
-void Wall::update() {
+std::vector<BoardSwitchButton*>* Wall::updateTree(Board *node) {
+    qDebug() << "building tree, " << node->boardName;
+    BoardSwitchButton *curr = new BoardSwitchButton(node->ID, node->boardName);
+    std::vector<BoardSwitchButton*> *bits = new std::vector<BoardSwitchButton*>;
+    bits->push_back(curr);
 
-    qDebug() << wallName;
-    this->wallNameLabel->setText(wallName);
+    for (unsigned int i = 0; i < node->children.size(); i++) {
+        std::vector<BoardSwitchButton*> *newEnd = updateTree(node->children[i]);
+        bits->insert(bits->end(), newEnd->begin(), newEnd->end());
 
-    delete mainbox;
+        //delete newEnd;
+    }
 
-    mainbox = new QGridLayout;
-    Sidebar* treeVis = buildTreeVis();
-    mainbox->addWidget(currentBoard->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallNameLabel, 0, 4, 1, 1);
-    mainbox->addLayout(treeVis, 1, 4, 9, 1);
+    return bits;
 }
 
 Wall::~Wall() {
     std::cout << "deletin (Wall)" << std::endl;
     delete root;
-    delete wallNameLabel;
-    delete mainbox;
-    //delete treeVis;
-    //currentBoard should hopefully get deleted in the board deletion
 }

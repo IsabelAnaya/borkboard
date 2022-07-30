@@ -25,7 +25,7 @@ bool DataHandler::saveBoard(Board *board, int boardID, int parentID) {
         std::cout << "couldn't remove preexisting board info" << std::endl;
     }
 
-    for (int i = 0; i < board->cork->notes.size(); i++) {
+    for (unsigned int i = 0; i < board->cork->notes.size(); i++) {
         if (!saveNote(board->cork->notes[i], boardID, i)) {
             return false;
         }
@@ -95,7 +95,6 @@ void DataHandler::retrieveInfo() {
     QSqlQuery q1;
     q1.prepare(query1);
     q1 = db->returnQuery(q1);
-
     q1.first();
 
     //boards
@@ -104,7 +103,6 @@ void DataHandler::retrieveInfo() {
 
         q1.next();
     }
-
 
     //notes
     QString query2 = "SELECT * FROM notes WHERE board_id = :board"; //FIX
@@ -135,11 +133,11 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1,
         default:
             return false;
     }
+
+    c3 = NULL; //just to get rid of the warning
 }
 
 Wall* DataHandler::rebuildWall() {
-    //retrieveInfo();
-
     QString boardString = "SELECT * FROM boards WHERE board_id = 0";
     QSqlQuery q1;
     q1.prepare(boardString);
@@ -159,7 +157,14 @@ Wall* DataHandler::rebuildWall() {
 
         q2.first();
         while (q2.isValid()) {
-            addNote(wall->root, static_cast<noteType>(q2.value(0).toInt()), q2.value(1).toInt(), q2.value(2).toInt(), q2.value(3).toString(), q2.value(4).toString(), q2.value(5).toString());
+            addNote(wall->root,
+                    static_cast<noteType>(q2.value(0).toInt()),
+                    q2.value(1).toInt(),
+                    q2.value(2).toInt(),
+                    q2.value(3).toString(),
+                    q2.value(4).toString(),
+                    q2.value(5).toString()
+            );
             q2.next();
         }
 

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include "UI-Components/Cork.h"
+#include "UI-Components/Sidebar.h"
 #include "Tools/DBManager.h"
 #include "Tools/DataHandler.h"
 
@@ -45,6 +46,7 @@ private slots:
 
 private:
     void updateBoard();
+    void connectButtons(std::vector<BoardSwitchButton*>* buttons);
 
     QMenuBar *menu;
     QMenu *fileMenu;
@@ -53,6 +55,7 @@ private:
     QInputDialog *nameDia;
     QFileDialog *fileDia;
     QLabel *wallName;
+    Sidebar *sidebar;
     QGridLayout *mainbox;
     QWidget *window;
     DBManager *db;

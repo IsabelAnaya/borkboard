@@ -1,19 +1,41 @@
 #include "Sidebar.h"
+#include <iostream>
 
-Sidebar::Sidebar(std::vector<BoardSwitchButton*> bits) {
+Sidebar::Sidebar(std::vector<BoardSwitchButton*> *bits) {
     buttons = bits;
+    layout = new QVBoxLayout;
 
-    for (unsigned int i = 0; i < bits.size(); i++) {
-        this->addWidget(bits[i]);
+    for (unsigned int i = 0; i < bits->size(); i++) {
+        layout->addWidget(buttons->at(i));
+    }
+
+    setLayout(layout);
+}
+
+void Sidebar::replace(std::vector<BoardSwitchButton*> *bits) {
+    QLayoutItem *item;
+
+    //delete buttons
+    while((item = layout->takeAt(0))) {
+        if (item->widget()) {
+            item->widget()->hide();
+            delete item->widget();
+        }
+    }
+
+    delete buttons;
+    buttons = bits;
+    for (unsigned int i = 0; i < bits->size(); i++) {
+        layout->addWidget(buttons->at(i));
     }
 }
 
-Sidebar::~Sidebar() {
+//void Sidebar::update(std::vector<BoardSwitchButton*> *bits) {
 
-    int toDelete = this->count();
-    for (int i = 0; i < toDelete; i++) {
-        QLayoutItem *temp = this->takeAt(0);
-        delete temp->widget();
-        delete temp;
-    }
+//    //
+
+//}
+
+void remove(BoardSwitchButton *bits) {
+
 }

@@ -92,7 +92,6 @@ void Cork::mousePressEvent(QMouseEvent *event) {
             std::cout << "right click on empty" << std::endl;
         } else {
             std::cout << "right click on note" << std::endl;
-            //std::cout << child->pos().x() << ", " << child->pos().y() << std::endl;
         }
 
     } else if (event->button() == Qt::LeftButton) {

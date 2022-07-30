@@ -4,7 +4,6 @@
 #define MAX_BOARDS 20
 
 #include "Board.h"
-#include "Sidebar.h"
 #include <list>
 #include <QPushButton>
 #include <QGridLayout>
@@ -15,17 +14,14 @@ public:
     Wall();
     Wall(QString name, QString bgColor, QString rootName);
     ~Wall();
-    Sidebar *buildTreeVis();
-    Board* addBoard(Board* parent, QString name);
+    Board* addBoard(Board *parent, QString name);
     void changeBoard(int board);
-    void update();
+    std::vector<BoardSwitchButton*>* updateTree(Board *node);
 
     Board *root;
     Board *currentBoard;
     QString wallName;
-    Sidebar *treeVis;
-    QGridLayout *mainbox;
-    QLabel* wallNameLabel;
+
 private:
     int maxID = 1;
     int boardsStored = 1;

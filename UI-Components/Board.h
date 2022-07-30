@@ -20,7 +20,7 @@ public:
 
     QString bgColor;
     QString boardName;
-    unsigned int ID;
+    int ID;
 
     Cork* cork;
 

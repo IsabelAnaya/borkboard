@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QLabel>
 #include <QMouseEvent>
-#include <QMimeData>
 #include <stdlib.h>
 #include "Notes/Note.h"
 #include "Notes/NoteImage.h"

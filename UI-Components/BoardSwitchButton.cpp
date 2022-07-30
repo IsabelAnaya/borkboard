@@ -11,3 +11,7 @@ void BoardSwitchButton::emitSignal() {
     std::cout << "trying to emit " << boardID << std::endl;
     emit boardSwitch(boardID);
 }
+
+BoardSwitchButton::~BoardSwitchButton() {
+
+}

@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(newWallAction, &QAction::triggered, this, &MainWindow::newWall);
     fileMenu->addAction(newWallAction);
 
-    //new wall
+    //load wall
     QAction *loadWallAction = new QAction(tr("&Load Wall"), this);
     connect(loadWallAction, &QAction::triggered, this, &MainWindow::loadWall);
     fileMenu->addAction(loadWallAction);
@@ -46,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     toolMenu->addAction(addTextNoteAction);
 
     //add image note
-    QAction *addImageNoteAction = new QAction(tr("&New Image Note"), this);
-    connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
-    toolMenu->addAction(addImageNoteAction);
+//    QAction *addImageNoteAction = new QAction(tr("&New Image Note"), this);
+//    connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
+//    toolMenu->addAction(addImageNoteAction);
 
     //add board link note
     QAction *addBoardLinkNoteAction = new QAction(tr("New Board Note"), this);
@@ -56,20 +56,23 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     toolMenu->addAction(addBoardLinkNoteAction);
 
     //make child board
-    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
-    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
-    toolMenu->addAction(addChildBoardAction);
+//    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
+//    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
+//    toolMenu->addAction(addChildBoardAction);
 
+    wallName = new QLabel(currWall->wallName);
+    sidebar = new Sidebar(currWall->updateTree(currWall->root));
+    mainbox = new QGridLayout;
 
-
+    mainbox->addWidget(currWall->root->cork,0, 0, 10, 3);
+    mainbox->addWidget(wallName, 0, 4, 1, 1);
+    mainbox->addWidget(sidebar, 1, 4, 9, 1);
 
     window = new QWidget();
-    window->setLayout(currWall->mainbox);
+    window->setLayout(mainbox);
     this->setCentralWidget(window);
 
     db = new DBManager();
-    //db->addWall("hi");
-
     dh = new DataHandler(db);
 }
 
@@ -88,8 +91,13 @@ void MainWindow::loadWall() {
         delete currWall;
         currBoard = NULL;
 
-        db->openWall(filePath);
-        currWall = dh->rebuildWall();
+        db->openWall(filePath); //opening the file
+        currWall = dh->rebuildWall(); //getting the wall ready
+        currBoard = currWall->root;
+
+        wallName->setText(currWall->wallName); //update the wall name
+        sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
+        mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
 
         updateBoard();
     }
@@ -105,9 +113,14 @@ void MainWindow::saveWall() {
 }
 
 void MainWindow::changeBoard(int board) {
-    currWall->changeBoard(board);
-    currBoard = currWall->currentBoard;
-    updateBoard();
+    qDebug() << "changeBoard signal";
+    if (board != currWall->currentBoard->ID) {
+        currWall->changeBoard(board);
+        currBoard = currWall->currentBoard;
+        updateBoard();
+    } else {
+        qDebug() << "same board, not switching";
+    }
 }
 
 void MainWindow::tempedit() {
@@ -153,6 +166,7 @@ Board* MainWindow::addBoard() {
         Board* child = currWall->addBoard(currBoard, nameDia->textValue());
 
         updateBoard();
+        std::vector<BoardSwitchButton*>* newButtons = currWall->updateTree(currWall->root);
         //pass current board and name of new board to wall
         return child;
     }
@@ -160,19 +174,13 @@ Board* MainWindow::addBoard() {
 }
 
 
+void MainWindow::updateBoard() {
+    //this->setStyleSheet(currWall->currentBoard->bgColor);
+    //window->setLayout(currWall->mainbox);
+
+    qDebug() << "updating";
+}
 
 MainWindow::~MainWindow() {
 
 }
-
-void MainWindow::updateBoard() {
-    currWall->update();
-    this->setStyleSheet(currWall->currentBoard->bgColor);
-    window->setLayout(currWall->mainbox);
-
-    foreach (BoardSwitchButton *button, currWall->treeVis->buttons) {
-        qDebug() << "connecting tree button";
-        connect(button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
-    }
-}
-

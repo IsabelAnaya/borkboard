@@ -28,12 +28,6 @@ bool DBManager::addWall(QString name) {
     query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, content_1 text, content_2 text, content_3 text)");
     query.exec();
 
-    //query.prepare("SELECT * FROM TestTable");
-    //query.exec();
-
-    //query.next();
-    //qDebug() << query.value(0).toString() << ", " << query.value(1).toString();
-
     return true;
 }
 

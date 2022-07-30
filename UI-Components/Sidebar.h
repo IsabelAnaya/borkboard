@@ -2,18 +2,23 @@
 #define SIDEBAR_H
 
 #include <vector>
-#include <QVBoxLayout>
+#include <QFrame>
 #include <QPushButton>
+#include <QVBoxLayout>
 #include "UI-Components/BoardSwitchButton.h"
 
-class Sidebar : public QVBoxLayout {
+class Sidebar : public QFrame {
     Q_OBJECT
 
 public:
-    Sidebar(std::vector<BoardSwitchButton*> bits);
-    ~Sidebar();
+    Sidebar(std::vector<BoardSwitchButton*> *bits);
+    static Sidebar retrieveSidebar();
+    void replace(std::vector<BoardSwitchButton*> *bits);
 
-    std::vector<BoardSwitchButton*> buttons;
+    std::vector<BoardSwitchButton*> *buttons;
+
+private:
+    QVBoxLayout *layout;
 };
 
 #endif // SIDEBAR_H
