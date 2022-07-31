@@ -17,6 +17,7 @@ public:
     void setColor(QString color);
 
     Board* makeNewChild(QString boardName);
+    Board* makeNewChild(QString boardName, QString color);
 
     QString bgColor;
     QString boardName;

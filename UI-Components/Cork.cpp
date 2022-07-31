@@ -59,6 +59,18 @@ NoteBoardLink* Cork::addBoardLinkNote(int board, QString name) {
     return tempo;
 }
 
+NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int board, QString name) {
+    NoteBoardLink *tempo = new NoteBoardLink(board, name, this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(x, y);
+    notes.push_back(tempo);
+
+    return tempo;
+}
+
 void Cork::moveNote(Note *note, int xPos, int yPos) {
     note->move(xPos, yPos);
 }

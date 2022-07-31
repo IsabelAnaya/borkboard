@@ -11,7 +11,7 @@ NoteImage::NoteImage(QWidget *parent) : Note(parent) {
     title->setFrameStyle(QFrame::StyledPanel);
     title->setLineWidth(2);
 
-    img = QPixmap("C:/Users/Isabel/Pictures/them.png");
+    //img = QPixmap("C://");
 
     content = new QLabel(this);
     content->setPixmap(img);

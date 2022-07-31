@@ -127,6 +127,8 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1,
             qDebug() << "done";
             return true;
         case noteBoard:
+            qDebug() << "boardlink";
+            board->cork->addBoardLinkNote(x, y, c1.toInt(), "temp");
             return false;
         case noteImage:
             return false;
@@ -149,6 +151,8 @@ Wall* DataHandler::rebuildWall() {
                     //id           //name         //color        //parent
         qDebug() << q1.value(0) << q1.value(1) << q1.value(2) << q1.value(3);
         Wall* wall = new Wall(db->getName(), q1.value(2).toString(), q1.value(1).toString());
+
+
 
         QString noteString = "SELECT type, x, y, content_1, content_2, content_3 FROM notes WHERE board_id = 0";
         QSqlQuery q2;

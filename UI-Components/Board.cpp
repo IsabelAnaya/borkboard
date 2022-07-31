@@ -31,6 +31,14 @@ Board* Board::makeNewChild(QString boardName) {
     return newB;
 }
 
+Board* Board::makeNewChild(QString boardName, QString color) {
+    Board *newB = new Board(color, boardName);
+    children.push_back(newB);
+    newB->parent = ID;
+
+    return newB;
+}
+
 Board::~Board() {
     for (unsigned int i = 0; i < children.size(); i++) {
         delete children[i];

@@ -18,12 +18,12 @@ public:
     explicit Cork(QWidget *parent = nullptr);
     ~Cork();
 
-    //Note* addNote();
-    //Note* addNote(std::string title, std::string content, int xPos, int yPos);
+    //could replace addNotes with 1 variant, use default values...
     NoteText* addTextNote();
     NoteText* addTextNote(int x, int y, QString t, QString c);
     NoteImage* addImageNote();
     NoteBoardLink* addBoardLinkNote(int board, QString name);
+    NoteBoardLink* addBoardLinkNote(int x, int y, int board, QString name);
     void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 

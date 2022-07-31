@@ -72,6 +72,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     window->setLayout(mainbox);
     this->setCentralWidget(window);
 
+    connectButtons();
+
     db = new DBManager();
     dh = new DataHandler(db);
 }
@@ -81,7 +83,7 @@ void MainWindow::newWall() {
     currBoard = NULL;
     currWall = new Wall();
     currBoard = currWall->root;
-    updateBoard();
+    //broken
 }
 
 void MainWindow::loadWall() {
@@ -98,8 +100,6 @@ void MainWindow::loadWall() {
         wallName->setText(currWall->wallName); //update the wall name
         sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
         mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
-
-        updateBoard();
     }
 }
 
@@ -117,7 +117,7 @@ void MainWindow::changeBoard(int board) {
     if (board != currWall->currentBoard->ID) {
         currWall->changeBoard(board);
         currBoard = currWall->currentBoard;
-        updateBoard();
+        updateCork();
     } else {
         qDebug() << "same board, not switching";
     }
@@ -131,15 +131,15 @@ void MainWindow::tempedit() {
     nameDia->setLabelText("Enter new name of wall:");
     if (nameDia->exec() == true) {
         currWall->wallName = nameDia->textValue();
+        wallName->setText(nameDia->textValue());
 
     }
 
     nameDia->setLabelText("Enter new name of current board:");
     if (nameDia->exec() == true) {
         this->currBoard->setName(nameDia->textValue());
+        //update the sidebar
     }
-
-    updateBoard();
 }
 
 void MainWindow::addTextNote() {
@@ -155,7 +155,7 @@ void MainWindow::addBoardLinkNote() {
     Board* board = addBoard();
 
     if (board) {
-        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
+        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
     }
 }
 
@@ -165,21 +165,46 @@ Board* MainWindow::addBoard() {
     if (nameDia->exec() == true) {
         Board* child = currWall->addBoard(currBoard, nameDia->textValue());
 
-        updateBoard();
         std::vector<BoardSwitchButton*>* newButtons = currWall->updateTree(currWall->root);
-        //pass current board and name of new board to wall
+        sidebar->replace(newButtons); //inefficient, fix this
+
+        connectButtons();
         return child;
     }
     return NULL;
 }
 
+void MainWindow::connectButtons() {
+    int size = sidebar->buttons->size();
+    for (int i = 0; i < size; i++) {
+        connect(sidebar->buttons->at(i), &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard, Qt::UniqueConnection);
+    }
+}
 
-void MainWindow::updateBoard() {
+void MainWindow::updateCork() {
     //this->setStyleSheet(currWall->currentBoard->bgColor);
     //window->setLayout(currWall->mainbox);
+    Cork* oldCork = static_cast<Cork*> (mainbox->itemAtPosition(0, 0)->widget());
+    for (unsigned int i = 0; i < oldCork->notes.size(); i++) {
+        oldCork->notes[i]->hide();
+    }
+    oldCork->hide();
+    mainbox->removeItem(mainbox->itemAtPosition(0, 0)); //remove old cork
+
+    mainbox->addWidget(currWall->currentBoard->cork,0, 0, 10, 3); //replace with new
+    Cork* currCork = currWall->currentBoard->cork;
+    currCork->show();
+    for (unsigned int i = 0; i < currCork->notes.size(); i++) {
+        currCork->notes[i]->show();
+//        if (currCork->notes[i]->getType() == noteBoard) {
+
+//        }
+    }
 
     qDebug() << "updating";
 }
+
+
 
 MainWindow::~MainWindow() {
 

@@ -45,8 +45,8 @@ private slots:
     Board* addBoard();
 
 private:
-    void updateBoard();
-    void connectButtons(std::vector<BoardSwitchButton*>* buttons);
+    void updateCork();
+    void connectButtons();
 
     QMenuBar *menu;
     QMenu *fileMenu;
