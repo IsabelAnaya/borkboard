@@ -85,7 +85,13 @@ void MainWindow::newWall() {
     currBoard = NULL;
     currWall = new Wall();
     currBoard = currWall->root;
-    //broken
+
+    wallName->setText("Wall: " + currWall->wallName); //update the wall name
+    boardName->setText("Board: " + currBoard->boardName);
+
+    sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
+    connectButtons(); //reconnect the sidebar
+    mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
 }
 
 void MainWindow::loadWall() {
