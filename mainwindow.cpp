@@ -60,13 +60,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 //    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
 //    toolMenu->addAction(addChildBoardAction);
 
-    wallName = new QLabel(currWall->wallName);
+    wallName = new QLabel("Wall: " + currWall->wallName);
+    boardName = new QLabel("Board: " + currBoard->boardName);
     sidebar = new Sidebar(currWall->updateTree(currWall->root));
     mainbox = new QGridLayout;
 
     mainbox->addWidget(currWall->root->cork,0, 0, 10, 3);
     mainbox->addWidget(wallName, 0, 4, 1, 1);
-    mainbox->addWidget(sidebar, 1, 4, 9, 1);
+    mainbox->addWidget(boardName, 1, 4, 1, 1);
+    mainbox->addWidget(sidebar, 2, 4, 8, 1);
 
     window = new QWidget();
     window->setLayout(mainbox);
@@ -97,9 +99,17 @@ void MainWindow::loadWall() {
         currWall = dh->rebuildWall(); //getting the wall ready
         currBoard = currWall->root;
 
-        wallName->setText(currWall->wallName); //update the wall name
+        wallName->setText("Wall: " + currWall->wallName); //update the wall name
+        boardName->setText("Board: " + currBoard->boardName);
         sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
+        connectButtons(); //reconnect the sidebar
         mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
+
+        //find any board links
+        std::vector<Note*> boardlinks = currWall->findAllNotesOfType(noteBoard);
+        for (unsigned int i = 0; i < boardlinks.size(); i++) {
+            connect(static_cast<NoteBoardLink*>(boardlinks[i])->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
+        }
     }
 }
 
@@ -109,7 +119,7 @@ void MainWindow::saveWall() {
     } else {
         db->addWall(currWall->wallName);
     }
-    dh->saveBoard(currBoard, 0, NULL);
+    dh->saveWall(currWall);
 }
 
 void MainWindow::changeBoard(int board) {
@@ -117,6 +127,7 @@ void MainWindow::changeBoard(int board) {
     if (board != currWall->currentBoard->ID) {
         currWall->changeBoard(board);
         currBoard = currWall->currentBoard;
+        boardName->setText("Board: " + currBoard->boardName);
         updateCork();
     } else {
         qDebug() << "same board, not switching";
@@ -138,7 +149,8 @@ void MainWindow::tempedit() {
     nameDia->setLabelText("Enter new name of current board:");
     if (nameDia->exec() == true) {
         this->currBoard->setName(nameDia->textValue());
-        //update the sidebar
+        boardName->setText("Board: " + currBoard->boardName);
+        sidebar->replace(currWall->updateTree(currWall->root));
     }
 }
 

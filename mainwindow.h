@@ -55,6 +55,7 @@ private:
     QInputDialog *nameDia;
     QFileDialog *fileDia;
     QLabel *wallName;
+    QLabel *boardName;
     Sidebar *sidebar;
     QGridLayout *mainbox;
     QWidget *window;

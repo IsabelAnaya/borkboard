@@ -31,6 +31,18 @@ Board* Board::makeNewChild(QString boardName) {
     return newB;
 }
 
+std::vector<Note*> Board::findAllNotesOfType(noteType type) {
+    std::vector<Note*> matching;
+
+    for (int i = 0; i < cork->notes.size(); i++) {
+        if (cork->notes[i]->getType() == type) {
+            matching.push_back(cork->notes[i]);
+        }
+    }
+
+    return matching;
+}
+
 Board* Board::makeNewChild(QString boardName, QString color) {
     Board *newB = new Board(color, boardName);
     children.push_back(newB);

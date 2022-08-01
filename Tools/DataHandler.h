@@ -11,12 +11,15 @@ class DataHandler {
 public:
     DataHandler(DBManager *d);
 
-    bool saveBoard(Board *board, int boardID, int parentID);
+    bool saveWall(Wall *wall);
+    bool saveBoard(Board *board);
     bool saveNote(Note *note, int boardID, int noteID);
     bool removeDoubles(int boardID);
-    void retrieveInfo();
     bool addNote(Board* board, noteType type, int x, int y, QString c1, QString c2, QString c3);
     Wall* rebuildWall();
+    void rebuildNotes(Board *board);
+    QSqlQuery findBoard(int ID);
+    void findChildBoards(int ID, QQueue<int> *parents);
 
 private:
     DBManager *db;

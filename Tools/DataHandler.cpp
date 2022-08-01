@@ -19,14 +19,33 @@ bool DataHandler::removeDoubles(int boardID) {
     return (db->completeQuery(b) && db->completeQuery(n));
 }
 
-bool DataHandler::saveBoard(Board *board, int boardID, int parentID) {
+bool DataHandler::saveWall(Wall *wall) {
+    QQueue<Board*> boards;
+    boards.enqueue(wall->root);
 
-    if (!removeDoubles(boardID)) {
+    while (!boards.isEmpty()) {
+        Board* currBoard = boards.dequeue();
+        if (!saveBoard(currBoard)) {
+            return false;
+        }
+
+        qDebug() << "children " << currBoard->children.size();
+        for (unsigned int i = 0; i < currBoard->children.size(); i++) {
+            boards.enqueue(currBoard->children[i]);
+        }
+    }
+
+    return true;
+}
+
+bool DataHandler::saveBoard(Board *board) {
+
+    if (!removeDoubles(board->ID)) {
         std::cout << "couldn't remove preexisting board info" << std::endl;
     }
 
     for (unsigned int i = 0; i < board->cork->notes.size(); i++) {
-        if (!saveNote(board->cork->notes[i], boardID, i)) {
+        if (!saveNote(board->cork->notes[i], board->ID, i)) {
             return false;
         }
     }
@@ -34,10 +53,10 @@ bool DataHandler::saveBoard(Board *board, int boardID, int parentID) {
     QString queryString = "INSERT INTO boards (board_id, name, color, parent) VALUES (:board, :name, :color, :parent)";
     QSqlQuery q;
     q.prepare(queryString);
-    q.bindValue(":board", boardID);
+    q.bindValue(":board", board->ID);
     q.bindValue(":name", board->boardName);
     q.bindValue(":color", board->bgColor);
-    q.bindValue(":parent", parentID);
+    q.bindValue(":parent", board->parent);
 
     return db->completeQuery(q);
 }
@@ -90,36 +109,10 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     return db->completeQuery(q);
 }
 
-void DataHandler::retrieveInfo() {
-    QString query1 = "SELECT * FROM boards";
-    QSqlQuery q1;
-    q1.prepare(query1);
-    q1 = db->returnQuery(q1);
-    q1.first();
-
-    //boards
-    while (q1.isValid()) {
-        qDebug() << q1.value(0) << q1.value(1) << q1.value(2) << q1.value(3);
-
-        q1.next();
-    }
-
-    //notes
-    QString query2 = "SELECT * FROM notes WHERE board_id = :board"; //FIX
-    QSqlQuery q2;
-    q2.prepare(query2);
-    q2 = db->returnQuery(q2);
-
-    q2.first();
-
-    while (q2.isValid()) {
-        qDebug() << q2.value(0) << q2.value(1) << q2.value(2) << q2.value(3) << q2.value(4) << q2.value(5) << q2.value(6) << q2.value(7);
-
-        q2.next();
-    }
-}
-
 bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1, QString c2, QString c3) {
+    QString boardString = "SELECT name FROM boards WHERE board_id = :board";
+    QSqlQuery q;
+
     switch (type) {
         case noteText:
             qDebug() << "text";
@@ -128,7 +121,14 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1,
             return true;
         case noteBoard:
             qDebug() << "boardlink";
-            board->cork->addBoardLinkNote(x, y, c1.toInt(), "temp");
+            q.prepare(boardString);
+            q.bindValue(":board", c1);
+            q = db->returnQuery(q);
+            q.first();
+            if (q.isValid()) {
+                board->cork->addBoardLinkNote(x, y, c1.toInt(), q.value(0).toString());
+            }
+
             return false;
         case noteImage:
             return false;
@@ -140,11 +140,7 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1,
 }
 
 Wall* DataHandler::rebuildWall() {
-    QString boardString = "SELECT * FROM boards WHERE board_id = 0";
-    QSqlQuery q1;
-    q1.prepare(boardString);
-    q1 = db->returnQuery(q1);
-
+    QSqlQuery q1 = findBoard(0);
     q1.first();
 
     if (q1.isValid()) {
@@ -152,28 +148,74 @@ Wall* DataHandler::rebuildWall() {
         qDebug() << q1.value(0) << q1.value(1) << q1.value(2) << q1.value(3);
         Wall* wall = new Wall(db->getName(), q1.value(2).toString(), q1.value(1).toString());
 
+        rebuildNotes(wall->root);
 
+        int currentID;
+        QQueue<int> parents;
 
-        QString noteString = "SELECT type, x, y, content_1, content_2, content_3 FROM notes WHERE board_id = 0";
-        QSqlQuery q2;
-        q2.prepare(noteString);
-        q2 = db->returnQuery(q2);
+        findChildBoards(0, &parents);
 
-        q2.first();
-        while (q2.isValid()) {
-            addNote(wall->root,
-                    static_cast<noteType>(q2.value(0).toInt()),
-                    q2.value(1).toInt(),
-                    q2.value(2).toInt(),
-                    q2.value(3).toString(),
-                    q2.value(4).toString(),
-                    q2.value(5).toString()
-            );
-            q2.next();
+        while (!parents.isEmpty()) {
+            //make board
+            currentID = parents.dequeue();
+            QSqlQuery q2 = findBoard(currentID);
+            q2.first();
+            if (q2.isValid()) {
+                Board *newest = wall->addSpecificBoard(wall->getBoard(q2.value(3).toInt()), q2.value(1).toString(), q2.value(2).toString(), q2.value(0).toInt());
+
+                if (newest) {
+                    //make notes
+                    rebuildNotes(newest);
+                    findChildBoards(currentID, &parents);
+                }
+            }
         }
 
         return wall;
     } else {
         return NULL;
+    }
+}
+
+QSqlQuery DataHandler::findBoard(int ID) {
+    QString idString = "SELECT * FROM boards WHERE board_id = :board";
+    QSqlQuery q;
+    q.prepare(idString);
+    q.bindValue(":board", ID);
+    return db->returnQuery(q);
+}
+
+void DataHandler::findChildBoards(int ID, QQueue<int> *parents) {
+    QString childString = "SELECT * FROM boards WHERE parent = :parent";
+    QSqlQuery q;
+    q.prepare(childString);
+    q.bindValue(":parent", ID);
+    q = db->returnQuery(q);
+
+    q.first();
+    while (q.isValid()) {
+        parents->enqueue(q.value(0).toInt());
+        q.next();
+    }
+}
+
+void DataHandler::rebuildNotes(Board *board) {
+    QString noteString = "SELECT type, x, y, content_1, content_2, content_3 FROM notes WHERE board_id = :id";
+    QSqlQuery q;
+    q.prepare(noteString);
+    q.bindValue(":id", board->ID);
+    q = db->returnQuery(q);
+
+    q.first();
+    while (q.isValid()) {
+        addNote(board,
+                static_cast<noteType>(q.value(0).toInt()),
+                q.value(1).toInt(),
+                q.value(2).toInt(),
+                q.value(3).toString(),
+                q.value(4).toString(),
+                q.value(5).toString()
+        );
+        q.next();
     }
 }

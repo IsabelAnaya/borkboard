@@ -1,6 +1,12 @@
 #include "Wall.h"
 #include <iostream>
 
+void zeroBoolArray(bool* arr, int size) {
+    for (int i = 0; i < size; i++) {
+        arr[i] = false;
+    }
+}
+
 Wall::Wall() {
     wallName = "New Wall";
 
@@ -11,7 +17,10 @@ Wall::Wall() {
 
     currentBoard = root;
     boardMap = new Board* [MAX_BOARDS];
+    slotFull = new bool [MAX_BOARDS];
+    zeroBoolArray(slotFull, MAX_BOARDS);
     boardMap[0] = root;
+    slotFull[0] = true;
 }
 
 //sets the wall's name and root board
@@ -24,16 +33,26 @@ Wall::Wall(QString name, QString bgColor, QString rootName) {
 
     currentBoard = root;
     boardMap = new Board* [MAX_BOARDS];
+    slotFull = new bool [MAX_BOARDS];
+    zeroBoolArray(slotFull, MAX_BOARDS);
     boardMap[0] = root;
+    slotFull[0] = true;
 }
 
 Board* Wall::addBoard(Board* parent, QString name) {
     if (boardsStored < MAX_BOARDS) {
-        Board* child = parent->makeNewChild(name);
-        child->ID = maxID % MAX_BOARDS;
-        boardMap[maxID] =  child;
+        while (slotFull[nextID]) {
+            nextID = (nextID + 1) % MAX_BOARDS;
+        }
 
-        maxID++;
+        Board* child = parent->makeNewChild(name);
+        child->ID = nextID;
+        boardMap[nextID] = child;
+        slotFull[nextID] = true;
+
+        nextID = (nextID + 1) % MAX_BOARDS;
+
+        boardsStored++;
         return child;
 
     } else {
@@ -41,8 +60,53 @@ Board* Wall::addBoard(Board* parent, QString name) {
     }
 }
 
+Board* Wall::addSpecificBoard(Board* parent, QString name, QString color, int ID) {
+    if (parent && boardsStored < MAX_BOARDS && !slotFull[ID]) {
+        Board* child = parent->makeNewChild(name, color);
+        child->ID = ID;
+        boardMap[ID] = child;
+        slotFull[ID] = true;
+
+        if (nextID == ID) {
+            nextID = (nextID + 1) % MAX_BOARDS;
+        }
+
+        boardsStored++;
+        return child;
+
+    } else {
+        return NULL;
+    }
+}
+
+Board* Wall::getBoard(int ID) {
+    if (ID > -1 && ID < MAX_BOARDS && slotFull[ID]) {
+        return boardMap[ID];
+    }
+
+    return NULL;
+}
+
 void Wall::changeBoard(int board) {
     currentBoard = boardMap[board];
+}
+
+std::vector<Note*> Wall::findAllNotesOfType(noteType type) {
+    std::vector<Note*> matching;
+    QQueue<Board*> unsearched;
+    unsearched.enqueue(root);
+
+    while(!unsearched.isEmpty()) {
+        Board *searching = unsearched.dequeue();
+        std::vector<Note*> found = searching->findAllNotesOfType(type);
+        matching.insert(matching.end(), found.begin(), found.end());
+
+        for (unsigned int i = 0; i < searching->children.size(); i++) {
+            unsearched.enqueue(searching->children[i]);
+        }
+    }
+
+    return matching;
 }
 
 std::vector<BoardSwitchButton*>* Wall::updateTree(Board *node) {

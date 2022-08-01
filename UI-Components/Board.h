@@ -19,6 +19,8 @@ public:
     Board* makeNewChild(QString boardName);
     Board* makeNewChild(QString boardName, QString color);
 
+    std::vector<Note*> findAllNotesOfType(noteType type);
+
     QString bgColor;
     QString boardName;
     int ID;
