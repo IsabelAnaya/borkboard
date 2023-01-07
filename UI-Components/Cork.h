@@ -32,6 +32,8 @@ private:
     unsigned int maxID = 0;
     Note* selectedNote;
     QPoint offset;
+    int initialSize[2] = {0, 0};
+    bool resizing = false;
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;

@@ -84,13 +84,18 @@ void Cork::renumberNotes() {
 
 void Cork::mouseReleaseEvent(QMouseEvent *event) {
     selectedNote = NULL;
+    resizing = false;
 }
 
 void Cork::mouseMoveEvent(QMouseEvent *event) {
     event->pos();
 
     if (selectedNote) {
-        selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
+        if (resizing) {
+            selectedNote->resize(initialSize[0] + event->pos().x() - offset.x(), initialSize[1] + event->pos().y() - offset.y());
+        } else {
+            selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
+        }
     }
     //move selected child relative to offset from note's origin
 
@@ -111,9 +116,23 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         if(!selectedNote) { return; }
 
         offset = event->pos() - selectedNote->pos();
-        std::cout << selectedNote->mapTo(this, selectedNote->pos()).x() << " " << selectedNote->mapTo(this, selectedNote->pos()).y() << std::endl;
-        std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
-        selectedNote->raise();
+
+        //check if its in a grabby area. if yes, resize, else get ready to move
+        if ((((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() < 10)) ||
+          (((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10)) ||
+          (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() < 10)) ||
+          (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10))) {
+
+            resizing = true;
+            initialSize[0] = selectedNote->width() - selectedNote->pos().x();
+            initialSize[1] = selectedNote->height() - selectedNote->pos().y();
+            std::cout << "checking the note dimensions; " << selectedNote->pos().x() + selectedNote->width() << ", " << selectedNote->pos().y() + selectedNote->height() << std::endl;
+
+        //movement moment
+        } else {
+            std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
+            selectedNote->raise();
+        }
     }
 }
 
