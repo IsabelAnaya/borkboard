@@ -97,25 +97,24 @@ void Cork::mouseMoveEvent(QMouseEvent *event) {
         case(0): //moving
             selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
             break;
-
-         //one of the offsets/initial things off?
         case(1): //top left
-            selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y()); //good?
-            selectedNote->resize(initialSize[0] - event->pos().x() + offset.x() + firstGrab[0], initialSize[1] - event->pos().y() + offset.y() + firstGrab[1]);
+            selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
+            selectedNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - event->pos().y() + firstGrab[1]);
             break;
         case(2): //bottom left
-            selectedNote->move(event->pos().x() - offset.x(), selectedNote->pos().y()); //good?
-            selectedNote->resize(initialSize[0] - event->pos().x() + offset.x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+            selectedNote->move(event->pos().x() - offset.x(), selectedNote->pos().y());
+            selectedNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
             break;
-        case(3): //bottom right. works right
+        case(3): //bottom right
             selectedNote->resize(initialSize[0] - initialPos.x() + event->pos().x() - offset.x(), initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
             break;
         case(4): //top right
+            selectedNote->move(selectedNote->pos().x(), event->pos().y() - offset.y());
+            selectedNote->resize(initialSize[0] - initialPos.x() + event->pos().x() - offset.x(), initialSize[1] - event->pos().y() + firstGrab[1]);
             break;
 
         }
     }
-    //move selected child relative to offset from note's origin
 }
 
 void Cork::mousePressEvent(QMouseEvent *event) {
