@@ -84,21 +84,38 @@ void Cork::renumberNotes() {
 
 void Cork::mouseReleaseEvent(QMouseEvent *event) {
     selectedNote = NULL;
-    resizing = false;
+    cornerGrabbed = 0;
+    initialSize[0] = 0;
+    initialSize[1] = 0;
 }
 
 void Cork::mouseMoveEvent(QMouseEvent *event) {
     event->pos();
 
     if (selectedNote) {
-        if (resizing) {
-            selectedNote->resize(initialSize[0] + event->pos().x() - offset.x(), initialSize[1] + event->pos().y() - offset.y());
-        } else {
+        switch (cornerGrabbed) {
+        case(0): //moving
             selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
+            break;
+
+         //one of the offsets/initial things off?
+        case(1): //top left
+            selectedNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y()); //good?
+            selectedNote->resize(initialSize[0] - event->pos().x() + offset.x() + firstGrab[0], initialSize[1] - event->pos().y() + offset.y() + firstGrab[1]);
+            break;
+        case(2): //bottom left
+            selectedNote->move(event->pos().x() - offset.x(), selectedNote->pos().y()); //good?
+            selectedNote->resize(initialSize[0] - event->pos().x() + offset.x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+            break;
+        case(3): //bottom right. works right
+            selectedNote->resize(initialSize[0] - initialPos.x() + event->pos().x() - offset.x(), initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+            break;
+        case(4): //top right
+            break;
+
         }
     }
     //move selected child relative to offset from note's origin
-
 }
 
 void Cork::mousePressEvent(QMouseEvent *event) {
@@ -116,22 +133,34 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         if(!selectedNote) { return; }
 
         offset = event->pos() - selectedNote->pos();
+        initialSize[0] = selectedNote->width(); //correctly offset for resizing
+        initialSize[1] = selectedNote->height();
+        initialPos = selectedNote->pos();
+        firstGrab[0] = event->pos().x();
+        firstGrab[1] = event->pos().y();
 
+        selectedNote->raise();
         //check if its in a grabby area. if yes, resize, else get ready to move
-        if ((((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() < 10)) ||
-          (((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10)) ||
-          (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() < 10)) ||
-          (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10))) {
+        if (((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() < 10)) {
+            std::cout << "top left" << std::endl;
+            cornerGrabbed = 1;
 
-            resizing = true;
-            initialSize[0] = selectedNote->width() - selectedNote->pos().x();
-            initialSize[1] = selectedNote->height() - selectedNote->pos().y();
-            std::cout << "checking the note dimensions; " << selectedNote->pos().x() + selectedNote->width() << ", " << selectedNote->pos().y() + selectedNote->height() << std::endl;
+        } else if (((event->pos() - selectedNote->pos()).x() < 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10)) {
+            std::cout << "bottom left" << std::endl;
+            cornerGrabbed = 2;
+
+        } else if (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() > selectedNote->height() - 10)) {
+            std::cout << "bottom right" << std::endl;
+            cornerGrabbed = 3;
+
+        } else if (((event->pos() - selectedNote->pos()).x() > selectedNote->width() - 10) && ((event->pos() - selectedNote->pos()).y() < 10)) {
+            std::cout << "top right" << std::endl;
+            cornerGrabbed = 4;
 
         //movement moment
         } else {
             std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
-            selectedNote->raise();
+
         }
     }
 }

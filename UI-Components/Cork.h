@@ -32,7 +32,10 @@ private:
     unsigned int maxID = 0;
     Note* selectedNote;
     QPoint offset;
+    QPoint initialPos;
     int initialSize[2] = {0, 0};
+    int firstGrab[2] = {0, 0};
+    int cornerGrabbed = 0;
     bool resizing = false;
 
 protected:
