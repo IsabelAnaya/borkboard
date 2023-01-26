@@ -21,7 +21,7 @@ NoteText* Cork::addTextNote() {
     return tempo;
 }
 
-NoteText* Cork::addTextNote(int x, int y, QString t, QString c) {
+NoteText* Cork::addTextNote(int x, int y, int height, int width, QString t, QString c) {
     //std::cout << "new note" << std::endl;
     NoteText *tempo = new NoteText(t, c, this);
     tempo->ID = maxID;
@@ -30,6 +30,7 @@ NoteText* Cork::addTextNote(int x, int y, QString t, QString c) {
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    tempo->resize(width, height);
 
     return tempo;
 }
@@ -59,7 +60,7 @@ NoteBoardLink* Cork::addBoardLinkNote(int board, QString name) {
     return tempo;
 }
 
-NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int board, QString name) {
+NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int height, int width, int board, QString name) {
     NoteBoardLink *tempo = new NoteBoardLink(board, name, this);
     tempo->ID = maxID;
 
@@ -67,6 +68,7 @@ NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int board, QString name) {
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    tempo->resize(width, height);
 
     return tempo;
 }
@@ -125,6 +127,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
             std::cout << "right click on empty" << std::endl;
         } else {
             std::cout << "right click on note" << std::endl;
+
         }
 
     } else if (event->button() == Qt::LeftButton) {

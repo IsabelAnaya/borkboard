@@ -65,6 +65,8 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     noteType type = note->getType();
     int x = note->pos().x();
     int y = note->pos().y();
+    int height = note->height();
+    int width = note->width();
     QString content1 = NULL;
     QString content2 = NULL;
     QString content3 = NULL;
@@ -94,7 +96,7 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
             return false;
     }
 
-    QString queryString = "INSERT INTO notes (count_id, board_id, type, x, y, content_1, content_2, content_3) VALUES (:count, :board, :type, :x, :y, :con1, :con2, :con3)";
+    QString queryString = "INSERT INTO notes (count_id, board_id, type, x, y, height, width, content_1, content_2, content_3) VALUES (:count, :board, :type, :x, :y, :height, :width, :con1, :con2, :con3)";
     QSqlQuery q;
     q.prepare(queryString);
     q.bindValue(":count", noteID);
@@ -102,6 +104,8 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     q.bindValue(":type", type);
     q.bindValue(":x", x);
     q.bindValue(":y", y);
+    q.bindValue(":height", height);
+    q.bindValue(":width", width);
     q.bindValue(":con1", content1);
     q.bindValue(":con2", content2);
     q.bindValue(":con3", content3);
@@ -109,14 +113,14 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     return db->completeQuery(q);
 }
 
-bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1, QString c2, QString c3) {
+bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height, int width, QString c1, QString c2, QString c3) {
     QString boardString = "SELECT name FROM boards WHERE board_id = :board";
     QSqlQuery q;
 
     switch (type) {
         case noteText:
             qDebug() << "text";
-            board->cork->addTextNote(x, y, c1, c2);
+            board->cork->addTextNote(x, y, height, width, c1, c2);
             qDebug() << "done";
             return true;
         case noteBoard:
@@ -126,7 +130,8 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, QString c1,
             q = db->returnQuery(q);
             q.first();
             if (q.isValid()) {
-                board->cork->addBoardLinkNote(x, y, c1.toInt(), q.value(0).toString());
+                board->cork->addBoardLinkNote(x, y, height, width, c1.toInt(), q.value(0).toString());
+                return true;
             }
 
             return false;
@@ -200,7 +205,7 @@ void DataHandler::findChildBoards(int ID, QQueue<int> *parents) {
 }
 
 void DataHandler::rebuildNotes(Board *board) {
-    QString noteString = "SELECT type, x, y, content_1, content_2, content_3 FROM notes WHERE board_id = :id";
+    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3 FROM notes WHERE board_id = :id";
     QSqlQuery q;
     q.prepare(noteString);
     q.bindValue(":id", board->ID);
@@ -212,9 +217,11 @@ void DataHandler::rebuildNotes(Board *board) {
                 static_cast<noteType>(q.value(0).toInt()),
                 q.value(1).toInt(),
                 q.value(2).toInt(),
-                q.value(3).toString(),
-                q.value(4).toString(),
-                q.value(5).toString()
+                q.value(3).toInt(),
+                q.value(4).toInt(),
+                q.value(5).toString(),
+                q.value(6).toString(),
+                q.value(7).toString()
         );
         q.next();
     }
