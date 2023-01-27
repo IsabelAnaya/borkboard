@@ -157,6 +157,7 @@ void MainWindow::tempedit() {
         this->currBoard->setName(nameDia->textValue());
         boardName->setText("Board: " + currBoard->boardName);
         sidebar->replace(currWall->updateTree(currWall->root));
+        connectButtons();
     }
 }
 
