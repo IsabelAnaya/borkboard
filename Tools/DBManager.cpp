@@ -25,7 +25,7 @@ bool DBManager::addWall(QString name) {
     query.prepare("CREATE TABLE boards (board_id int, name text, color text, parent int, PRIMARY KEY (board_id))");
     query.exec();
 
-    query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, content_1 text, content_2 text, content_3 text)");
+    query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, height int, width int, content_1 text, content_2 text, content_3 text)");
     query.exec();
 
     return true;

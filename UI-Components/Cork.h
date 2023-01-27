@@ -20,10 +20,10 @@ public:
 
     //could replace addNotes with 1 variant, use default values...
     NoteText* addTextNote();
-    NoteText* addTextNote(int x, int y, QString t, QString c);
+    NoteText* addTextNote(int x, int y, int height, int width, QString c);
     NoteImage* addImageNote();
     NoteBoardLink* addBoardLinkNote(int board, QString name);
-    NoteBoardLink* addBoardLinkNote(int x, int y, int board, QString name);
+    NoteBoardLink* addBoardLinkNote(int x, int y, int height, int width, int board, QString name);
     void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 
@@ -32,6 +32,11 @@ private:
     unsigned int maxID = 0;
     Note* selectedNote;
     QPoint offset;
+    QPoint initialPos;
+    int initialSize[2] = {0, 0};
+    int firstGrab[2] = {0, 0};
+    int cornerGrabbed = 0;
+    bool resizing = false;
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override;

@@ -13,6 +13,9 @@ public:
     noteType getType() override;
 
     BoardSwitchButton* button;
+
+protected:
+    void resizeEvent(QResizeEvent* event);
 };
 
 #endif // NOTEIMAGE_H
