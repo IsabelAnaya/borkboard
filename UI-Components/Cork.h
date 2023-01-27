@@ -20,7 +20,7 @@ public:
 
     //could replace addNotes with 1 variant, use default values...
     NoteText* addTextNote();
-    NoteText* addTextNote(int x, int y, int height, int width, QString t, QString c);
+    NoteText* addTextNote(int x, int y, int height, int width, QString c);
     NoteImage* addImageNote();
     NoteBoardLink* addBoardLinkNote(int board, QString name);
     NoteBoardLink* addBoardLinkNote(int x, int y, int height, int width, int board, QString name);

@@ -7,13 +7,13 @@ class NoteText: public Note {
 
 public:
     explicit NoteText(QWidget *parent = nullptr);
-    NoteText(QString t, QString c, QWidget *parent);
+    NoteText(QString c, QWidget *parent);
     ~NoteText();
 
     std::string toText() override;
     noteType getType() override;
 
-    QTextEdit* title;
+    //QTextEdit* title;
     QTextEdit* content;
 };
 

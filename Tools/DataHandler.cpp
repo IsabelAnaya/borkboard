@@ -79,8 +79,7 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
 
         case noteText:
             text = static_cast<NoteText*>(note);
-            content1 = text->title->toPlainText();
-            content2 = text->content->toPlainText();
+            content1 = text->content->toPlainText();
             break;
 
         case noteBoard:
@@ -120,7 +119,7 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
     switch (type) {
         case noteText:
             qDebug() << "text";
-            board->cork->addTextNote(x, y, height, width, c1, c2);
+            board->cork->addTextNote(x, y, height, width, c1);
             qDebug() << "done";
             return true;
         case noteBoard:
@@ -141,6 +140,7 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
             return false;
     }
 
+    c2 = NULL;
     c3 = NULL; //just to get rid of the warning
 }
 

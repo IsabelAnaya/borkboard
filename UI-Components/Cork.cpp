@@ -21,9 +21,9 @@ NoteText* Cork::addTextNote() {
     return tempo;
 }
 
-NoteText* Cork::addTextNote(int x, int y, int height, int width, QString t, QString c) {
+NoteText* Cork::addTextNote(int x, int y, int height, int width, QString c) {
     //std::cout << "new note" << std::endl;
-    NoteText *tempo = new NoteText(t, c, this);
+    NoteText *tempo = new NoteText(c, this);
     tempo->ID = maxID;
 
     maxID++;
