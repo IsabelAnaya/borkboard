@@ -8,6 +8,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QLabel>
+#include <QSettings>
 #include <QMenuBar>
 #include <fstream>
 #include <iostream>
@@ -36,8 +37,12 @@ public slots:
 
 private slots:
     void newWall();
+    void loadRecentWall();
+    void loadWallByPath(const QString &filepath);
     void loadWall();
     void saveWall();
+    void updateCurrentFile(const QString &file);
+    void updateRecent();
     void tempedit();
     void addTextNote();
     void addImageNote();
@@ -61,6 +66,7 @@ private:
     QWidget *window;
     DBManager *db;
     DataHandler *dh;
+    QAction *recentFileAction[5];
 
 };
 #endif // MAINWINDOW_H

@@ -29,6 +29,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(loadWallAction, &QAction::triggered, this, &MainWindow::loadWall);
     fileMenu->addAction(loadWallAction);
 
+    //recent walls
+    QMenu *recentWallSubMenu = fileMenu->addMenu(tr("&Recent Walls"));
+    for (int i = 0; i < 5; i++) {
+        recentFileAction[i] = new QAction(this);
+        recentFileAction[i]->setVisible(true);
+        recentFileAction[i]->setData("");
+        connect(recentFileAction[i], &QAction::triggered, this, &MainWindow::loadRecentWall);
+        recentWallSubMenu->addAction(recentFileAction[i]);
+    }
+    updateRecent();
+
     //save wall
     QAction *saveWallAction = new QAction(tr("&Save"), this);
     connect(saveWallAction, &QAction::triggered, this, &MainWindow::saveWall);
@@ -96,7 +107,17 @@ void MainWindow::newWall() {
 
 void MainWindow::loadWall() {
     QString filePath = fileDia->getOpenFileName(this, tr("Open Wall"), "", tr("*.bork"));
+    loadWallByPath(filePath);
+}
 
+void MainWindow::loadRecentWall() {
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        loadWallByPath(action->data().toString());
+    }
+}
+
+void MainWindow::loadWallByPath(const QString &filePath) {
     if (filePath != "") {
         delete currWall;
         currBoard = NULL;
@@ -116,6 +137,8 @@ void MainWindow::loadWall() {
         for (unsigned int i = 0; i < boardlinks.size(); i++) {
             connect(static_cast<NoteBoardLink*>(boardlinks[i])->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
         }
+
+        updateCurrentFile(filePath);
     }
 }
 
@@ -126,6 +149,7 @@ void MainWindow::saveWall() {
         db->addWall(currWall->wallName);
     }
     dh->saveWall(currWall);
+    updateCurrentFile(currWall->wallName + ".bork");
 }
 
 void MainWindow::changeBoard(int board) {
@@ -138,6 +162,43 @@ void MainWindow::changeBoard(int board) {
     } else {
         qDebug() << "same board, not switching";
     }
+}
+
+void MainWindow::updateCurrentFile(const QString &file) {
+    qDebug() << "updateCurrentFile, " << file;
+    QSettings settings("beldog", "Bork Board");
+    QStringList files = settings.value("recentfiles").toStringList();
+    files.removeAll(file);
+    files.prepend(file);
+    while (files.size() > 5) {
+        files.removeLast();
+    }
+
+    qDebug() << files;
+    settings.setValue("recentfiles", files);
+    settings.sync();
+    qDebug() << settings.value("recentfiles").toStringList();
+    updateRecent();
+}
+
+void MainWindow::updateRecent() {
+    qDebug() << "updateRecent";
+    QSettings settings("beldog", "Bork Board");
+    QStringList files = settings.value("recentfiles").toStringList();
+    int recentFileCount = qMin(files.size(), 5);
+    qDebug() << files;
+    for (int i = 0; i < recentFileCount; i++) {
+        QString fileName = files[i];
+
+        recentFileAction[i]->setText(QFileInfo(fileName).fileName());
+        recentFileAction[i]->setData(files[i]);
+        recentFileAction[i]->setVisible(true);
+    }
+
+    for (int j = recentFileCount; j < 5; j++) {
+        recentFileAction[j]->setVisible(false);
+    }
+    //https://surfer.nmr.mgh.harvard.edu/ftp/dist/freesurfer/tutorial_versions/freesurfer/lib/qt/qt_doc/html/mainwindows-recentfiles-mainwindow-cpp.html
 }
 
 void MainWindow::tempedit() {
