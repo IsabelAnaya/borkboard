@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QMenu>
 #include <QMouseEvent>
 #include <stdlib.h>
 #include "Notes/Note.h"
@@ -21,6 +22,7 @@ public:
     //could replace addNotes with 1 variant, use default values...
     NoteText* addTextNote();
     NoteText* addTextNote(int x, int y, int height, int width, QString c);
+
     NoteImage* addImageNote();
     NoteBoardLink* addBoardLinkNote(int board, QString name);
     NoteBoardLink* addBoardLinkNote(int x, int y, int height, int width, int board, QString name);
@@ -30,15 +32,24 @@ public:
 private:
     void renumberNotes();
     unsigned int maxID = 0;
+    Note* movingNote;
     Note* selectedNote;
     QPoint offset;
     QPoint initialPos;
+    QPoint newPos;
     int initialSize[2] = {0, 0};
     int firstGrab[2] = {0, 0};
     int cornerGrabbed = 0;
     bool resizing = false;
 
+    QAction *addAction;
+
+private slots:
+    void newNoteSlot();
+    void removeNoteSlot();
+
 protected:
+    void contextMenuEvent(QContextMenuEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
