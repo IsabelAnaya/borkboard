@@ -7,8 +7,6 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::DefaultContextMenu);
-    QAction *addAction = new QAction(tr("&Add new note"), this);
-    connect(addAction, &QAction::triggered, this, &Cork::newNoteSlot);
 }
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {
@@ -213,5 +211,5 @@ Cork::~Cork() {
         delete notes[i];
     }
 
-    delete addAction;
+    //delete addAction;
 }

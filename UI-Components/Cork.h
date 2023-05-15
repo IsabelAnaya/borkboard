@@ -42,8 +42,6 @@ private:
     int cornerGrabbed = 0;
     bool resizing = false;
 
-    QAction *addAction;
-
 private slots:
     void newNoteSlot();
     void removeNoteSlot();
