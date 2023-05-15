@@ -271,6 +271,8 @@ void MainWindow::updateCork() {
     oldCork->hide();
     mainbox->removeItem(mainbox->itemAtPosition(0, 0)); //remove old cork
 
+    delete oldCork;
+
     mainbox->addWidget(currWall->currentBoard->cork,0, 0, 10, 3); //replace with new
     Cork* currCork = currWall->currentBoard->cork;
     currCork->show();
