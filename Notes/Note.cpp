@@ -12,6 +12,10 @@ noteType Note::getType() {
     return noteText;
 }
 
+int Note::getID() {
+    return ID;
+}
+
 Note::~Note() {
 
 }

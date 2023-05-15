@@ -19,6 +19,8 @@ public:
     //Note(QString t, QString c, QWidget *parent);
     ~Note();
 
+    int getID();
+
     virtual std::string toText();
     virtual noteType getType();
 
