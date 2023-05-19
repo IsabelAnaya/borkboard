@@ -87,6 +87,10 @@ Board* Wall::getBoard(int ID) {
     return NULL;
 }
 
+std::pair<Board**, bool*> Wall::getAllBoards() {
+    return std::make_pair(boardMap, slotFull);
+}
+
 void Wall::changeBoard(int board) {
     currentBoard = boardMap[board];
 }

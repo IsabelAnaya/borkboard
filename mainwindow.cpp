@@ -3,7 +3,11 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     colorDia = new QColorDialog();
     nameDia = new QInputDialog();
+    questionDia = new QMessageBox();
     nameDia->setLabelText("Enter new name of wall:");
+    questionDia->setText("Use Pre-Existing Board?");
+    questionDia->addButton("Yes", QMessageBox::YesRole);
+    questionDia->addButton("No", QMessageBox::NoRole);
 
     fileDia = new QFileDialog();
 
@@ -66,10 +70,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(addBoardLinkNoteAction, &QAction::triggered, this, &MainWindow::addBoardLinkNote);
     toolMenu->addAction(addBoardLinkNoteAction);
 
+    toolMenu->addSeparator();
+
     //make child board
-//    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
-//    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
-//    toolMenu->addAction(addChildBoardAction);
+    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
+    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
+    toolMenu->addAction(addChildBoardAction);
 
     wallName = new QLabel("Wall: " + currWall->wallName);
     boardName = new QLabel("Board: " + currBoard->boardName);
@@ -231,11 +237,38 @@ void MainWindow::addImageNote() {
 }
 
 void MainWindow::addBoardLinkNote() {
-    //ask for new/existing
-    Board* board = addBoard();
+    int result = questionDia->exec(); // 0 for yes, 1 for no
 
-    if (board) {
-        connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+    if (result == 1) {
+        Board* board = addBoard();
+        if (board) {
+            connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+        }
+    } else { // old board
+        std::pair<Board**, bool*> boardInfo = currWall->getAllBoards();
+        QStringList items;
+
+        for (int i = 0; i < MAX_BOARDS; i++) {
+            if (boardInfo.second[i]) {
+                items += boardInfo.first[i]->boardName;
+            }
+        }
+
+        nameDia->setLabelText("Select board:");
+        nameDia->setComboBoxItems(items);
+        if (nameDia->exec()) {
+            qDebug() << nameDia->textValue();
+            Board* board = currWall->getBoard(items.indexOf(nameDia->textValue()));
+            if (board) {
+                connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+            }
+        }
+        // get list of boards from wall
+        // shove boards into inputdialog thru setcomboboxitems
+        // call dialog
+        // text value, turn back into board
+        // set up the new note
+
     }
 }
 
@@ -270,8 +303,6 @@ void MainWindow::updateCork() {
     }
     oldCork->hide();
     mainbox->removeItem(mainbox->itemAtPosition(0, 0)); //remove old cork
-
-    delete oldCork;
 
     mainbox->addWidget(currWall->currentBoard->cork,0, 0, 10, 3); //replace with new
     Cork* currCork = currWall->currentBoard->cork;

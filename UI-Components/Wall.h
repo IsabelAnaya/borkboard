@@ -18,6 +18,7 @@ public:
     Board* addBoard(Board *parent, QString name);
     Board* addSpecificBoard(Board *parent, QString name, QString color, int ID);
     Board* getBoard(int ID);
+    std::pair<Board**, bool*> getAllBoards();
     void changeBoard(int board);
     std::vector<BoardSwitchButton*>* updateTree(Board *node);
     std::vector<Note*> findAllNotesOfType(noteType type);

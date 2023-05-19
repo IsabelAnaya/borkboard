@@ -10,6 +10,7 @@
 #include <QLabel>
 #include <QSettings>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -59,6 +60,7 @@ private:
     QColorDialog *colorDia;
     QInputDialog *nameDia;
     QFileDialog *fileDia;
+    QMessageBox *questionDia;
     QLabel *wallName;
     QLabel *boardName;
     Sidebar *sidebar;
