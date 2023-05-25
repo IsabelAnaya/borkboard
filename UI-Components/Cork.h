@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QFileDialog>
 #include <stdlib.h>
 #include "Notes/Note.h"
 #include "Notes/NoteImage.h"
@@ -24,6 +25,7 @@ public:
     NoteText* addTextNote(int x, int y, int height, int width, QString c);
 
     NoteImage* addImageNote();
+    NoteImage* addImageNote(int x, int y, int height, int width, QString c);
     NoteBoardLink* addBoardLinkNote(int board, QString name);
     NoteBoardLink* addBoardLinkNote(int x, int y, int height, int width, int board, QString name);
     void moveNote(Note *note, int xPos, int yPos);
@@ -45,6 +47,7 @@ private:
 private slots:
     void newNoteSlot();
     void removeNoteSlot();
+    void changeImageSlot();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;

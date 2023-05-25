@@ -5,61 +5,59 @@
 NoteImage::NoteImage(QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
-    title = new QTextEdit(this);
-    title->setText(tr("insert title..."));
-    title->setFixedHeight(27);
-    title->setFrameStyle(QFrame::StyledPanel);
-    title->setLineWidth(2);
-
-    //img = QPixmap("C://");
+    imgPath = "";
+    img = QPixmap(imgPath);
 
     content = new QLabel(this);
-    content->setPixmap(img);
     content->setFixedHeight(80);
+    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
     lay = new QVBoxLayout;
-    lay->addWidget(title);
     lay->addWidget(content);
     setLayout(lay);
 
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
+    content->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-NoteImage::NoteImage(QString t, QString c, QWidget *parent) : Note(parent) {
+NoteImage::NoteImage(QString c, QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
-    title = new QTextEdit(this);
-    title->setText(t);
-    title->setFixedHeight(27);
-    title->setFrameStyle(QFrame::StyledPanel);
-    title->setLineWidth(2);
+    imgPath = c;
+    img = QPixmap(imgPath);
 
     content = new QLabel(this);
-    content->setText(c);
     content->setFixedHeight(80);
+    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
     lay = new QVBoxLayout;
-    lay->addWidget(title);
     lay->addWidget(content);
     setLayout(lay);
 
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
+    content->setAttribute(Qt::WA_TransparentForMouseEvents);
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void NoteImage::changeImage(QString newPath) {
+    imgPath = newPath;
+    img = QPixmap(imgPath);
+    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
 }
 
 std::string NoteImage::toText() {
-    return title->toPlainText().toStdString();
+    return imgPath.toStdString();
     //need the pixmap
 }
 
@@ -67,8 +65,12 @@ noteType NoteImage::getType() {
     return noteImage;
 }
 
+void NoteImage::resizeEvent(QResizeEvent *event) {
+    content->setFixedHeight(this->height() - 20);
+    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
+}
+
 NoteImage::~NoteImage() {
-    delete title;
     delete content;
     delete lay;
 }

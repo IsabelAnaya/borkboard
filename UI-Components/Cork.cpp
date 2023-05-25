@@ -19,6 +19,12 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
         QAction *removeAction = new QAction(tr("&Delete note"), this);
         connect(removeAction, &QAction::triggered, this, &Cork::removeNoteSlot);
         menu.addAction(removeAction);
+
+        if (selectedNote->getType() == noteImage) {
+            QAction *changeImageAction = new QAction(tr("&Change Picture"), this);
+            connect(changeImageAction, &QAction::triggered, this, &Cork::changeImageSlot);
+            menu.addAction(changeImageAction);
+        }
     }
 
     newPos = event->pos();
@@ -38,6 +44,18 @@ void Cork::removeNoteSlot() {
         if (it != notes.end()) {
             delete *it;
             notes.erase(it);
+        }
+    }
+}
+
+void Cork::changeImageSlot() {
+    if (selectedNote && selectedNote->getType() == noteImage) {
+        //ask for new pic
+        QFileDialog dialog;
+        QString newPath = dialog.getOpenFileName(this, tr("Choose Image"), "", tr("Image Files (*.png *.jpg *.bmp)"));
+
+        if (newPath != "") {
+            static_cast<NoteImage*>(selectedNote)->changeImage(newPath);
         }
     }
 }
@@ -78,6 +96,20 @@ NoteImage* Cork::addImageNote() {
 
     tempo->move(10, 10);
     notes.push_back(tempo);
+
+    return tempo;
+}
+
+NoteImage* Cork::addImageNote(int x, int y, int height, int width, QString c) {
+    //std::cout << "new note" << std::endl;
+    NoteImage *tempo = new NoteImage(c, this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(x, y);
+    notes.push_back(tempo);
+    tempo->resize(width, height);
 
     return tempo;
 }

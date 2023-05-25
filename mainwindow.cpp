@@ -61,9 +61,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     toolMenu->addAction(addTextNoteAction);
 
     //add image note
-//    QAction *addImageNoteAction = new QAction(tr("&New Image Note"), this);
-//    connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
-//    toolMenu->addAction(addImageNoteAction);
+    QAction *addImageNoteAction = new QAction(tr("&New Image Note"), this);
+    connect(addImageNoteAction, &QAction::triggered, this, &MainWindow::addImageNote);
+    toolMenu->addAction(addImageNoteAction);
 
     //add board link note
     QAction *addBoardLinkNoteAction = new QAction(tr("New Board Note"), this);
@@ -263,12 +263,6 @@ void MainWindow::addBoardLinkNote() {
                 connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
             }
         }
-        // get list of boards from wall
-        // shove boards into inputdialog thru setcomboboxitems
-        // call dialog
-        // text value, turn back into board
-        // set up the new note
-
     }
 }
 

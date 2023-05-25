@@ -71,11 +71,13 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     QString content2 = NULL;
     QString content3 = NULL;
     NoteText *text;
+    NoteImage *img;
 
     switch (type) {
-//        case noteImage:
-
-//            break;
+        case noteImage:
+            img = static_cast<NoteImage*>(note);
+            content1 = img->imgPath;
+            break;
 
         case noteText:
             text = static_cast<NoteText*>(note);
@@ -120,7 +122,6 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
         case noteText:
             qDebug() << "text";
             board->cork->addTextNote(x, y, height, width, c1);
-            qDebug() << "done";
             return true;
         case noteBoard:
             qDebug() << "boardlink";
@@ -135,7 +136,9 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
 
             return false;
         case noteImage:
-            return false;
+            qDebug() << "image" << c1;
+            board->cork->addImageNote(x, y, height, width, c1);
+            return true;
         default:
             return false;
     }
