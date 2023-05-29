@@ -5,12 +5,12 @@
 NoteImage::NoteImage(QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
-    imgPath = "";
+    imgPath = ":/images/dummy";
     img = QPixmap(imgPath);
 
     content = new QLabel(this);
-    content->setFixedHeight(80);
-    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
+    content->setFixedHeight(200);
+    content->setPixmap(img.scaled(200, content->height(), Qt::KeepAspectRatio));
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
