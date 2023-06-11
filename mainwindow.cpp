@@ -78,20 +78,36 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     toolMenu->addAction(addChildBoardAction);
 
     wallName = new QLabel("Wall: " + currWall->wallName);
+    wallName->setFixedHeight(20);
     boardName = new QLabel("Board: " + currBoard->boardName);
+    boardName->setFixedHeight(20);
+
     sidebar = new Sidebar(currWall->updateTree(currWall->root));
+    sidebar->setFixedWidth(190);
     mainbox = new QGridLayout;
+    QVBoxLayout *sidebox = new QVBoxLayout;
+    QVBoxLayout *innerScrollLay = new QVBoxLayout;
+    QScrollArea *sidebarScroll = new QScrollArea;
+    sidebarScroll->setWidget(sidebar);
+    sidebarScroll->setFixedWidth(205);
+    //sidebar->setFixedHeight(sidebarScroll->height() * 2);
+    sidebarScroll->setAlignment(Qt::AlignHCenter);
+    sidebarScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    innerScrollLay->addWidget(sidebarScroll);
+    innerScrollLay->addStretch();
+    //sidebarScroll->setFixedHeight(this->hei)
 
     mainbox->addWidget(currWall->root->cork,0, 0, 10, 3);
-    mainbox->addWidget(wallName, 0, 4, 1, 1);
-    mainbox->addWidget(boardName, 1, 4, 1, 1);
-    mainbox->addWidget(sidebar, 2, 4, 8, 1);
+    sidebox->addWidget(wallName);
+    sidebox->addWidget(boardName);
+    sidebox->addLayout(innerScrollLay);
+    mainbox->addLayout(sidebox, 0, 4);
 
     window = new QWidget();
     window->setLayout(mainbox);
     this->setCentralWidget(window);
 
-    connectButtons();
+    connectButtons(); // <---- HERE
 
     db = new DBManager();
     dh = new DataHandler(db);
@@ -272,19 +288,27 @@ Board* MainWindow::addBoard() {
     if (nameDia->exec() == true) {
         Board* child = currWall->addBoard(currBoard, nameDia->textValue());
 
-        std::vector<BoardSwitchButton*>* newButtons = currWall->updateTree(currWall->root);
+        SidebarItem* newButtons = currWall->updateTree(currWall->root);
         sidebar->replace(newButtons); //inefficient, fix this
 
+        //qDebug() << "connecting buttons";
         connectButtons();
+        //qDebug() << "returning from addboard, " << child;
         return child;
     }
     return NULL;
 }
 
 void MainWindow::connectButtons() {
-    int size = sidebar->buttons->size();
+    connectButtonsRecurse(sidebar->firstElem); // lol
+}
+
+void MainWindow::connectButtonsRecurse(SidebarItem* elem) {
+    int size = elem->directChildCount;
+    connect(elem->boardButton, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard, Qt::UniqueConnection);
+
     for (int i = 0; i < size; i++) {
-        connect(sidebar->buttons->at(i), &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard, Qt::UniqueConnection);
+        connectButtonsRecurse(elem->children.at(i));
     }
 }
 

@@ -20,6 +20,7 @@ SOURCES += \
     UI-Components/BoardSwitchButton.cpp \
     UI-Components/Cork.cpp \
     UI-Components/Sidebar.cpp \
+    UI-Components/SidebarItem.cpp \
     UI-Components/Wall.cpp \
     main.cpp \
     mainwindow.cpp
@@ -35,6 +36,7 @@ HEADERS += \
     UI-Components/BoardSwitchButton.h \
     UI-Components/Cork.h \
     UI-Components/Sidebar.h \
+    UI-Components/SidebarItem.h \
     UI-Components/Wall.h \
     mainwindow.h
 

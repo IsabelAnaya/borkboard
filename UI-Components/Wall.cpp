@@ -56,6 +56,7 @@ Board* Wall::addBoard(Board* parent, QString name) {
         return child;
 
     } else {
+        //qDebug() << "failed to create board!";
         return NULL;
     }
 }
@@ -113,20 +114,18 @@ std::vector<Note*> Wall::findAllNotesOfType(noteType type) {
     return matching;
 }
 
-std::vector<BoardSwitchButton*>* Wall::updateTree(Board *node) {
+SidebarItem* Wall::updateTree(Board *node) {
     qDebug() << "building tree, " << node->boardName;
-    BoardSwitchButton *curr = new BoardSwitchButton(node->ID, node->boardName);
-    std::vector<BoardSwitchButton*> *bits = new std::vector<BoardSwitchButton*>;
-    bits->push_back(curr);
+    BoardSwitchButton* currButton = new BoardSwitchButton(node->ID, node->boardName);
+    SidebarItem* curr = new SidebarItem(nullptr, currButton);
 
     for (unsigned int i = 0; i < node->children.size(); i++) {
-        std::vector<BoardSwitchButton*> *newEnd = updateTree(node->children[i]);
-        bits->insert(bits->end(), newEnd->begin(), newEnd->end());
-
-        //delete newEnd;
+        SidebarItem* newEnd = updateTree(node->children[i]);
+        curr->addItem(newEnd);
     }
 
-    return bits;
+    //qDebug() << "returning from updateTree..." << curr;
+    return curr;
 }
 
 Wall::~Wall() {

@@ -6,16 +6,18 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include "UI-Components/BoardSwitchButton.h"
+#include "SidebarItem.h"
 
 class Sidebar : public QFrame {
     Q_OBJECT
 
 public:
-    Sidebar(std::vector<BoardSwitchButton*> *bits);
+    Sidebar(SidebarItem *bits);
     static Sidebar retrieveSidebar();
-    void replace(std::vector<BoardSwitchButton*> *bits);
+    void replace(SidebarItem *bits);
 
-    std::vector<BoardSwitchButton*> *buttons;
+    //std::vector<BoardSwitchButton*> *buttons;
+    SidebarItem *firstElem;
 
 private:
     QVBoxLayout *layout;
