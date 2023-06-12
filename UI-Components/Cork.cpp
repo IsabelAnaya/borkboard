@@ -7,6 +7,7 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::DefaultContextMenu);
+    setStyleSheet("Cork { border: 0; background-color: white }");
 }
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {

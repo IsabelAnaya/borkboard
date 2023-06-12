@@ -3,6 +3,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     colorDia = new QColorDialog();
     nameDia = new QInputDialog();
+    selectDia = new QInputDialog();
     questionDia = new QMessageBox();
     nameDia->setLabelText("Enter new name of wall:");
     questionDia->setText("Use Pre-Existing Board?");
@@ -215,7 +216,7 @@ void MainWindow::tempedit() {
     nameDia->setLabelText("Enter new name of wall:");
     if (nameDia->exec() == true) {
         currWall->wallName = nameDia->textValue();
-        wallName->setText(nameDia->textValue());
+        wallName->setText("Wall: " + nameDia->textValue());
 
     }
 
@@ -254,11 +255,11 @@ void MainWindow::addBoardLinkNote() {
             }
         }
 
-        nameDia->setLabelText("Select board:");
-        nameDia->setComboBoxItems(items);
-        if (nameDia->exec()) {
+        selectDia->setLabelText("Select board:");
+        selectDia->setComboBoxItems(items);
+        if (selectDia->exec()) {
             qDebug() << nameDia->textValue();
-            Board* board = currWall->getBoard(items.indexOf(nameDia->textValue()));
+            Board* board = currWall->getBoard(items.indexOf(selectDia->textValue()));
             if (board) {
                 connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
             }

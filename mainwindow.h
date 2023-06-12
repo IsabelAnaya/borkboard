@@ -59,6 +59,7 @@ private:
     QMenu *toolMenu;
     QColorDialog *colorDia;
     QInputDialog *nameDia;
+    QInputDialog *selectDia;
     QFileDialog *fileDia;
     QMessageBox *questionDia;
     QLabel *wallName;
