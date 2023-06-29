@@ -10,12 +10,17 @@ public:
     NoteBoardLink(int board, QString name, QWidget *parent);
     ~NoteBoardLink();
 
+    void setName(QString name);
     noteType getType() override;
+    int getBoardID();
 
     BoardSwitchButton* button;
 
 protected:
     void resizeEvent(QResizeEvent* event);
+
+private:
+    int boardID;
 };
 
 #endif // NOTEIMAGE_H

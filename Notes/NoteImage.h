@@ -2,6 +2,7 @@
 #define NOTEIMAGE_H
 
 #include "Note.h"
+#include <QResizeEvent>
 
 class NoteImage: public Note {
 
@@ -19,7 +20,7 @@ public:
     QString imgPath;
 
 protected:
-    void resizeEvent(QResizeEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
 };
 
 #endif // NOTEIMAGE_H

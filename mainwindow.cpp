@@ -96,6 +96,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     db = new DBManager();
     dh = new DataHandler(db);
+
+    setStyleSheet("Cork { border: 0; background-color: white }");
 }
 
 void MainWindow::newWall() {
@@ -224,6 +226,17 @@ void MainWindow::tempedit() {
     if (nameDia->exec() == true) {
         this->currBoard->setName(nameDia->textValue());
         boardName->setText("Board: " + currBoard->boardName);
+
+        // update board notes
+        std::vector<Note*> candidates = currWall->findAllNotesOfType(noteBoard);
+        for (unsigned int i = 0; i < candidates.size(); i++) {
+            NoteBoardLink* candidate = static_cast<NoteBoardLink*>(candidates[i]);
+            if (candidate->getBoardID() == currBoard->ID) {
+                candidate->setName(nameDia->textValue());
+            }
+        }
+
+        // update sidebar
         sidebar->replace(currWall->updateTree(currWall->root));
         connectButtons();
     }

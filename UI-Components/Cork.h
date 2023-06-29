@@ -11,6 +11,7 @@
 #include "Notes/NoteImage.h"
 #include "Notes/NoteText.h"
 #include "Notes/NoteBoardLink.h"
+#include "Notes/NoteSticker.h"
 
 //area for notes
 class Cork : public QFrame {
@@ -28,6 +29,8 @@ public:
     NoteImage* addImageNote(int x, int y, int height, int width, QString c);
     NoteBoardLink* addBoardLinkNote(int board, QString name);
     NoteBoardLink* addBoardLinkNote(int x, int y, int height, int width, int board, QString name);
+    NoteSticker* addStickerNote(int type);
+    NoteSticker* addStickerNote(int x, int y, int height, int width, int type);
     void moveNote(Note *note, int xPos, int yPos);
     std::vector<Note*> notes;
 
@@ -43,9 +46,11 @@ private:
     int firstGrab[2] = {0, 0};
     int cornerGrabbed = 0;
     bool resizing = false;
+    bool image = false;
 
 private slots:
     void newNoteSlot();
+    void newStickerSlot();
     void removeNoteSlot();
     void changeImageSlot();
 

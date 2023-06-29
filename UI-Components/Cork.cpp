@@ -7,14 +7,16 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::DefaultContextMenu);
-    setStyleSheet("Cork { border: 0; background-color: white }");
 }
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {
     QMenu menu(this);
     QAction *addAction = new QAction(tr("&Add new note"), this);
     connect(addAction, &QAction::triggered, this, &Cork::newNoteSlot);
+    QAction *addStickerAction = new QAction(tr("&Add sticker"), this);
+    connect(addStickerAction, &QAction::triggered, this, &Cork::newStickerSlot);
     menu.addAction(addAction);
+    menu.addAction(addStickerAction);
 
     if (selectedNote) {
         QAction *removeAction = new QAction(tr("&Delete note"), this);
@@ -34,6 +36,11 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
 
 void Cork::newNoteSlot() {
     Note* note = addTextNote();
+    note->move(newPos);
+}
+
+void Cork::newStickerSlot() {
+    NoteSticker* note = addStickerNote(0);
     note->move(newPos);
 }
 
@@ -140,6 +147,33 @@ NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int height, int width, int b
     return tempo;
 }
 
+NoteSticker* Cork::addStickerNote(int type) {
+    NoteSticker *tempo = new NoteSticker(this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(20, 20);
+    notes.push_back(tempo);
+
+    tempo->setStyleSheet("* { border: 0 } *:hover { border: 10px } ");
+
+    return tempo;
+}
+
+NoteSticker* Cork::addStickerNote(int x, int y, int height, int width, int type) {
+    NoteSticker *tempo = new NoteSticker(type, this);
+    tempo->ID = maxID;
+
+    maxID++;
+
+    tempo->move(x, y);
+    notes.push_back(tempo);
+    tempo->resize(width, height);
+
+    return tempo;
+}
+
 void Cork::moveNote(Note *note, int xPos, int yPos) {
     note->move(xPos, yPos);
 }
@@ -153,6 +187,7 @@ void Cork::renumberNotes() {
 
 void Cork::mouseReleaseEvent(QMouseEvent *event) {
     movingNote = NULL;
+    image = false;
     cornerGrabbed = 0;
     initialSize[0] = 0;
     initialSize[1] = 0;
@@ -167,12 +202,24 @@ void Cork::mouseMoveEvent(QMouseEvent *event) {
             movingNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
             break;
         case(1): //top left
-            movingNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
-            movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - event->pos().y() + firstGrab[1]);
+            if (!image) {
+                movingNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
+                movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - event->pos().y() + firstGrab[1]);
+            } else {
+                int initialW = movingNote->width();
+                movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - event->pos().y() + firstGrab[1]);
+                movingNote->move(movingNote->pos().x() + (initialW - movingNote->width()), event->pos().y() - offset.y());
+            }
             break;
         case(2): //bottom left
-            movingNote->move(event->pos().x() - offset.x(), movingNote->pos().y());
-            movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+            if (!image) {
+                movingNote->move(event->pos().x() - offset.x(), movingNote->pos().y());
+                movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+            } else  {
+                int initialW = movingNote->width();
+                movingNote->resize(initialSize[0] - event->pos().x() + firstGrab[0], initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
+                movingNote->move(movingNote->pos().x() + (initialW - movingNote->width()), movingNote->pos().y());
+            }
             break;
         case(3): //bottom right
             movingNote->resize(initialSize[0] - initialPos.x() + event->pos().x() - offset.x(), initialSize[1] - initialPos.y() + event->pos().y() - offset.y());
@@ -210,6 +257,9 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         firstGrab[1] = event->pos().y();
 
         movingNote->raise();
+        if (movingNote->getType() == noteImage) {
+            image = true;
+        }
         //check if its in a grabby area. if yes, resize, else get ready to move
         if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
             std::cout << "top left" << std::endl;

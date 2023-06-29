@@ -10,6 +10,7 @@ class BoardSwitchButton : public QPushButton {
 public:
     BoardSwitchButton(int board, QString name);
     ~BoardSwitchButton();
+    void setName(QString name);
     void emitSignal();
     int boardID;
 

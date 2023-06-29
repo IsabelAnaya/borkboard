@@ -1,6 +1,4 @@
 #include "NoteImage.h"
-#include "NoteText.h"
-#include <iostream>
 
 NoteImage::NoteImage(QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
@@ -9,8 +7,7 @@ NoteImage::NoteImage(QWidget *parent) : Note(parent) {
     img = QPixmap(imgPath);
 
     content = new QLabel(this);
-    content->setFixedHeight(200);
-    content->setPixmap(img.scaled(200, content->height(), Qt::KeepAspectRatio));
+    content->setPixmap(img.scaledToHeight(200));
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
@@ -33,8 +30,8 @@ NoteImage::NoteImage(QString c, QWidget *parent) : Note(parent) {
     img = QPixmap(imgPath);
 
     content = new QLabel(this);
-    content->setFixedHeight(80);
-    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
+    content->setPixmap(img.scaledToHeight(content->height() - 20));
+    resize(content->pixmap().width() + 20, this->height());
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
@@ -53,12 +50,12 @@ NoteImage::NoteImage(QString c, QWidget *parent) : Note(parent) {
 void NoteImage::changeImage(QString newPath) {
     imgPath = newPath;
     img = QPixmap(imgPath);
-    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
+    content->setPixmap(img.scaledToHeight(content->height() - 20));
+    resize(content->pixmap().width() + 20, this->height());
 }
 
 std::string NoteImage::toText() {
     return imgPath.toStdString();
-    //need the pixmap
 }
 
 noteType NoteImage::getType() {
@@ -66,8 +63,8 @@ noteType NoteImage::getType() {
 }
 
 void NoteImage::resizeEvent(QResizeEvent *event) {
-    content->setFixedHeight(this->height() - 20);
-    content->setPixmap(img.scaled(content->width(), content->height(), Qt::KeepAspectRatio));
+    content->setPixmap(img.scaledToHeight(event->size().height() - 20));
+    resize(content->pixmap().width() + 20, event->size().height());
 }
 
 NoteImage::~NoteImage() {

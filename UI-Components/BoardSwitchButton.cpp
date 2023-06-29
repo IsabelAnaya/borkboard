@@ -7,6 +7,10 @@ BoardSwitchButton::BoardSwitchButton(int board, QString name) {
     connect(this, &QAbstractButton::released, this, &BoardSwitchButton::emitSignal);
 }
 
+void BoardSwitchButton::setName(QString name) {
+    setText(name);
+}
+
 void BoardSwitchButton::emitSignal() {
     std::cout << "trying to emit " << boardID << std::endl;
     emit boardSwitch(boardID);

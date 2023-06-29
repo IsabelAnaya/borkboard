@@ -12,6 +12,7 @@ CONFIG += c++11
 SOURCES += \
     Notes/Note.cpp \
     Notes/NoteImage.cpp \
+    Notes/NoteSticker.cpp \
     Notes/NoteText.cpp \
     Notes/NoteBoardLink.cpp \
     Tools/DBManager.cpp \
@@ -27,6 +28,7 @@ SOURCES += \
 HEADERS += \
     Notes/Note.h \
     Notes/NoteImage.h \
+    Notes/NoteSticker.h \
     Notes/NoteText.h \
     Notes/NoteBoardLink.h \
     Tools/DBManager.h \

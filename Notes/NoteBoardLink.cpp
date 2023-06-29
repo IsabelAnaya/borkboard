@@ -6,6 +6,7 @@ NoteBoardLink::NoteBoardLink(int board, QString name, QWidget *parent) : Note(pa
 
     button = new BoardSwitchButton(board, name);
     button->resize(100, 100);
+    boardID = board;
 
     lay = new QVBoxLayout;
     lay->addWidget(button);
@@ -16,6 +17,14 @@ NoteBoardLink::NoteBoardLink(int board, QString name, QWidget *parent) : Note(pa
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void NoteBoardLink::setName(QString name) {
+    button->setName(name);
+}
+
+int NoteBoardLink::getBoardID() {
+    return boardID;
 }
 
 noteType NoteBoardLink::getType() {

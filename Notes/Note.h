@@ -9,7 +9,7 @@
 #include <QVBoxLayout>
 #include <fstream>
 
-enum noteType { noteImage, noteText, noteBoard, noteFile };
+enum noteType { noteImage, noteText, noteBoard, noteFile, noteSticker };
 
 //note semi-abstract class
 class Note : public QFrame {
