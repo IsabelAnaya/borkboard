@@ -1,40 +1,27 @@
 #include "Sidebar.h"
 #include <iostream>
 
-Sidebar::Sidebar(std::vector<BoardSwitchButton*> *bits) {
-    buttons = bits;
+Sidebar::Sidebar(SidebarItem *bits) {
     layout = new QVBoxLayout;
+    firstElem = bits;
 
-    for (unsigned int i = 0; i < bits->size(); i++) {
-        layout->addWidget(buttons->at(i));
-    }
-
+    layout->addWidget(bits);
     setLayout(layout);
+    //setStyleSheet("background-color:blue");
+
+    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 }
 
-void Sidebar::replace(std::vector<BoardSwitchButton*> *bits) {
-    QLayoutItem *item;
+void Sidebar::replace(SidebarItem *bits) {
+    QLayoutItem* item = layout->takeAt((0));
+    item->widget()->hide();
+    layout->removeItem(item);
+    delete item;
 
-    //delete buttons
-    while((item = layout->takeAt(0))) {
-        if (item->widget()) {
-            item->widget()->hide();
-            delete item->widget();
-        }
-    }
-
-    delete buttons;
-    buttons = bits;
-    for (unsigned int i = 0; i < bits->size(); i++) {
-        layout->addWidget(buttons->at(i));
-    }
+    firstElem = bits;
+    layout->addWidget(bits);
+    //qDebug() << "sidebar replaced";
 }
-
-//void Sidebar::update(std::vector<BoardSwitchButton*> *bits) {
-
-//    //
-
-//}
 
 void remove(BoardSwitchButton *bits) {
 

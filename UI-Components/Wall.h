@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QQueue>
+#include "SidebarItem.h"
 
 class Wall {
 
@@ -20,7 +21,7 @@ public:
     Board* getBoard(int ID);
     std::pair<Board**, bool*> getAllBoards();
     void changeBoard(int board);
-    std::vector<BoardSwitchButton*>* updateTree(Board *node);
+    SidebarItem* updateTree(Board *node);
     std::vector<Note*> findAllNotesOfType(noteType type);
 
     Board *root;

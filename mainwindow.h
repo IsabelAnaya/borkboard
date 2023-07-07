@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QSettings>
+#include <QScrollArea>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <fstream>
@@ -53,6 +54,7 @@ private slots:
 private:
     void updateCork();
     void connectButtons();
+    void connectButtonsRecurse(SidebarItem* elem);
 
     QMenuBar *menu;
     QMenu *fileMenu;
