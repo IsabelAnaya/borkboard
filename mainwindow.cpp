@@ -83,19 +83,16 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     boardName->setFixedHeight(20);
 
     sidebar = new Sidebar(currWall->updateTree(currWall->root));
-    sidebar->setFixedWidth(190);
     mainbox = new QGridLayout;
     QVBoxLayout *sidebox = new QVBoxLayout;
     QVBoxLayout *innerScrollLay = new QVBoxLayout;
     QScrollArea *sidebarScroll = new QScrollArea;
-    sidebarScroll->setWidget(sidebar);
+
     sidebarScroll->setFixedWidth(205);
-    //sidebar->setFixedHeight(sidebarScroll->height() * 2);
     sidebarScroll->setAlignment(Qt::AlignHCenter);
-    sidebarScroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     innerScrollLay->addWidget(sidebarScroll);
-    innerScrollLay->addStretch();
-    //sidebarScroll->setFixedHeight(this->hei)
+    sidebarScroll->setWidgetResizable(true);
+    sidebarScroll->setWidget(sidebar);
 
     mainbox->addWidget(currWall->root->cork,0, 0, 10, 3);
     sidebox->addWidget(wallName);
