@@ -10,14 +10,13 @@
 class Board  {
 public:
     Board();
-    Board(QString color, QString name);
+    Board(QString name);
     ~Board();
 
     void setName(QString name);
     void setColor(QString color);
 
     Board* makeNewChild(QString boardName);
-    Board* makeNewChild(QString boardName, QString color);
 
     std::vector<Note*> findAllNotesOfType(noteType type);
 

@@ -9,6 +9,7 @@ void zeroBoolArray(bool* arr, int size) {
 
 Wall::Wall() {
     wallName = "New Wall";
+    themePath = "";
 
     root = new Board();
     root->setName("Root");
@@ -24,10 +25,11 @@ Wall::Wall() {
 }
 
 //sets the wall's name and root board
-Wall::Wall(QString name, QString bgColor, QString rootName) {
+Wall::Wall(QString name, QString theme, QString rootName) {
     wallName = name;
+    themePath = theme;
 
-    root = new Board(bgColor, rootName);
+    root = new Board(rootName);
     root->ID = 0;
     root->parent = NULL;
 
@@ -61,9 +63,9 @@ Board* Wall::addBoard(Board* parent, QString name) {
     }
 }
 
-Board* Wall::addSpecificBoard(Board* parent, QString name, QString color, int ID) {
+Board* Wall::addSpecificBoard(Board* parent, QString name, int ID) {
     if (parent && boardsStored < MAX_BOARDS && !slotFull[ID]) {
-        Board* child = parent->makeNewChild(name, color);
+        Board* child = parent->makeNewChild(name);
         child->ID = ID;
         boardMap[ID] = child;
         slotFull[ID] = true;

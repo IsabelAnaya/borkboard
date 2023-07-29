@@ -17,7 +17,7 @@ public:
     Wall(QString name, QString bgColor, QString rootName);
     ~Wall();
     Board* addBoard(Board *parent, QString name);
-    Board* addSpecificBoard(Board *parent, QString name, QString color, int ID);
+    Board* addSpecificBoard(Board *parent, QString name, int ID);
     Board* getBoard(int ID);
     std::pair<Board**, bool*> getAllBoards();
     void changeBoard(int board);
@@ -27,6 +27,7 @@ public:
     Board *root;
     Board *currentBoard;
     QString wallName;
+    QString themePath;
 
 private:
     int nextID = 1;

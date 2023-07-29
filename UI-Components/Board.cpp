@@ -8,8 +8,7 @@ Board::Board() {
     cork = new Cork();
 }
 
-Board::Board(QString color, QString name) {
-    bgColor = color;
+Board::Board(QString name) {
     boardName = name;
 
     cork = new Cork();
@@ -24,7 +23,7 @@ void Board::setName(QString boardName) {
 }
 
 Board* Board::makeNewChild(QString boardName) {
-    Board *newB = new Board("background-color:#ffffff", boardName);
+    Board *newB = new Board(boardName);
     children.push_back(newB);
     newB->parent = ID;
 
@@ -34,21 +33,13 @@ Board* Board::makeNewChild(QString boardName) {
 std::vector<Note*> Board::findAllNotesOfType(noteType type) {
     std::vector<Note*> matching;
 
-    for (int i = 0; i < cork->notes.size(); i++) {
+    for (unsigned int i = 0; i < cork->notes.size(); i++) {
         if (cork->notes[i]->getType() == type) {
             matching.push_back(cork->notes[i]);
         }
     }
 
     return matching;
-}
-
-Board* Board::makeNewChild(QString boardName, QString color) {
-    Board *newB = new Board(color, boardName);
-    children.push_back(newB);
-    newB->parent = ID;
-
-    return newB;
 }
 
 Board::~Board() {

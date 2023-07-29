@@ -19,14 +19,23 @@ bool DBManager::addWall(QString name) {
     }
 
     QSqlQuery query;
-    query.prepare("PRAGMA schema.user_version = 0");
+    query.prepare("PRAGMA schema.user_version = 1");
     query.exec();
 
-    query.prepare("CREATE TABLE boards (board_id int, name text, color text, parent int, PRIMARY KEY (board_id))");
+    query.prepare("CREATE TABLE boards (board_id int, name text, parent int, PRIMARY KEY (board_id))");
     query.exec();
 
-    query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, height int, width int, content_1 text, content_2 text, content_3 text)");
+    query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, height int, width int, color int, content_1 text, content_2 text, content_3 text)");
     query.exec();
+
+    query.prepare("CREATE TABLE config (key text, value text, PRIMARY KEY (key))");
+    query.exec();
+
+    query.prepare ("INSERT INTO config (key, value) VALUES ('name', :name), ('theme', '')");
+    query.bindValue(":name", name);
+    if (!query.exec()) {
+        qDebug() << "failed to config";
+    }
 
     return true;
 }
@@ -37,7 +46,6 @@ bool DBManager::openWall(QString name) {
         db.setDatabaseName(name);
 
         db.open();
-
         return true;
     }
 
@@ -54,16 +62,21 @@ QSqlQuery DBManager::returnQuery(QSqlQuery q) {
 }
 
 QString DBManager::getName() {
-    QString name = db.databaseName();
+    QSqlQuery getName;
+    getName.prepare("SELECT value FROM config WHERE key = \"name\"");
+    getName.exec();
+    getName.first();
+    if (getName.isValid()) {
+        return getName.value(0).toString();
+    } else {
+        QString name = db.databaseName();
 
-    std::string strName = name.toStdString();
-    int pos = strName.find('/');
-    while (strName.find('/', pos + 1) != std::string::npos) {
-        pos = strName.find('/', pos + 1);
+        std::string strName = name.toStdString();
+        int pos = strName.find('/');
+        while (strName.find('/', pos + 1) != std::string::npos) {
+            pos = strName.find('/', pos + 1);
+        }
+
+        return (name.right(name.size() - pos - 1)).left(name.size() - pos - 6);
     }
-
-    return (name.right(name.size() - pos - 1)).left(name.size() - pos - 6);
 }
-
-
-//PRAGMA schema.user_version = #;

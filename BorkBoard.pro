@@ -17,6 +17,7 @@ SOURCES += \
     Notes/NoteBoardLink.cpp \
     Tools/DBManager.cpp \
     Tools/DataHandler.cpp \
+    Tools/ThemeManager.cpp \
     UI-Components/Board.cpp \
     UI-Components/BoardSwitchButton.cpp \
     UI-Components/Cork.cpp \
@@ -34,6 +35,7 @@ HEADERS += \
     Notes/NoteBoardLink.h \
     Tools/DBManager.h \
     Tools/DataHandler.h \
+    Tools/ThemeManager.h \
     UI-Components/Board.h \
     UI-Components/BoardSwitchButton.h \
     UI-Components/Cork.h \

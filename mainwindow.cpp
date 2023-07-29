@@ -50,10 +50,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     connect(saveWallAction, &QAction::triggered, this, &MainWindow::saveWall);
     fileMenu->addAction(saveWallAction);
 
-    //temp edit
-    QAction *tempeditAction = new QAction(tr("&TEMP EDIT"), this);
-    connect(tempeditAction, &QAction::triggered, this, &MainWindow::tempedit);
-    fileMenu->addAction(tempeditAction);
+    //change theme
+    QAction *changeThemeAction = new QAction(tr("&Change Theme"), this);
+    connect(changeThemeAction, &QAction::triggered, this, &MainWindow::changeTheme);
+    fileMenu->addAction(changeThemeAction);
+
+    //change wall name
+    QAction *changeNameAction = new QAction(tr("&Change Wall Name"), this);
+    connect(changeNameAction, &QAction::triggered, this, &MainWindow::tempedit);
+    fileMenu->addAction(changeNameAction);
 
     /******* NOTES ********/
     //add text note
@@ -109,8 +114,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     db = new DBManager();
     dh = new DataHandler(db);
+    tm = new ThemeManager();
 
-    setStyleSheet("Cork { border: 0; background-color: white }");
+    setStyleSheet("Cork {  background-color: white; border: 0 }\n Sidebar { border: 0 }\n QScrollArea { border: 0 }\n");
 }
 
 void MainWindow::newWall() {
@@ -125,6 +131,7 @@ void MainWindow::newWall() {
     sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
     connectButtons(); //reconnect the sidebar
     mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
+    setStyleSheet("Cork {  background-color: white; border: 0 }\n Sidebar { border: 0 }\n QScrollArea { border: 0 }\n");
 }
 
 void MainWindow::loadWall() {
@@ -160,6 +167,7 @@ void MainWindow::loadWallByPath(const QString &filePath) {
             connect(static_cast<NoteBoardLink*>(boardlinks[i])->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard);
         }
 
+        setStyleSheet(tm->applyTheme(currWall->themePath));
         updateCurrentFile(filePath);
     }
 }
@@ -172,6 +180,14 @@ void MainWindow::saveWall() {
     }
     dh->saveWall(currWall);
     updateCurrentFile(currWall->wallName + ".bork");
+}
+
+void MainWindow::changeTheme() {
+    QString filePath = fileDia->getOpenFileName(this, tr("Select theme"), "", tr("*.borkt"));
+    if (filePath != "") {
+        currWall->themePath = filePath;
+        setStyleSheet(tm->applyTheme(currWall->themePath));
+    }
 }
 
 void MainWindow::changeBoard(int board) {

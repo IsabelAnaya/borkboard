@@ -19,6 +19,7 @@
 #include "UI-Components/Sidebar.h"
 #include "Tools/DBManager.h"
 #include "Tools/DataHandler.h"
+#include "Tools/ThemeManager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -45,6 +46,7 @@ private slots:
     void saveWall();
     void updateCurrentFile(const QString &file);
     void updateRecent();
+    void changeTheme();
     void tempedit();
     void addTextNote();
     void addImageNote();
@@ -71,6 +73,7 @@ private:
     QWidget *window;
     DBManager *db;
     DataHandler *dh;
+    ThemeManager *tm;
     QAction *recentFileAction[5];
 
 };

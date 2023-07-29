@@ -1,0 +1,34 @@
+{
+	"name": "Blue",
+	"author": "BB",
+
+	"cork": {
+		"background": {
+			"isColor": true,
+			"color": "#80a2cf"
+		}
+	},
+
+	"side": {
+		"background": {
+			"color": "#385780",
+			"text": "#ffffff"
+		},
+		"innerPanel": {
+			"color": "#80a2cf",
+			"column": "#385780"
+		}
+	},
+	
+	"notes": {
+		"color1": "#4c3b70",
+		"color2": "#3b706f",
+		"color3": "#5c703b",
+		"color4": "#70403b",
+		"color5": "#703b5d"
+	},
+
+	"button": {
+		"color": "#a7bddb"
+	}
+}

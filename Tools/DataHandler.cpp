@@ -35,6 +35,18 @@ bool DataHandler::saveWall(Wall *wall) {
         }
     }
 
+    if (wall->themePath != "") {
+        QString themeString = "UPDATE config SET value = :theme WHERE key = 'theme'";
+        QSqlQuery updateTheme;
+        updateTheme.prepare(themeString);
+        updateTheme.bindValue(":theme", wall->themePath);
+        qDebug() << wall->themePath;
+        if (!db->completeQuery(updateTheme)) {
+            return false;
+        }
+    }
+
+    qDebug() << "save successful";
     return true;
 }
 
@@ -50,12 +62,11 @@ bool DataHandler::saveBoard(Board *board) {
         }
     }
 
-    QString queryString = "INSERT INTO boards (board_id, name, color, parent) VALUES (:board, :name, :color, :parent)";
+    QString queryString = "INSERT INTO boards (board_id, name, parent) VALUES (:board, :name, :parent)";
     QSqlQuery q;
     q.prepare(queryString);
     q.bindValue(":board", board->ID);
     q.bindValue(":name", board->boardName);
-    q.bindValue(":color", board->bgColor);
     q.bindValue(":parent", board->parent);
 
     return db->completeQuery(q);
@@ -97,7 +108,7 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
             return false;
     }
 
-    QString queryString = "INSERT INTO notes (count_id, board_id, type, x, y, height, width, content_1, content_2, content_3) VALUES (:count, :board, :type, :x, :y, :height, :width, :con1, :con2, :con3)";
+    QString queryString = "INSERT INTO notes (count_id, board_id, type, x, y, height, width, color, content_1, content_2, content_3) VALUES (:count, :board, :type, :x, :y, :height, :width, 1, :con1, :con2, :con3)";
     QSqlQuery q;
     q.prepare(queryString);
     q.bindValue(":count", noteID);
@@ -152,8 +163,8 @@ Wall* DataHandler::rebuildWall() {
     q1.first();
 
     if (q1.isValid()) {
-                    //id           //name         //color        //parent
-        qDebug() << q1.value(0) << q1.value(1) << q1.value(2) << q1.value(3);
+                    //id           //name        //parent
+        qDebug() << q1.value(0) << q1.value(1) << q1.value(2);
         Wall* wall = new Wall(db->getName(), q1.value(2).toString(), q1.value(1).toString());
 
         rebuildNotes(wall->root);
@@ -169,7 +180,7 @@ Wall* DataHandler::rebuildWall() {
             QSqlQuery q2 = findBoard(currentID);
             q2.first();
             if (q2.isValid()) {
-                Board *newest = wall->addSpecificBoard(wall->getBoard(q2.value(3).toInt()), q2.value(1).toString(), q2.value(2).toString(), q2.value(0).toInt());
+                Board *newest = wall->addSpecificBoard(wall->getBoard(q2.value(2).toInt()), q2.value(1).toString(), q2.value(0).toInt());
 
                 if (newest) {
                     //make notes
@@ -179,8 +190,20 @@ Wall* DataHandler::rebuildWall() {
             }
         }
 
+        QString findTheme = "SELECT value FROM config WHERE key = 'theme'";
+        QSqlQuery q3;
+        q3.prepare(findTheme);
+        db->returnQuery(q3);
+        q3.first();
+        if (!q3.isValid()) {
+            qDebug() << "failed to get theme";
+        } else {
+            wall->themePath = q3.value(0).toString();
+        }
+
         return wall;
     } else {
+        qDebug() << "about to die";
         return NULL;
     }
 }
@@ -208,7 +231,7 @@ void DataHandler::findChildBoards(int ID, QQueue<int> *parents) {
 }
 
 void DataHandler::rebuildNotes(Board *board) {
-    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3 FROM notes WHERE board_id = :id";
+    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3, color FROM notes WHERE board_id = :id";
     QSqlQuery q;
     q.prepare(noteString);
     q.bindValue(":id", board->ID);
