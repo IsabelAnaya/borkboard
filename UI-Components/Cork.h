@@ -36,6 +36,7 @@ public:
 
 private:
     void renumberNotes();
+    void changeNoteColor(int c);
     unsigned int maxID = 0;
     Note* movingNote;
     Note* selectedNote;

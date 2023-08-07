@@ -15,7 +15,7 @@ public:
     bool saveBoard(Board *board);
     bool saveNote(Note *note, int boardID, int noteID);
     bool removeDoubles(int boardID);
-    bool addNote(Board* board, noteType type, int x, int y, int height, int width, QString c1, QString c2, QString c3);
+    bool addNote(Board* board, noteType type, int x, int y, int height, int width, QString c1, QString c2, QString c3, int color);
     Wall* rebuildWall();
     void rebuildNotes(Board *board);
     QSqlQuery findBoard(int ID);

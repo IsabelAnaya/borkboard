@@ -28,10 +28,24 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
             connect(changeImageAction, &QAction::triggered, this, &Cork::changeImageSlot);
             menu.addAction(changeImageAction);
         }
+
+        if (selectedNote->getType() != noteSticker) {
+            QAction *color1Action = new QAction(tr("&Color 1"), this);
+            connect(color1Action, &QAction::triggered, this, [this](){changeNoteColor(1);});
+            menu.addAction(color1Action);
+
+            QAction *color2Action = new QAction(tr("&Color 2"), this);
+            connect(color2Action, &QAction::triggered, this, [this](){changeNoteColor(2);});
+            menu.addAction(color2Action);
+        }
     }
 
     newPos = event->pos();
     menu.exec(event->globalPos());
+}
+
+void Cork::changeNoteColor(int c) {
+    selectedNote->setColor(c);
 }
 
 void Cork::newNoteSlot() {
@@ -243,6 +257,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         } else {
             std::cout << "right click on note" << std::endl;
             selectedNote = child;
+            qDebug() << selectedNote->color;
         }
 
     } else if (event->button() == Qt::LeftButton) {

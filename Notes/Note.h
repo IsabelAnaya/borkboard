@@ -20,12 +20,14 @@ public:
     ~Note();
 
     int getID();
+    void setColor(int c);
 
     virtual std::string toText();
     virtual noteType getType();
 
     QVBoxLayout* lay;
     int ID;
+    int color;
     //float len, wid;
 
 protected:
