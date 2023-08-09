@@ -12,11 +12,15 @@ public:
     ThemeManager();
 
     QString applyTheme(QString path);
+    QString getCurrentTheme();
 
 private:
     QColor corkColor;
     QColor sideColor;
     QColor sideInnerColor;
+    QString currentTheme;
+    QString defaultTheme;
+    QString basicThemeBits;
 };
 
 #endif // THEMEMANAGER_H

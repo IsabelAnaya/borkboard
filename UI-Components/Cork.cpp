@@ -46,6 +46,7 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
 
 void Cork::changeNoteColor(int c) {
     selectedNote->setColor(c);
+    setStyleSheet(styleSheet()); // head in my hands. this is stupid but it works
 }
 
 void Cork::newNoteSlot() {
