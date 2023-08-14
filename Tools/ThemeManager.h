@@ -13,6 +13,7 @@ public:
 
     QString applyTheme(QString path);
     QString getCurrentTheme();
+    QString getDefaultTheme();
 
 private:
     QColor corkColor;

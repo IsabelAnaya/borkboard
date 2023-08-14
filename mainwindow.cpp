@@ -116,7 +116,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     dh = new DataHandler(db);
     tm = new ThemeManager();
 
-    setStyleSheet("Cork {  background-color: white; border: 0 }\n Sidebar { border: 0 }\n QScrollArea { border: 0 }\n");
+    setStyleSheet(tm->getDefaultTheme());
 }
 
 void MainWindow::newWall() {
@@ -131,7 +131,7 @@ void MainWindow::newWall() {
     sidebar->replace(currWall->updateTree(currWall->root)); //update the sidebar
     connectButtons(); //reconnect the sidebar
     mainbox->addWidget(currWall->root->cork,0, 0, 10, 3); //re add the cork
-    setStyleSheet("Cork {  background-color: white; border: 0 }\n Sidebar { border: 0 }\n QScrollArea { border: 0 }\n");
+    setStyleSheet(tm->getDefaultTheme());
 }
 
 void MainWindow::loadWall() {

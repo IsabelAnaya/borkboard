@@ -5,6 +5,7 @@
 #include <QFrame>
 #include <QHBoxLayout>
 #include <QDebug>
+#include <QVariant>
 #include "BoardSwitchButton.h"
 
 class SidebarItem : public QWidget {

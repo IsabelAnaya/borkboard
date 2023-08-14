@@ -3,6 +3,7 @@
 SidebarItem::SidebarItem(QWidget* parent, BoardSwitchButton* board) : QWidget(parent) {
     line = new QFrame;
     line->setFrameShape(QFrame::VLine);
+    line->setProperty("class", QString::fromStdString("column"));
 
     boardButton = board;
 

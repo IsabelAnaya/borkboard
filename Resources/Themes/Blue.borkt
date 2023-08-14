@@ -5,18 +5,18 @@
 	"cork": {
 		"background": {
 			"isColor": true,
-			"color": "#80a2cf"
+			"color": "#add0ff"
 		}
 	},
 
 	"side": {
 		"background": {
-			"color": "#385780",
-			"text": "#ffffff"
+			"color": "#03306e",
+			"text": "#add0ff"
 		},
 		"innerPanel": {
-			"color": "#80a2cf",
-			"column": "#385780"
+			"color": "#add0ff",
+			"column": "#03306e"
 		}
 	},
 	
@@ -29,6 +29,7 @@
 	},
 
 	"button": {
-		"color": "#a7bddb"
+		"color": "#add0ff",
+		"text": "#03306e"
 	}
 }
