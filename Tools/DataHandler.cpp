@@ -82,17 +82,16 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     QString content2 = NULL;
     QString content3 = NULL;
     NoteText *text;
-    NoteImage *img;
 
     switch (type) {
         case noteImage:
-            img = static_cast<NoteImage*>(note);
-            content1 = img->imgPath;
+            content1 = note->toText();
             break;
 
         case noteText:
             text = static_cast<NoteText*>(note);
-            content1 = text->content->toPlainText();
+            text->toMarkdown(); //update text if needed
+            content1 = text->toText();
             break;
 
         case noteBoard:

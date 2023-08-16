@@ -48,7 +48,7 @@ NoteSticker::NoteSticker(int type, QWidget *parent) {
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-std::string NoteSticker::toText() {
+QString NoteSticker::toText() {
     return "sticker";
 }
 

@@ -253,8 +253,13 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         //ask to make new note, or delete if its over a note
         Note *child = static_cast<Note*>(childAt(event->pos()));
         if(!child) {
+            if (activeNote){
+                activeNote->toMarkdown();
+                activeNote = NULL;
+            }
             std::cout << "right click on empty" << std::endl;
             selectedNote = NULL;
+            qDebug() << "right click test";
         } else {
             std::cout << "right click on note" << std::endl;
             selectedNote = child;
@@ -263,7 +268,14 @@ void Cork::mousePressEvent(QMouseEvent *event) {
 
     } else if (event->button() == Qt::LeftButton) {
         movingNote = static_cast<Note*>(childAt(event->pos()));
-        if(!movingNote) { return; }
+        if(!movingNote) {
+            if (activeNote){
+                activeNote->toMarkdown();
+                activeNote = NULL;
+            }
+
+            return;
+        }
 
         offset = event->pos() - movingNote->pos();
         initialSize[0] = movingNote->width(); //correctly offset for resizing
@@ -276,6 +288,18 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         if (movingNote->getType() == noteImage) {
             image = true;
         }
+
+        if (movingNote->getType() == noteText) {
+            if (activeNote && activeNote != movingNote) {
+                activeNote->toMarkdown();
+            }
+            activeNote = static_cast<NoteText*>(movingNote);
+            activeNote->toPlaintext();
+        } else if (activeNote){
+            activeNote->toMarkdown();
+            activeNote = NULL;
+        }
+
         //check if its in a grabby area. if yes, resize, else get ready to move
         if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
             std::cout << "top left" << std::endl;

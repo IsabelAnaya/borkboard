@@ -22,7 +22,7 @@ public:
     int getID();
     void setColor(int c);
 
-    virtual std::string toText();
+    virtual QString toText();
     virtual noteType getType();
 
     QVBoxLayout* lay;

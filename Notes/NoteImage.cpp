@@ -54,8 +54,8 @@ void NoteImage::changeImage(QString newPath) {
     resize(content->pixmap().width() + 20, this->height());
 }
 
-std::string NoteImage::toText() {
-    return imgPath.toStdString();
+QString NoteImage::toText() {
+    return imgPath;
 }
 
 noteType NoteImage::getType() {

@@ -12,7 +12,7 @@ public:
     ~NoteImage();
 
     void changeImage(QString newPath);
-    std::string toText() override;
+    QString toText() override;
     noteType getType() override;
 
     QPixmap img;

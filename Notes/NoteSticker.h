@@ -10,7 +10,7 @@ public:
     NoteSticker(int type, QWidget *parent = nullptr);
     ~NoteSticker();
 
-    std::string toText() override;
+    QString toText() override;
     noteType getType() override;
 
 private:

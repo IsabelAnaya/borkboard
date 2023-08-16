@@ -1,10 +1,11 @@
 #include "Note.h"
 
 Note::Note(QWidget *parent) : QFrame(parent) {
+    color = 1;
     this->setProperty("class", "color-1");
 }
 
-std::string Note::toText() {
+QString Note::toText() {
     return "hello";
 }
 

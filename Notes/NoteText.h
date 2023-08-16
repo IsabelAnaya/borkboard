@@ -10,11 +10,14 @@ public:
     NoteText(QString c, QWidget *parent);
     ~NoteText();
 
-    std::string toText() override;
+    QString toText() override;
     noteType getType() override;
+    void toMarkdown();
+    void toPlaintext();
 
     //QTextEdit* title;
     QTextEdit* content;
+    QString text;
 };
 
 #endif // NOTETEXT_H

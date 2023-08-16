@@ -25,6 +25,8 @@ NoteText::NoteText(QWidget *parent) : Note(parent) {
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
     this->resize(200, 150);
+    content->setAttribute(Qt::WA_TransparentForMouseEvents);
+    toMarkdown();
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
@@ -42,6 +44,8 @@ NoteText::NoteText(QString c, QWidget *parent) : Note(parent) {
     content = new QTextEdit(this);
     content->setText(c);
     //content->setFixedHeight(80);
+
+    content->setPlainText(content->toPlainText());
     content->setFrameStyle(QFrame::StyledPanel);
     content->setLineWidth(2);
 
@@ -53,13 +57,28 @@ NoteText::NoteText(QString c, QWidget *parent) : Note(parent) {
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
     this->resize(100, 200);
+    content->setAttribute(Qt::WA_TransparentForMouseEvents);
+    toMarkdown();
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-std::string NoteText::toText() {
-    return content->toPlainText().toStdString();
+void NoteText::toMarkdown() {
+    text = content->toPlainText();
+    content->setMarkdown(content->toMarkdown());
+    content->setAttribute(Qt::WA_TransparentForMouseEvents);
+    content->setCursorWidth(0);
+}
+
+void NoteText::toPlaintext() {
+    content->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+    content->setText(text);
+    content->setCursorWidth(1);
+}
+
+QString NoteText::toText() {
+    return text;
 }
 
 noteType NoteText::getType() {

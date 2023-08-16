@@ -38,8 +38,9 @@ private:
     void renumberNotes();
     void changeNoteColor(int c);
     unsigned int maxID = 0;
-    Note* movingNote;
-    Note* selectedNote;
+    Note* movingNote = NULL;
+    Note* selectedNote = NULL;
+    NoteText* activeNote = NULL;
     QPoint offset;
     QPoint initialPos;
     QPoint newPos;
@@ -48,6 +49,7 @@ private:
     int cornerGrabbed = 0;
     bool resizing = false;
     bool image = false;
+    bool text = false;
 
 private slots:
     void newNoteSlot();
