@@ -90,7 +90,9 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
 
         case noteText:
             text = static_cast<NoteText*>(note);
-            text->toMarkdown(); //update text if needed
+            if (text->editable) {
+                text->toMarkdown(); //update text if needed
+            }
             content1 = text->toText();
             break;
 

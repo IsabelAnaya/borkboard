@@ -18,6 +18,8 @@ public:
     //QTextEdit* title;
     QTextEdit* content;
     QString text;
+
+    bool editable = false;
 };
 
 #endif // NOTETEXT_H

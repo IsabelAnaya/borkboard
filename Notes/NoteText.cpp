@@ -65,6 +65,7 @@ NoteText::NoteText(QString c, QWidget *parent) : Note(parent) {
 }
 
 void NoteText::toMarkdown() {
+    editable = false;
     text = content->toPlainText();
     content->setMarkdown(content->toMarkdown());
     content->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -72,6 +73,7 @@ void NoteText::toMarkdown() {
 }
 
 void NoteText::toPlaintext() {
+    editable = true;
     content->setAttribute(Qt::WA_TransparentForMouseEvents, false);
     content->setText(text);
     content->setCursorWidth(1);

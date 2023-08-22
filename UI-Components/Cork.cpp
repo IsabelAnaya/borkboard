@@ -37,6 +37,18 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
             QAction *color2Action = new QAction(tr("&Color 2"), this);
             connect(color2Action, &QAction::triggered, this, [this](){changeNoteColor(2);});
             menu.addAction(color2Action);
+
+            QAction *color3Action = new QAction(tr("&Color 3"), this);
+            connect(color3Action, &QAction::triggered, this, [this](){changeNoteColor(3);});
+            menu.addAction(color3Action);
+
+            QAction *color4Action = new QAction(tr("&Color 4"), this);
+            connect(color4Action, &QAction::triggered, this, [this](){changeNoteColor(4);});
+            menu.addAction(color4Action);
+
+            QAction *color5Action = new QAction(tr("&Color 5"), this);
+            connect(color5Action, &QAction::triggered, this, [this](){changeNoteColor(5);});
+            menu.addAction(color5Action);
         }
     }
 
