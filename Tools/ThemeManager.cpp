@@ -35,6 +35,8 @@ QString ThemeManager::applyTheme(QString path) {
             + "Sidebar { background-color: " + (theme["side"]["innerPanel"]["color"]).toString() + "; border: 0; border-radius: 10px }\n"
             + "QScrollArea { background-color: " + (theme["side"]["innerPanel"]["color"]).toString() + "; border: 0px; border-radius: 10px }\n"
             + "Note { background-color: " +  (theme["side"]["background"]["color"]).toString() + "; border: 0px; border-radius: 10px} \n"
+            //+ "QPushButton { background-color: red; color: blue } \n"
+            + ".side-text { color: " + (theme["side"]["background"]["text"]).toString() + " } \n"
             + ".column { color: " + (theme["side"]["innerPanel"]["column"]).toString() + " } \n"
             + ".color-1 { background-color: " +  (theme["notes"]["color1"]).toString() + "; border: 0px; border-radius: 10px } \n"
             + ".color-2 { background-color: " +  (theme["notes"]["color2"]).toString() + "; border: 0px; border-radius: 10px } \n"

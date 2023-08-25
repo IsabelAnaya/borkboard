@@ -85,8 +85,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     wallName = new QLabel("Wall: " + currWall->wallName);
     wallName->setFixedHeight(20);
+    wallName->setProperty("class", "side-text");
     boardName = new QLabel("Board: " + currBoard->boardName);
     boardName->setFixedHeight(20);
+    boardName->setProperty("class", "side-text");
 
     sidebar = new Sidebar(currWall->updateTree(currWall->root));
     mainbox = new QGridLayout;
