@@ -222,9 +222,14 @@ void MainWindow::updateCurrentFile(const QString &file) {
 }
 
 void MainWindow::updateRecent() {
-    qDebug() << "updateRecent";
     QSettings settings("beldog", "Bork Board");
     QStringList files = settings.value("recentfiles").toStringList();
+    qDebug() << "updateRecent" << files.length();
+    for (int i = files.length() - 1; i >= 0; i--) {
+        if (!QFile::exists(files[i])) {
+            files.removeAt(i);
+        }
+    }
     int recentFileCount = qMin(files.size(), 5);
     qDebug() << files;
     for (int i = 0; i < recentFileCount; i++) {

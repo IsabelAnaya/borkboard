@@ -26,6 +26,7 @@ bool DataHandler::saveWall(Wall *wall) {
     while (!boards.isEmpty()) {
         Board* currBoard = boards.dequeue();
         if (!saveBoard(currBoard)) {
+            qDebug() << "critical cringe moment";
             return false;
         }
 
@@ -100,6 +101,10 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
             content1 = QString::number(static_cast<NoteBoardLink*>(note)->button->boardID);
             break;
 
+        case noteSticker:
+            content1 = "1"; //change this later
+            break;
+
 //        case noteFile:
 
 //            break;
@@ -155,6 +160,10 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
             qDebug() << "image" << c1;
             note = board->cork->addImageNote(x, y, height, width, c1);
             note->setColor(color);
+            return true;
+        case noteSticker:
+            qDebug() << "sticker";
+            note = board->cork->addStickerNote(x, y, height, width, c1.toInt());
             return true;
         default:
             return false;

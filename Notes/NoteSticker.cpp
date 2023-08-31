@@ -19,12 +19,13 @@ NoteSticker::NoteSticker(QWidget *parent) : Note(parent) {
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
     content->setAttribute(Qt::WA_TransparentForMouseEvents);
+    this->setProperty("class", "sticker");
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
 }
 
-NoteSticker::NoteSticker(int type, QWidget *parent) {
+NoteSticker::NoteSticker(int type, QWidget *parent) : Note(parent) {
     setMinimumSize(20, 20);
 
     stickerPath = ":/images/star";
@@ -43,6 +44,7 @@ NoteSticker::NoteSticker(int type, QWidget *parent) {
     this->setFrameStyle(QFrame::StyledPanel);
     this->setLineWidth(2);
     content->setAttribute(Qt::WA_TransparentForMouseEvents);
+    this->setProperty("class", "sticker");
 
     show();
     setAttribute(Qt::WA_DeleteOnClose);
