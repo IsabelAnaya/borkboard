@@ -7,53 +7,88 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::DefaultContextMenu);
+
+    menu = new QMenu(this);
+    /************** NOTES **************/
+    addNoteMenu = menu->addMenu("Create New Note");
+
+    QAction *addTextAction = new QAction(tr("&Add Text Note"), this);
+    connect(addTextAction, &QAction::triggered, this, &Cork::newTextSlot);
+    addNoteMenu->addAction(addTextAction);
+
+    QAction *addImageAction = new QAction(tr("&Add Image Note"), this);
+    connect(addImageAction, &QAction::triggered, this, &Cork::newImageSlot);
+    addNoteMenu->addAction(addImageAction);
+
+    QAction *addBoardNoteAction = new QAction(tr("&Add Board Note"), this);
+    connect(addBoardNoteAction, &QAction::triggered, this, &Cork::newBoardNoteSlot);
+    addNoteMenu->addAction(addBoardNoteAction);
+
+    QAction *addStickerAction = new QAction(tr("&Add sticker"), this);
+    connect(addStickerAction, &QAction::triggered, this, &Cork::newStickerSlot);
+    addNoteMenu->addAction(addStickerAction);
+
+    /************** COLORS **************/
+    changeColorMenu = menu->addMenu("Change Note's Color");
+
+    QAction *color1Action = new QAction(tr("&Color 1"), this);
+    connect(color1Action, &QAction::triggered, this, [this](){changeNoteColor(1);});
+    changeColorMenu->addAction(color1Action);
+
+    QAction *color2Action = new QAction(tr("&Color 2"), this);
+    connect(color2Action, &QAction::triggered, this, [this](){changeNoteColor(2);});
+    changeColorMenu->addAction(color2Action);
+
+    QAction *color3Action = new QAction(tr("&Color 3"), this);
+    connect(color3Action, &QAction::triggered, this, [this](){changeNoteColor(3);});
+    changeColorMenu->addAction(color3Action);
+
+    QAction *color4Action = new QAction(tr("&Color 4"), this);
+    connect(color4Action, &QAction::triggered, this, [this](){changeNoteColor(4);});
+    changeColorMenu->addAction(color4Action);
+
+    QAction *color5Action = new QAction(tr("&Color 5"), this);
+    connect(color5Action, &QAction::triggered, this, [this](){changeNoteColor(5);});
+    changeColorMenu->addAction(color5Action);
+
+    changeColorMenu->menuAction()->setVisible(false);
+
+    /*************** EXTRA **************/
+    removeAction = new QAction(tr("&Delete note"), this);
+    connect(removeAction, &QAction::triggered, this, &Cork::removeNoteSlot);
+    menu->addAction(removeAction);
+    removeAction->setVisible(false);
+
+    changeImageAction = new QAction(tr("&Change Picture"), this);
+    connect(changeImageAction, &QAction::triggered, this, &Cork::changeImageSlot);
+    menu->addAction(changeImageAction);
+    changeImageAction->setVisible(false);
+
 }
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {
-    QMenu menu(this);
-    QAction *addAction = new QAction(tr("&Add new note"), this);
-    connect(addAction, &QAction::triggered, this, &Cork::newNoteSlot);
-    QAction *addStickerAction = new QAction(tr("&Add sticker"), this);
-    connect(addStickerAction, &QAction::triggered, this, &Cork::newStickerSlot);
-    menu.addAction(addAction);
-    menu.addAction(addStickerAction);
-
     if (selectedNote) {
-        QAction *removeAction = new QAction(tr("&Delete note"), this);
-        connect(removeAction, &QAction::triggered, this, &Cork::removeNoteSlot);
-        menu.addAction(removeAction);
+        removeAction->setVisible(true);
 
         if (selectedNote->getType() == noteImage) {
-            QAction *changeImageAction = new QAction(tr("&Change Picture"), this);
-            connect(changeImageAction, &QAction::triggered, this, &Cork::changeImageSlot);
-            menu.addAction(changeImageAction);
+            changeImageAction->setVisible(true);
+        } else {
+            changeImageAction->setVisible(false);
         }
 
         if (selectedNote->getType() != noteSticker) {
-            QAction *color1Action = new QAction(tr("&Color 1"), this);
-            connect(color1Action, &QAction::triggered, this, [this](){changeNoteColor(1);});
-            menu.addAction(color1Action);
-
-            QAction *color2Action = new QAction(tr("&Color 2"), this);
-            connect(color2Action, &QAction::triggered, this, [this](){changeNoteColor(2);});
-            menu.addAction(color2Action);
-
-            QAction *color3Action = new QAction(tr("&Color 3"), this);
-            connect(color3Action, &QAction::triggered, this, [this](){changeNoteColor(3);});
-            menu.addAction(color3Action);
-
-            QAction *color4Action = new QAction(tr("&Color 4"), this);
-            connect(color4Action, &QAction::triggered, this, [this](){changeNoteColor(4);});
-            menu.addAction(color4Action);
-
-            QAction *color5Action = new QAction(tr("&Color 5"), this);
-            connect(color5Action, &QAction::triggered, this, [this](){changeNoteColor(5);});
-            menu.addAction(color5Action);
+            changeColorMenu->menuAction()->setVisible(true);
+        } else {
+            changeColorMenu->menuAction()->setVisible(false);
         }
+    } else {
+        removeAction->setVisible(false);
+        changeColorMenu->menuAction()->setVisible(false);
+        changeImageAction->setVisible(false);
     }
 
     newPos = event->pos();
-    menu.exec(event->globalPos());
+    menu->exec(event->globalPos());
 }
 
 void Cork::changeNoteColor(int c) {
@@ -61,8 +96,18 @@ void Cork::changeNoteColor(int c) {
     setStyleSheet(styleSheet()); // head in my hands. this is stupid but it works
 }
 
-void Cork::newNoteSlot() {
+void Cork::newTextSlot() {
     Note* note = addTextNote();
+    note->move(newPos);
+}
+
+void Cork::newImageSlot() {
+    Note* note = addImageNote();
+    note->move(newPos);
+}
+
+void Cork::newBoardNoteSlot() {
+    Note* note = addBoardLinkNote(0, "*temp");
     note->move(newPos);
 }
 
@@ -346,5 +391,6 @@ Cork::~Cork() {
         delete notes[i];
     }
 
-    //delete addAction;
+    delete menu;
+    //TODO: delete all actions and submenus
 }

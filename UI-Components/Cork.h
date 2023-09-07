@@ -50,9 +50,16 @@ private:
     bool resizing = false;
     bool image = false;
     bool text = false;
+    QMenu* menu;
+    QMenu* addNoteMenu;
+    QMenu* changeColorMenu;
+    QAction* removeAction; //needs to be here so it can be switched on
+    QAction* changeImageAction;
 
 private slots:
-    void newNoteSlot();
+    void newTextSlot();
+    void newImageSlot();
+    void newBoardNoteSlot();
     void newStickerSlot();
     void removeNoteSlot();
     void changeImageSlot();
