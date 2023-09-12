@@ -118,9 +118,13 @@ void Cork::newStickerSlot() {
 
 void Cork::removeNoteSlot() {
     if (selectedNote) {
-        int id = selectedNote->getID();
-        auto it = std::find_if(notes.begin(), notes.end(), [&id](Note* note){ return note->getID() == id; });
+        int id = selectedNote->ID;
+        auto iti = std::find(order.begin(), order.end(), id);
+        if (iti != order.end()) {
+            order.erase(iti);
+        }
 
+        auto it = std::find_if(notes.begin(), notes.end(), [&id](Note* note){ return note->getID() == id; });
         if (it != notes.end()) {
             delete *it;
             notes.erase(it);
@@ -149,6 +153,7 @@ NoteText* Cork::addTextNote() {
 
     tempo->move(10, 10);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
 
     return tempo;
 }
@@ -162,6 +167,7 @@ NoteText* Cork::addTextNote(int x, int y, int height, int width, QString c) {
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
     tempo->resize(width, height);
 
     return tempo;
@@ -176,6 +182,7 @@ NoteImage* Cork::addImageNote() {
 
     tempo->move(10, 10);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
 
     return tempo;
 }
@@ -189,6 +196,7 @@ NoteImage* Cork::addImageNote(int x, int y, int height, int width, QString c) {
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
     tempo->resize(width, height);
 
     return tempo;
@@ -202,6 +210,7 @@ NoteBoardLink* Cork::addBoardLinkNote(int board, QString name) {
 
     tempo->move(20, 20);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
 
     return tempo;
 }
@@ -214,6 +223,7 @@ NoteBoardLink* Cork::addBoardLinkNote(int x, int y, int height, int width, int b
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
     tempo->resize(width, height);
 
     return tempo;
@@ -227,6 +237,7 @@ NoteSticker* Cork::addStickerNote(int type) {
 
     tempo->move(20, 20);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
 
     tempo->setStyleSheet("* { border: 0 } *:hover { border: 10px } ");
 
@@ -241,6 +252,7 @@ NoteSticker* Cork::addStickerNote(int x, int y, int height, int width, int type)
 
     tempo->move(x, y);
     notes.push_back(tempo);
+    order.insert(order.begin(), tempo->ID);
     tempo->resize(width, height);
 
     return tempo;
@@ -251,6 +263,7 @@ void Cork::moveNote(Note *note, int xPos, int yPos) {
 }
 
 void Cork::renumberNotes() {
+    qDebug() << "incompatible with order vector!";
     maxID = notes.size();
     for (int i = 0; i < int(maxID); i++) {
         notes[i]->ID = i;
@@ -342,6 +355,13 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         firstGrab[1] = event->pos().y();
 
         movingNote->raise();
+        int id = movingNote->ID;
+        auto it = std::find(order.begin(), order.end(), id);
+        if (it != order.end()) {
+            order.erase(it);
+            order.insert(order.begin(), id);
+        }
+
         if (movingNote->getType() == noteImage) {
             image = true;
         }

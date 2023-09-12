@@ -30,7 +30,7 @@ bool DataHandler::saveWall(Wall *wall) {
             return false;
         }
 
-        qDebug() << "children " << currBoard->children.size();
+        //qDebug() << "children " << currBoard->children.size();
         for (unsigned int i = 0; i < currBoard->children.size(); i++) {
             boards.enqueue(currBoard->children[i]);
         }
@@ -41,7 +41,7 @@ bool DataHandler::saveWall(Wall *wall) {
         QSqlQuery updateTheme;
         updateTheme.prepare(themeString);
         updateTheme.bindValue(":theme", wall->themePath);
-        qDebug() << wall->themePath;
+        //qDebug() << wall->themePath;
         if (!db->completeQuery(updateTheme)) {
             return false;
         }
@@ -58,7 +58,8 @@ bool DataHandler::saveBoard(Board *board) {
     }
 
     for (unsigned int i = 0; i < board->cork->notes.size(); i++) {
-        if (!saveNote(board->cork->notes[i], board->ID, i)) {
+        if (!saveNote(board->cork->notes[i], board->cork->order, board->ID, i)) {
+            qDebug() << "break on saving note " << i;
             return false;
         }
     }
@@ -73,7 +74,7 @@ bool DataHandler::saveBoard(Board *board) {
     return db->completeQuery(q);
 }
 
-bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
+bool DataHandler::saveNote(Note *note, std::vector<int> order, int boardID, int noteID) {
     noteType type = note->getType();
     int x = note->pos().x();
     int y = note->pos().y();
@@ -83,6 +84,14 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     QString content2 = NULL;
     QString content3 = NULL;
     NoteText *text;
+    int id = note->ID;
+    int noteOrder = -1;
+    auto it = std::find(order.begin(), order.end(), id);
+    if (it != order.end()) {
+        noteOrder = it - order.begin();
+    }
+    qDebug() << noteOrder;
+
 
     switch (type) {
         case noteImage:
@@ -114,11 +123,13 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
             return false;
     }
 
-    QString queryString = "INSERT INTO notes (count_id, board_id, type, x, y, height, width, color, content_1, content_2, content_3) VALUES (:count, :board, :type, :x, :y, :height, :width, :color, :con1, :con2, :con3)";
+    qDebug() << db->getName();
+    QString queryString = "INSERT INTO notes (count_id, board_id, ordered, type, x, y, height, width, color, content_1, content_2, content_3) VALUES (:count, :board, :ord, :type, :x, :y, :height, :width, :color, :con1, :con2, :con3)";
     QSqlQuery q;
     q.prepare(queryString);
     q.bindValue(":count", noteID);
     q.bindValue(":board", boardID);
+    q.bindValue(":ord", noteOrder);
     q.bindValue(":type", type);
     q.bindValue(":x", x);
     q.bindValue(":y", y);
@@ -129,6 +140,7 @@ bool DataHandler::saveNote(Note *note, int boardID, int noteID) {
     q.bindValue(":con3", content3);
     q.bindValue(":color", note->color);
 
+    //qDebug() << "got this far";
     return db->completeQuery(q);
 }
 
@@ -246,7 +258,7 @@ void DataHandler::findChildBoards(int ID, QQueue<int> *parents) {
 }
 
 void DataHandler::rebuildNotes(Board *board) {
-    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3, color FROM notes WHERE board_id = :id";
+    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3, color, ordered FROM notes WHERE board_id = :id ORDER BY ordered DESC";
     QSqlQuery q;
     q.prepare(noteString);
     q.bindValue(":id", board->ID);

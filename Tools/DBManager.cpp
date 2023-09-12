@@ -11,7 +11,6 @@ bool DBManager::addWall(QString name) {
         qDebug() << "file exists";
     }
 
-
     if(!db.open()) {
         qDebug() << "database connection failure";
     } else {
@@ -25,7 +24,7 @@ bool DBManager::addWall(QString name) {
     query.prepare("CREATE TABLE boards (board_id int, name text, parent int, PRIMARY KEY (board_id))");
     query.exec();
 
-    query.prepare("CREATE TABLE notes (count_id int, board_id int, type int, x int, y int, height int, width int, color int, content_1 text, content_2 text, content_3 text)");
+    query.prepare("CREATE TABLE notes (count_id int, board_id int, ordered int, type int, x int, y int, height int, width int, color int, content_1 text, content_2 text, content_3 text)");
     query.exec();
 
     query.prepare("CREATE TABLE config (key text, value text, PRIMARY KEY (key))");
@@ -33,9 +32,7 @@ bool DBManager::addWall(QString name) {
 
     query.prepare ("INSERT INTO config (key, value) VALUES ('name', :name), ('theme', '')");
     query.bindValue(":name", name);
-    if (!query.exec()) {
-        qDebug() << "failed to config";
-    }
+    query.exec();
 
     return true;
 }
