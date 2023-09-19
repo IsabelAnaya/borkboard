@@ -57,6 +57,10 @@ private:
     QMenu* changeColorMenu;
     QAction* removeAction; //needs to be here so it can be switched on
     QAction* changeImageAction;
+    QAction* toFrontAction;
+    QAction* toBackAction;
+    QAction* backOneAction;
+    QAction* forwardOneAction;
 
 private slots:
     void newTextSlot();
@@ -65,6 +69,10 @@ private slots:
     void newStickerSlot();
     void removeNoteSlot();
     void changeImageSlot();
+    void toFrontSlot();
+    void toBackSlot();
+    void forwardOneSlot();
+    void backOneSlot();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;

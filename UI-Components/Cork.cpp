@@ -64,11 +64,35 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     menu->addAction(changeImageAction);
     changeImageAction->setVisible(false);
 
+    /*************** LAYERS **************/
+    toFrontAction = new QAction(tr("&Send to Front"), this);
+    connect(toFrontAction, &QAction::triggered, this, &Cork::toFrontSlot);
+    menu->addAction(toFrontAction);
+    toFrontAction->setVisible(false);
+
+    forwardOneAction = new QAction(tr("&Send Forward 1 Layer"), this);
+    connect(forwardOneAction, &QAction::triggered, this, &Cork::forwardOneSlot);
+    menu->addAction(forwardOneAction);
+    forwardOneAction->setVisible(false);
+
+    toBackAction = new QAction(tr("&Send to Back"), this);
+    connect(toBackAction, &QAction::triggered, this, &Cork::toBackSlot);
+    menu->addAction(toBackAction);
+    toBackAction->setVisible(false);
+
+    backOneAction = new QAction(tr("&Send Back 1 Layer"), this);
+    connect(backOneAction, &QAction::triggered, this, &Cork::backOneSlot);
+    menu->addAction(backOneAction);
+    backOneAction->setVisible(false);
 }
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {
     if (selectedNote) {
         removeAction->setVisible(true);
+        toFrontAction->setVisible(true);
+        forwardOneAction->setVisible(true);
+        toBackAction->setVisible(true);
+        backOneAction->setVisible(true);
 
         if (selectedNote->getType() == noteImage) {
             changeImageAction->setVisible(true);
@@ -85,6 +109,11 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
         removeAction->setVisible(false);
         changeColorMenu->menuAction()->setVisible(false);
         changeImageAction->setVisible(false);
+
+        toFrontAction->setVisible(false);
+        forwardOneAction->setVisible(false);
+        toBackAction->setVisible(false);
+        backOneAction->setVisible(false);
     }
 
     newPos = event->pos();
@@ -258,6 +287,46 @@ NoteSticker* Cork::addStickerNote(int x, int y, int height, int width, int type)
     return tempo;
 }
 
+void Cork::toFrontSlot() {
+    selectedNote->raise();
+    int id = selectedNote->ID;
+    auto it = std::find(order.begin(), order.end(), id);
+    if (it != order.end()) {
+        order.erase(it);
+        order.insert(order.begin(), id);
+    }
+}
+
+void Cork::toBackSlot() {
+    selectedNote->lower();
+    int id = selectedNote->ID;
+    auto it = std::find(order.begin(), order.end(), id);
+    if (it != order.end()) {
+        order.erase(it);
+        order.insert(order.end(), id);
+    }
+}
+
+/***WIP***/
+void Cork::forwardOneSlot() {
+    int id = selectedNote->ID;
+    auto it = std::find(order.begin(), order.end(), id);
+//    if (it != order.end() && it != order.begin()) {
+//        order.erase(it);
+//        order.insert(it - 1, id);
+//    }
+}
+
+void Cork::backOneSlot() {
+    int id = selectedNote->ID;
+    auto it = std::find(order.begin(), order.end(), id);
+//    if (it != order.end() && it != order.end() - 1) {
+//        order.insert(it + 1, id);
+//        order.erase(it);
+
+//    }
+}
+
 void Cork::moveNote(Note *note, int xPos, int yPos) {
     note->move(xPos, yPos);
 }
@@ -353,14 +422,6 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         initialPos = movingNote->pos();
         firstGrab[0] = event->pos().x();
         firstGrab[1] = event->pos().y();
-
-        movingNote->raise();
-        int id = movingNote->ID;
-        auto it = std::find(order.begin(), order.end(), id);
-        if (it != order.end()) {
-            order.erase(it);
-            order.insert(order.begin(), id);
-        }
 
         if (movingNote->getType() == noteImage) {
             image = true;
