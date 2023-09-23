@@ -5,8 +5,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     nameDia = new QInputDialog();
     selectDia = new QInputDialog();
     questionDia = new QMessageBox();
+    confirmDelete = new QMessageBox();
     nameDia->setLabelText("Enter new name of wall:");
     questionDia->setText("Use Pre-Existing Board?");
+    confirmDelete->setText("Delete this note?");
+    confirmDelete->addButton("Yes", QMessageBox::YesRole);
+    confirmDelete->addButton("No", QMessageBox::NoRole);
     questionDia->addButton("Yes", QMessageBox::YesRole);
     questionDia->addButton("No", QMessageBox::NoRole);
 
@@ -16,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     currWall = new Wall();
     currBoard = currWall->root;
+    currBoard->cork->confirmDelete = confirmDelete;
 
     this->setWindowTitle("Bork Board");
 
@@ -156,6 +161,7 @@ void MainWindow::loadWallByPath(const QString &filePath) {
         db->openWall(filePath); //opening the file
         currWall = dh->rebuildWall(); //getting the wall ready
         currBoard = currWall->root;
+        currBoard->cork->confirmDelete = confirmDelete;
 
         wallName->setText("Wall: " + currWall->wallName); //update the wall name
         boardName->setText("Board: " + currBoard->boardName);
@@ -197,6 +203,7 @@ void MainWindow::changeBoard(int board) {
     if (board != currWall->currentBoard->ID) {
         currWall->changeBoard(board);
         currBoard = currWall->currentBoard;
+        currBoard->cork->confirmDelete = confirmDelete;
         boardName->setText("Board: " + currBoard->boardName);
         updateCork();
     } else {

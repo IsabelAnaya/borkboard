@@ -66,6 +66,7 @@ private:
     QInputDialog *selectDia;
     QFileDialog *fileDia;
     QMessageBox *questionDia;
+    QMessageBox *confirmDelete;
     QLabel *wallName;
     QLabel *boardName;
     Sidebar *sidebar;

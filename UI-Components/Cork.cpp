@@ -147,16 +147,18 @@ void Cork::newStickerSlot() {
 
 void Cork::removeNoteSlot() {
     if (selectedNote) {
-        int id = selectedNote->ID;
-        auto iti = std::find(order.begin(), order.end(), id);
-        if (iti != order.end()) {
-            order.erase(iti);
-        }
+        if (!confirmDelete->exec()) {
+            int id = selectedNote->ID;
+            auto iti = std::find(order.begin(), order.end(), id);
+            if (iti != order.end()) {
+                order.erase(iti);
+            }
 
-        auto it = std::find_if(notes.begin(), notes.end(), [&id](Note* note){ return note->getID() == id; });
-        if (it != notes.end()) {
-            delete *it;
-            notes.erase(it);
+            auto it = std::find_if(notes.begin(), notes.end(), [&id](Note* note){ return note->getID() == id; });
+            if (it != notes.end()) {
+                delete *it;
+                notes.erase(it);
+            }
         }
     }
 }

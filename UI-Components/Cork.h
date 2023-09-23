@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <stdlib.h>
 #include "Notes/Note.h"
 #include "Notes/NoteImage.h"
@@ -33,6 +34,7 @@ public:
     NoteSticker* addStickerNote(int x, int y, int height, int width, int type);
     void moveNote(Note *note, int xPos, int yPos);
 
+    QMessageBox* confirmDelete;
     std::vector<Note*> notes;
     std::vector<int> order;
 
