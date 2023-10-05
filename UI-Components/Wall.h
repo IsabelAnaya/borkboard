@@ -23,6 +23,7 @@ public:
     void changeBoard(int board);
     SidebarItem* updateTree(Board *node);
     std::vector<Note*> findAllNotesOfType(noteType type);
+    void deleteBoard(int ID);
 
     Board *root;
     Board *currentBoard;

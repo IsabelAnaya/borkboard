@@ -44,6 +44,7 @@ private slots:
     void loadWallByPath(const QString &filepath);
     void loadWall();
     void saveWall();
+    void deleteBoard();
     void updateCurrentFile(const QString &file);
     void updateRecent();
     void changeTheme();
@@ -60,12 +61,14 @@ private:
 
     QMenuBar *menu;
     QMenu *fileMenu;
+    QMenu *boardMenu;
     QMenu *toolMenu;
     QColorDialog *colorDia;
     QInputDialog *nameDia;
     QInputDialog *selectDia;
     QFileDialog *fileDia;
     QMessageBox *questionDia;
+    QMessageBox *confirmBoardDelete;
     QMessageBox *confirmDelete;
     QLabel *wallName;
     QLabel *boardName;
