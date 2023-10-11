@@ -44,11 +44,12 @@ private slots:
     void loadWallByPath(const QString &filepath);
     void loadWall();
     void saveWall();
+    void renameBoard();
     void deleteBoard();
     void updateCurrentFile(const QString &file);
     void updateRecent();
     void changeTheme();
-    void tempedit();
+    void renameWall();
     void addTextNote();
     void addImageNote();
     void addBoardLinkNote();
