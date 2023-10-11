@@ -38,6 +38,7 @@ public:
     std::vector<Note*> notes;
     std::vector<int> order;
     Note* selectedNote = NULL;
+    bool deleteOverride = false;
 
 private:
     void renumberNotes();

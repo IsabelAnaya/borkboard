@@ -269,6 +269,7 @@ void MainWindow::deleteBoard() {
                         continue;
                     }
                     parentCork->selectedNote = note;
+                    parentCork->deleteOverride = true;
                     parentCork->removeNoteSlot();
                 }
             }
@@ -281,7 +282,7 @@ void MainWindow::deleteBoard() {
             }
 
             for (int i = currBoard->children.size() - 1; i >= 0; i--) {
-                parentBoard->children.push_back(currBoard->children[i]);
+                parentBoard->children.insert(it, currBoard->children[i]);
                 currBoard->children.pop_back();
             }
 
