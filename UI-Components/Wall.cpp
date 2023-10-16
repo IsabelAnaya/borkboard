@@ -130,6 +130,15 @@ SidebarItem* Wall::updateTree(Board *node) {
     return curr;
 }
 
+//assumes children have been reparented manually
+void Wall::deleteBoard(int ID) {
+    slotFull[ID] = false;
+    Board* toDelete = boardMap[ID];
+    delete toDelete;
+    boardMap[ID] = NULL;
+    boardsStored--;
+}
+
 Wall::~Wall() {
     std::cout << "deletin (Wall)" << std::endl;
     delete root;

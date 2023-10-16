@@ -6,11 +6,15 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     selectDia = new QInputDialog();
     questionDia = new QMessageBox();
     confirmDelete = new QMessageBox();
+    confirmBoardDelete = new QMessageBox();
     nameDia->setLabelText("Enter new name of wall:");
     questionDia->setText("Use Pre-Existing Board?");
     confirmDelete->setText("Delete this note?");
+    confirmBoardDelete->setText("Delete the current board?");
     confirmDelete->addButton("Yes", QMessageBox::YesRole);
     confirmDelete->addButton("No", QMessageBox::NoRole);
+    confirmBoardDelete->addButton("Yes", QMessageBox::YesRole);
+    confirmBoardDelete->addButton("No", QMessageBox::NoRole);
     questionDia->addButton("Yes", QMessageBox::YesRole);
     questionDia->addButton("No", QMessageBox::NoRole);
 
@@ -27,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     //file bar
     menu = new QMenuBar;
     fileMenu = menuBar()->addMenu(tr("&File"));
+    boardMenu = menuBar()->addMenu(tr("&Board"));
     toolMenu = menuBar()->addMenu(tr("&Tools"));
 
     //new wall
@@ -62,8 +67,22 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     //change wall name
     QAction *changeNameAction = new QAction(tr("&Change Wall Name"), this);
-    connect(changeNameAction, &QAction::triggered, this, &MainWindow::tempedit);
+    connect(changeNameAction, &QAction::triggered, this, &MainWindow::renameWall);
     fileMenu->addAction(changeNameAction);
+
+    /******* BOARD ACTIONS *******/
+    QAction *renameBoardAction = new QAction(tr("&Rename Current Board"), this);
+    connect(renameBoardAction, &QAction::triggered, this, &MainWindow::renameBoard);
+    boardMenu->addAction(renameBoardAction);
+
+    QAction *deleteBoardAction = new QAction(tr("&Delete Current Board"), this);
+    connect(deleteBoardAction, &QAction::triggered, this, &MainWindow::deleteBoard);
+    boardMenu->addAction(deleteBoardAction);
+
+    //make child board
+    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
+    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
+    boardMenu->addAction(addChildBoardAction);
 
     /******* NOTES ********/
     //add text note
@@ -83,10 +102,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     toolMenu->addSeparator();
 
-    //make child board
-    QAction *addChildBoardAction = new QAction(tr("&New Child Board"), this);
-    connect(addChildBoardAction, &QAction::triggered, this, &MainWindow::addBoard);
-    toolMenu->addAction(addChildBoardAction);
 
     wallName = new QLabel("Wall: " + currWall->wallName);
     wallName->setFixedHeight(20);
@@ -211,6 +226,75 @@ void MainWindow::changeBoard(int board) {
     }
 }
 
+void MainWindow::renameBoard() {
+    nameDia->setLabelText("Enter new name of current board:");
+    if (nameDia->exec() == true) {
+        this->currBoard->setName(nameDia->textValue());
+        boardName->setText("Board: " + currBoard->boardName);
+
+        // update board notes
+        std::vector<Note*> candidates = currWall->findAllNotesOfType(noteBoard);
+        for (unsigned int i = 0; i < candidates.size(); i++) {
+            NoteBoardLink* candidate = static_cast<NoteBoardLink*>(candidates[i]);
+            if (candidate->getBoardID() == currBoard->ID) {
+                candidate->setName(nameDia->textValue());
+            }
+        }
+
+        // update sidebar
+        sidebar->replace(currWall->updateTree(currWall->root));
+        connectButtons();
+    }
+}
+
+//delete current board
+void MainWindow::deleteBoard() {
+    if (currBoard->ID == 0) {
+        //can not delete root!
+        QMessageBox popup;
+        popup.setText("Can not delete root board.");
+        popup.exec();
+
+    } else {
+        if (!confirmBoardDelete->exec()) {
+            std::vector<Note*> boardNotes = currWall->findAllNotesOfType(noteBoard);
+            for (unsigned int i = 0; i < boardNotes.size(); i++) {
+                NoteBoardLink* note = static_cast<NoteBoardLink*>(boardNotes[i]);
+                if (note->getBoardID() == currBoard->ID) {
+                    Cork* parentCork = 0;
+                    try {
+                        parentCork = static_cast<Cork*>(note->parentWidget());
+                    } catch(...) {
+                        qDebug() << "failed to find cork";
+                        continue;
+                    }
+                    parentCork->selectedNote = note;
+                    parentCork->deleteOverride = true;
+                    parentCork->removeNoteSlot();
+                }
+            }
+
+            Board* parentBoard = currWall->getBoard(currBoard->parent);
+
+            auto it = std::find(parentBoard->children.begin(), parentBoard->children.end(), currBoard);
+            if (it != parentBoard->children.end()) {
+                parentBoard->children.erase(it);
+            }
+
+            for (int i = currBoard->children.size() - 1; i >= 0; i--) {
+                parentBoard->children.insert(it, currBoard->children[i]);
+                currBoard->children.pop_back();
+            }
+
+            int id = currBoard->ID;
+            changeBoard(0);
+            currWall->deleteBoard(id);
+            sidebar->replace(currWall->updateTree(currWall->root));
+            connectButtons();
+        }
+    }
+}
+
 void MainWindow::updateCurrentFile(const QString &file) {
     qDebug() << "updateCurrentFile, " << file;
     QSettings settings("beldog", "Bork Board");
@@ -253,7 +337,7 @@ void MainWindow::updateRecent() {
     //https://surfer.nmr.mgh.harvard.edu/ftp/dist/freesurfer/tutorial_versions/freesurfer/lib/qt/qt_doc/html/mainwindows-recentfiles-mainwindow-cpp.html
 }
 
-void MainWindow::tempedit() {
+void MainWindow::renameWall() {
 //    if (colorDia->exec() == true) {
 //        this->currBoard->setColor("background-color:" + colorDia->currentColor().name(QColor::HexRgb));
 //    }
@@ -263,25 +347,6 @@ void MainWindow::tempedit() {
         currWall->wallName = nameDia->textValue();
         wallName->setText("Wall: " + nameDia->textValue());
 
-    }
-
-    nameDia->setLabelText("Enter new name of current board:");
-    if (nameDia->exec() == true) {
-        this->currBoard->setName(nameDia->textValue());
-        boardName->setText("Board: " + currBoard->boardName);
-
-        // update board notes
-        std::vector<Note*> candidates = currWall->findAllNotesOfType(noteBoard);
-        for (unsigned int i = 0; i < candidates.size(); i++) {
-            NoteBoardLink* candidate = static_cast<NoteBoardLink*>(candidates[i]);
-            if (candidate->getBoardID() == currBoard->ID) {
-                candidate->setName(nameDia->textValue());
-            }
-        }
-
-        // update sidebar
-        sidebar->replace(currWall->updateTree(currWall->root));
-        connectButtons();
     }
 }
 

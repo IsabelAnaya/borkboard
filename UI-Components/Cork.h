@@ -37,13 +37,14 @@ public:
     QMessageBox* confirmDelete;
     std::vector<Note*> notes;
     std::vector<int> order;
+    Note* selectedNote = NULL;
+    bool deleteOverride = false;
 
 private:
     void renumberNotes();
     void changeNoteColor(int c);
     unsigned int maxID = 0;
     Note* movingNote = NULL;
-    Note* selectedNote = NULL;
     NoteText* activeNote = NULL;
     QPoint offset;
     QPoint initialPos;
@@ -64,12 +65,14 @@ private:
     QAction* backOneAction;
     QAction* forwardOneAction;
 
+public slots:
+    void removeNoteSlot();
+
 private slots:
     void newTextSlot();
     void newImageSlot();
     void newBoardNoteSlot();
     void newStickerSlot();
-    void removeNoteSlot();
     void changeImageSlot();
     void toFrontSlot();
     void toBackSlot();

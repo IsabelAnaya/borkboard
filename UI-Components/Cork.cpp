@@ -147,7 +147,7 @@ void Cork::newStickerSlot() {
 
 void Cork::removeNoteSlot() {
     if (selectedNote) {
-        if (!confirmDelete->exec()) {
+        if (deleteOverride || !confirmDelete->exec()) {
             int id = selectedNote->ID;
             auto iti = std::find(order.begin(), order.end(), id);
             if (iti != order.end()) {
@@ -159,6 +159,7 @@ void Cork::removeNoteSlot() {
                 delete *it;
                 notes.erase(it);
             }
+            deleteOverride = false;
         }
     }
 }
