@@ -1,0 +1,35 @@
+{
+	"name": "Orange",
+	"author": "BB",
+
+	"cork": {
+		"background": {
+			"isColor": true,
+			"color": "#F3B58B"
+		}
+	},
+
+	"side": {
+		"background": {
+			"color": "#E0793D",
+			"text": "#4C3528"
+		},
+		"innerPanel": {
+			"color": "#F3B58B",
+			"column": "#E0793D"
+		}
+	},
+	
+	"notes": {
+		"color1": "#DC8A52",
+		"color2": "#E0793D",
+		"color3": "#C24C08",
+		"color4": "#AD460A",
+		"color5": "#995934"
+	},
+
+	"button": {
+		"color": "#E0793D",
+		"text": "#4C3528"
+	}
+}

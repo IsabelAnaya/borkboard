@@ -1,0 +1,35 @@
+{
+	"name": "Green",
+	"author": "BB",
+
+	"cork": {
+		"background": {
+			"isColor": true,
+			"color": "#DDFFC9"
+		}
+	},
+
+	"side": {
+		"background": {
+			"color": "#71A646",
+			"text": "#233817"
+		},
+		"innerPanel": {
+			"color": "#DDFFC9",
+			"column": "#03306e"
+		}
+	},
+	
+	"notes": {
+		"color1": "#A5E670",
+		"color2": "#377802",
+		"color3": "#497430",
+		"color4": "#325020",
+		"color5": "#233817"
+	},
+
+	"button": {
+		"color": "#C6E5B4",
+		"text": "#233817"
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"name": "Dark",
+	"author": "BB",
+
+	"cork": {
+		"background": {
+			"isColor": true,
+			"color": "#383838"
+		}
+	},
+
+	"side": {
+		"background": {
+			"color": "#454545",
+			"text": "#F1E4D5"
+		},
+		"innerPanel": {
+			"color": "#383838",
+			"column": "#F1E4D5"
+		}
+	},
+	
+	"notes": {
+		"color1": "#9EB0C9",
+		"color2": "#8493A8",
+		"color3": "#6A7893",
+		"color4": "#51627B",
+		"color5": "#3C4B61"
+	},
+
+	"button": {
+		"color": "#F1E4D5",
+		"text": "#383838"
+	}
+}
