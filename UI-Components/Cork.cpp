@@ -21,7 +21,7 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     addNoteMenu->addAction(addImageAction);
 
     QAction *addBoardNoteAction = new QAction(tr("&Add Board Note"), this);
-    connect(addBoardNoteAction, &QAction::triggered, this, &Cork::newBoardNoteSlot);
+    connect(addBoardNoteAction, &QAction::triggered, this, &Cork::getBoardForNote);
     addNoteMenu->addAction(addBoardNoteAction);
 
     QAction *addStickerAction = new QAction(tr("&Add sticker"), this);
@@ -136,8 +136,7 @@ void Cork::newImageSlot() {
 }
 
 void Cork::newBoardNoteSlot() {
-    Note* note = addBoardLinkNote(0, "*temp");
-    note->move(newPos);
+    emit getBoardForNote(true);
 }
 
 void Cork::newStickerSlot() {

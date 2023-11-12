@@ -79,6 +79,9 @@ private slots:
     void forwardOneSlot();
     void backOneSlot();
 
+signals:
+    void getBoardForNote(bool positioned);
+
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

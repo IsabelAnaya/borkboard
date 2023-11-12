@@ -97,6 +97,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
 
     //add board link note
     QAction *addBoardLinkNoteAction = new QAction(tr("New Board Note"), this);
+    addBoardLinkNoteAction->setData(false);
     connect(addBoardLinkNoteAction, &QAction::triggered, this, &MainWindow::addBoardLinkNote);
     toolMenu->addAction(addBoardLinkNoteAction);
 
@@ -133,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent) {
     this->setCentralWidget(window);
 
     connectButtons(); // <---- HERE
+    connect(currWall->currentBoard->cork, &Cork::getBoardForNote, this, &MainWindow::addBoardLinkNote, Qt::UniqueConnection);
 
     db = new DBManager();
     dh = new DataHandler(db);
@@ -170,6 +172,7 @@ void MainWindow::loadRecentWall() {
 
 void MainWindow::loadWallByPath(const QString &filePath) {
     if (filePath != "") {
+        disconnect(currWall->currentBoard->cork, &Cork::getBoardForNote, this, &MainWindow::addBoardLinkNote);
         delete currWall;
         currBoard = NULL;
 
@@ -177,6 +180,7 @@ void MainWindow::loadWallByPath(const QString &filePath) {
         currWall = dh->rebuildWall(); //getting the wall ready
         currBoard = currWall->root;
         currBoard->cork->confirmDelete = confirmDelete;
+        connect(currBoard->cork, &Cork::getBoardForNote, this, &MainWindow::addBoardLinkNote, Qt::UniqueConnection);
 
         wallName->setText("Wall: " + currWall->wallName); //update the wall name
         boardName->setText("Board: " + currBoard->boardName);
@@ -358,13 +362,17 @@ void MainWindow::addImageNote() {
     currBoard->cork->addImageNote();
 }
 
-void MainWindow::addBoardLinkNote() {
+void MainWindow::addBoardLinkNote(bool positioned = false) {
     int result = questionDia->exec(); // 0 for yes, 1 for no
 
     if (result == 1) {
         Board* board = addBoard();
         if (board) {
-            connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+            if (positioned) {
+                connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+            } else {
+                connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+            }
         }
     } else { // old board
         std::pair<Board**, bool*> boardInfo = currWall->getAllBoards();
@@ -381,7 +389,9 @@ void MainWindow::addBoardLinkNote() {
         if (selectDia->exec()) {
             qDebug() << nameDia->textValue();
             Board* board = currWall->getBoard(items.indexOf(selectDia->textValue()));
-            if (board) {
+            if (positioned) {
+                connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
+            } else {
                 connect(currBoard->cork->addBoardLinkNote(board->ID, board->boardName)->button, &BoardSwitchButton::boardSwitch, this, &MainWindow::changeBoard); //doesn't catch preexisting
             }
         }
@@ -426,10 +436,12 @@ void MainWindow::updateCork() {
         oldCork->notes[i]->hide();
     }
     oldCork->hide();
+    disconnect(oldCork, &Cork::getBoardForNote, this, &MainWindow::addBoardLinkNote);
     mainbox->removeItem(mainbox->itemAtPosition(0, 0)); //remove old cork
 
     mainbox->addWidget(currWall->currentBoard->cork,0, 0, 10, 3); //replace with new
     Cork* currCork = currWall->currentBoard->cork;
+    connect(currCork, &Cork::getBoardForNote, this, &MainWindow::addBoardLinkNote, Qt::UniqueConnection);
     currCork->show();
     for (unsigned int i = 0; i < currCork->notes.size(); i++) {
         currCork->notes[i]->show();

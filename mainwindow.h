@@ -37,6 +37,7 @@ public:
 
 public slots:
     void changeBoard(int board);
+    void addBoardLinkNote(bool positioned);
 
 private slots:
     void newWall();
@@ -52,7 +53,6 @@ private slots:
     void renameWall();
     void addTextNote();
     void addImageNote();
-    void addBoardLinkNote();
     Board* addBoard();
 
 private:
