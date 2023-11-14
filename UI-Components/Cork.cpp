@@ -289,6 +289,16 @@ NoteSticker* Cork::addStickerNote(int x, int y, int height, int width, int type)
     return tempo;
 }
 
+Note* Cork::getNoteById(int id) {
+    int listLen = notes.size();
+    for (int i = 0; i < listLen; i++) {
+        if (notes[i]->ID == id) {
+            return notes[i];
+        }
+    }
+    return NULL;
+}
+
 void Cork::toFrontSlot() {
     selectedNote->raise();
     int id = selectedNote->ID;
@@ -309,24 +319,50 @@ void Cork::toBackSlot() {
     }
 }
 
-/***WIP***/
 void Cork::forwardOneSlot() {
     int id = selectedNote->ID;
     auto it = std::find(order.begin(), order.end(), id);
-//    if (it != order.end() && it != order.begin()) {
-//        order.erase(it);
-//        order.insert(it - 1, id);
-//    }
+    if (it != order.end() && it != order.begin()) {
+        auto forward = std::prev(it);
+        order.erase(it);
+        order.insert(forward, id);
+
+        Note* currNote;
+        //raise from inserted slot to beginning
+        while (forward != order.begin()) {
+            currNote = getNoteById(*forward);
+            if (currNote) {
+                currNote->raise();
+            }
+            forward = std::prev(forward);
+        }
+        currNote = getNoteById(*forward);
+        if (currNote) {
+            currNote->raise();
+        }
+    }
 }
 
 void Cork::backOneSlot() {
     int id = selectedNote->ID;
     auto it = std::find(order.begin(), order.end(), id);
-//    if (it != order.end() && it != order.end() - 1) {
-//        order.insert(it + 1, id);
-//        order.erase(it);
+    if (it != order.end() && std::next(it) != order.end()) {
+        auto back = std::next(it);
+        order.erase(it);
+        order.insert(back, id);
+        back = std::prev(back);
 
-//    }
+        Note* currNote;
+        //lower from inserted slot to back
+        while (back != order.end()) {
+            qDebug() << "yikes" << *back;
+            currNote = getNoteById(*back);
+            if (currNote) {
+                currNote->lower();
+            }
+            back = std::next(back);
+        }
+    }
 }
 
 void Cork::moveNote(Note *note, int xPos, int yPos) {
@@ -404,7 +440,7 @@ void Cork::mousePressEvent(QMouseEvent *event) {
         } else {
             std::cout << "right click on note" << std::endl;
             selectedNote = child;
-            qDebug() << selectedNote->color;
+            qDebug() << selectedNote->ID;
         }
 
     } else if (event->button() == Qt::LeftButton) {
