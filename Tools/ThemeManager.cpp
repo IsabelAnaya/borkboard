@@ -1,11 +1,18 @@
 #include "ThemeManager.h"
 
 ThemeManager::ThemeManager() {
-    defaultTheme = QString("Cork {  background-color: white; border: 0; border-radius: 5px; }\n Sidebar { border: 0; border-radius: 5px }\n QScrollArea { background-color: white; border: 0;  border-radius: 5px }\n")
-            + QString(".column { color: #d9d9d9 } \n")
-            + QString(".color-1, .color-2, .color-3, .color-4, .color-5 { background-color: #d9d9d9; border: 0px; border-radius: 5px }\n")
-            + QString(".sticker { background-color: transparent; border: 0px; }\n.sticker:hover { background-color: #d9d9d950 }");
     basicThemeBits = "QLabel { border: 0px; border-radius: 5px }\n QTextEdit { border: 0px; border-radius: 5px; background-color: palette(base) }\n";
+    defaultTheme =  QString("Cork {  background-color: white; border: 0; border-radius: 5px; }\n ")
+            + "Sidebar { border: 0; border-radius: 5px }\n "
+            + "QScrollArea { background-color: white; border: 0;  border-radius: 5px }\n"
+            + ".column { color: #d9d9d9 } \n"
+            + "QPushButton { border: 1px solid #d9d9d9; padding: 5px; background-color: white; color: black } \n"
+            + "QPushButton:hover { border: 1px solid white; background-color: #d9d9d9; color: black } \n"
+            + "QPushButton:focus { border: 1px solid white; background-color: #d9d9d9; color: black } \n"
+            + ".color-1, .color-2, .color-3, .color-4, .color-5 { background-color: #d9d9d9; border: 0px; border-radius: 5px }\n"
+            + ".sticker { background-color: transparent; border: 0px; }\n.sticker:hover { background-color: #d9d9d950 }"
+            ;
+
     currentTheme = basicThemeBits + defaultTheme;
 }
 
@@ -41,11 +48,11 @@ QString ThemeManager::applyTheme(QString path) {
             + "QPushButton:focus { border: 1px solid " + (theme["button"]["color"]).toString() + "; background-color: " + (theme["button"]["text"]).toString() + "; color: " + (theme["button"]["color"]).toString() + " } \n"
             + ".side-text { color: " + (theme["side"]["background"]["text"]).toString() + " } \n"
             + ".column { color: " + (theme["side"]["innerPanel"]["column"]).toString() + " } \n"
-            + ".color-1 { background-color: " +  (theme["notes"]["color1"]).toString() + "; border: 0px; border-radius: 5px } \n"
-            + ".color-2 { background-color: " +  (theme["notes"]["color2"]).toString() + "; border: 0px; border-radius: 5px } \n"
-            + ".color-3 { background-color: " +  (theme["notes"]["color3"]).toString() + "; border: 0px; border-radius: 5px } \n"
-            + ".color-4 { background-color: " +  (theme["notes"]["color4"]).toString() + "; border: 0px; border-radius: 5px } \n"
-            + ".color-5 { background-color: " +  (theme["notes"]["color5"]).toString() + "; border: 0px; border-radius: 5px } \n"
+            + ".color-1 { background-color: " + (theme["notes"]["color1"]).toString() + "; border: 0px; border-radius: 5px } \n"
+            + ".color-2 { background-color: " + (theme["notes"]["color2"]).toString() + "; border: 0px; border-radius: 5px } \n"
+            + ".color-3 { background-color: " + (theme["notes"]["color3"]).toString() + "; border: 0px; border-radius: 5px } \n"
+            + ".color-4 { background-color: " + (theme["notes"]["color4"]).toString() + "; border: 0px; border-radius: 5px } \n"
+            + ".color-5 { background-color: " + (theme["notes"]["color5"]).toString() + "; border: 0px; border-radius: 5px } \n"
             + ".sticker { background-color: transparent; border: 0px }\n"
             + ".sticker:hover { background-color: " + (theme["notes"]["color1"]).toString() + "50 }"
             );
