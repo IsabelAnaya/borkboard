@@ -60,6 +60,7 @@ private:
     QMenu* addNoteMenu;
     QMenu* changeColorMenu;
     QAction* removeAction; //needs to be here so it can be switched on
+    QAction* toggleLockAction;
     QAction* changeImageAction;
     QAction* toFrontAction;
     QAction* toBackAction;
@@ -74,6 +75,7 @@ private slots:
     void newImageSlot();
     void newBoardNoteSlot();
     void newStickerSlot();
+    void toggleLockSlot();
     void changeImageSlot();
     void toFrontSlot();
     void toBackSlot();

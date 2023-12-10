@@ -28,6 +28,8 @@ public:
     QVBoxLayout* lay;
     int ID;
     int color;
+
+    bool locked = false;
     //float len, wid;
 
 protected:

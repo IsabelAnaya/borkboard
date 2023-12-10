@@ -54,6 +54,11 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
     changeColorMenu->menuAction()->setVisible(false);
 
     /*************** EXTRA **************/
+    toggleLockAction = new QAction(tr("&Lock note"), this);
+    connect(toggleLockAction, &QAction::triggered, this, &Cork::toggleLockSlot);
+    menu->addAction(toggleLockAction);
+    toggleLockAction->setVisible(false);
+
     removeAction = new QAction(tr("&Delete note"), this);
     connect(removeAction, &QAction::triggered, this, &Cork::removeNoteSlot);
     menu->addAction(removeAction);
@@ -88,6 +93,12 @@ Cork::Cork(QWidget *parent) : QFrame(parent) {
 
 void Cork::contextMenuEvent(QContextMenuEvent *event) {
     if (selectedNote) {
+        if (selectedNote->locked) {
+            toggleLockAction->setText("Unlock note");
+        } else {
+            toggleLockAction->setText("Lock note");
+        }
+        toggleLockAction->setVisible(true);
         removeAction->setVisible(true);
         toFrontAction->setVisible(true);
         forwardOneAction->setVisible(true);
@@ -106,6 +117,7 @@ void Cork::contextMenuEvent(QContextMenuEvent *event) {
             changeColorMenu->menuAction()->setVisible(false);
         }
     } else {
+        toggleLockAction->setVisible(false);
         removeAction->setVisible(false);
         changeColorMenu->menuAction()->setVisible(false);
         changeImageAction->setVisible(false);
@@ -299,6 +311,12 @@ Note* Cork::getNoteById(int id) {
     return NULL;
 }
 
+void Cork::toggleLockSlot() {
+    if (selectedNote) {
+        selectedNote->locked = !selectedNote->locked;
+    }
+}
+
 void Cork::toFrontSlot() {
     selectedNote->raise();
     int id = selectedNote->ID;
@@ -388,7 +406,7 @@ void Cork::mouseReleaseEvent(QMouseEvent *event) {
 void Cork::mouseMoveEvent(QMouseEvent *event) {
     event->pos();
 
-    if (movingNote) {
+    if (movingNote && !movingNote->locked) {
         switch (cornerGrabbed) {
         case(0): //moving
             movingNote->move(event->pos().x() - offset.x(), event->pos().y() - offset.y());
@@ -454,49 +472,52 @@ void Cork::mousePressEvent(QMouseEvent *event) {
             return;
         }
 
-        offset = event->pos() - movingNote->pos();
-        initialSize[0] = movingNote->width(); //correctly offset for resizing
-        initialSize[1] = movingNote->height();
-        initialPos = movingNote->pos();
-        firstGrab[0] = event->pos().x();
-        firstGrab[1] = event->pos().y();
 
-        if (movingNote->getType() == noteImage) {
-            image = true;
-        }
+        if (!movingNote->locked) {
+            offset = event->pos() - movingNote->pos();
+            initialSize[0] = movingNote->width(); //correctly offset for resizing
+            initialSize[1] = movingNote->height();
+            initialPos = movingNote->pos();
+            firstGrab[0] = event->pos().x();
+            firstGrab[1] = event->pos().y();
 
-        if (movingNote->getType() == noteText) {
-            if (activeNote && activeNote != movingNote) {
-                activeNote->toMarkdown();
+            if (movingNote->getType() == noteImage) {
+                image = true;
             }
-            activeNote = static_cast<NoteText*>(movingNote);
-            activeNote->toPlaintext();
-        } else if (activeNote){
-            activeNote->toMarkdown();
-            activeNote = NULL;
-        }
 
-        //check if its in a grabby area. if yes, resize, else get ready to move
-        if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
-            std::cout << "top left" << std::endl;
-            cornerGrabbed = 1;
+            if (movingNote->getType() == noteText) {
+                if (activeNote && activeNote != movingNote) {
+                    activeNote->toMarkdown();
+                }
+                activeNote = static_cast<NoteText*>(movingNote);
+                activeNote->toPlaintext();
+            } else if (activeNote){
+                activeNote->toMarkdown();
+                activeNote = NULL;
+            }
 
-        } else if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() > movingNote->height() - 10)) {
-            std::cout << "bottom left" << std::endl;
-            cornerGrabbed = 2;
+            //check if its in a grabby area. if yes, resize, else get ready to move
+            if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
+                std::cout << "top left" << std::endl;
+                cornerGrabbed = 1;
 
-        } else if (((event->pos() - movingNote->pos()).x() > movingNote->width() - 10) && ((event->pos() - movingNote->pos()).y() > movingNote->height() - 10)) {
-            std::cout << "bottom right" << std::endl;
-            cornerGrabbed = 3;
+            } else if (((event->pos() - movingNote->pos()).x() < 10) && ((event->pos() - movingNote->pos()).y() > movingNote->height() - 10)) {
+                std::cout << "bottom left" << std::endl;
+                cornerGrabbed = 2;
 
-        } else if (((event->pos() - movingNote->pos()).x() > movingNote->width() - 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
-            std::cout << "top right" << std::endl;
-            cornerGrabbed = 4;
+            } else if (((event->pos() - movingNote->pos()).x() > movingNote->width() - 10) && ((event->pos() - movingNote->pos()).y() > movingNote->height() - 10)) {
+                std::cout << "bottom right" << std::endl;
+                cornerGrabbed = 3;
 
-        //movement moment
-        } else {
-            std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
+            } else if (((event->pos() - movingNote->pos()).x() > movingNote->width() - 10) && ((event->pos() - movingNote->pos()).y() < 10)) {
+                std::cout << "top right" << std::endl;
+                cornerGrabbed = 4;
 
+            //movement moment
+            } else {
+                std::cout << event->pos().x() << " " << event->pos().y() << std::endl;
+
+            }
         }
     }
 }
