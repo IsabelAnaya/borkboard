@@ -124,7 +124,7 @@ bool DataHandler::saveNote(Note *note, std::vector<int> order, int boardID, int 
     }
 
     qDebug() << db->getName();
-    QString queryString = "INSERT INTO notes (count_id, board_id, ordered, type, x, y, height, width, color, content_1, content_2, content_3) VALUES (:count, :board, :ord, :type, :x, :y, :height, :width, :color, :con1, :con2, :con3)";
+    QString queryString = "INSERT INTO notes (count_id, board_id, ordered, type, x, y, height, width, color, content_1, content_2, content_3, locked) VALUES (:count, :board, :ord, :type, :x, :y, :height, :width, :color, :con1, :con2, :con3, :lock)";
     QSqlQuery q;
     q.prepare(queryString);
     q.bindValue(":count", noteID);
@@ -139,12 +139,13 @@ bool DataHandler::saveNote(Note *note, std::vector<int> order, int boardID, int 
     q.bindValue(":con2", content2);
     q.bindValue(":con3", content3);
     q.bindValue(":color", note->color);
+    q.bindValue(":lock", (int)note->locked);
 
     //qDebug() << "got this far";
     return db->completeQuery(q);
 }
 
-bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height, int width, QString c1, QString c2, QString c3, int color) {
+bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height, int width, QString c1, QString c2, QString c3, int color, bool locked) {
     QString boardString = "SELECT name FROM boards WHERE board_id = :board";
     QSqlQuery q;
     Note* note;
@@ -154,6 +155,7 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
             qDebug() << "text";
             note = board->cork->addTextNote(x, y, height, width, c1);
             note->setColor(color);
+            note->locked = locked;
             return true;
         case noteBoard:
             qDebug() << "boardlink";
@@ -164,6 +166,7 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
             if (q.isValid()) {
                 note = board->cork->addBoardLinkNote(x, y, height, width, c1.toInt(), q.value(0).toString());
                 note->setColor(color);
+                note->locked = locked;
                 return true;
             }
 
@@ -172,10 +175,12 @@ bool DataHandler::addNote(Board* board, noteType type, int x, int y, int height,
             qDebug() << "image" << c1;
             note = board->cork->addImageNote(x, y, height, width, c1);
             note->setColor(color);
+            note->locked = locked;
             return true;
         case noteSticker:
             qDebug() << "sticker";
             note = board->cork->addStickerNote(x, y, height, width, c1.toInt());
+            note->locked = locked;
             return true;
         default:
             return false;
@@ -258,7 +263,7 @@ void DataHandler::findChildBoards(int ID, QQueue<int> *parents) {
 }
 
 void DataHandler::rebuildNotes(Board *board) {
-    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3, color, ordered FROM notes WHERE board_id = :id ORDER BY ordered DESC";
+    QString noteString = "SELECT type, x, y, height, width, content_1, content_2, content_3, color, ordered, locked FROM notes WHERE board_id = :id ORDER BY ordered DESC";
     QSqlQuery q;
     q.prepare(noteString);
     q.bindValue(":id", board->ID);
@@ -275,7 +280,8 @@ void DataHandler::rebuildNotes(Board *board) {
                 q.value(5).toString(),
                 q.value(6).toString(),
                 q.value(7).toString(),
-                q.value(8).toInt()
+                q.value(8).toInt(),
+                q.value(9).toBool()
         );
         q.next();
     }
